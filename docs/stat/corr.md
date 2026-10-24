@@ -60,5 +60,5 @@ import Numeric from '@neabyte/numerix'
 const value = Numeric.stat.corr([2, 2, 2], [2, 2, 2])
 
 console.log(value)
-// [["NaN","NaN"],["NaN","NaN"]]
+// [[NaN,NaN],[NaN,NaN]]
 ```
