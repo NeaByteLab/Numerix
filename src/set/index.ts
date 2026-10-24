@@ -1,0 +1,6 @@
+export { default as diff } from '@app/set/diff.ts'
+export { default as intersect } from '@app/set/intersect.ts'
+export { default as member } from '@app/set/member.ts'
+export { default as union } from '@app/set/union.ts'
+export { default as unique } from '@app/set/unique.ts'
+export { default as xor } from '@app/set/xor.ts'

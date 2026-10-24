@@ -1,0 +1,5 @@
+export { default as argpartition } from '@app/sort/argpartition.ts'
+export { default as argsort } from '@app/sort/argsort.ts'
+export { default as order } from '@app/sort/order.ts'
+export { default as partition } from '@app/sort/partition.ts'
+export { default as search } from '@app/sort/search.ts'
