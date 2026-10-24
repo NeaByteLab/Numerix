@@ -1,0 +1,18 @@
+Numerix
+Copyright (c) 2026 NeaByteLab. All rights reserved.
+
+This product includes software developed as an independent TypeScript
+implementation whose public API is modeled on the NumPy API.
+
+NumPy
+Copyright (c) 2005-2025, NumPy Developers.
+All rights reserved.
+
+NumPy is licensed under the BSD 3-Clause License. The full license text is
+available at https://github.com/numpy/numpy/blob/main/LICENSE.txt
+
+NumPy is a foundational reference for the numeric API surface, naming
+conventions, and algorithm semantics reproduced by this project. This project
+is not affiliated with, endorsed by, or a distribution of the NumPy project.
+The NumPy name and logo are property of their respective owners and are used
+here only for attribution.
