@@ -1,6 +1,6 @@
 {
   "name": "@neabyte/numerix",
-  "description": "-",
+  "description": "Numerical library for arrays, transforms, sampling, and linear algebra",
   "version": "0.1.0",
   "type": "module",
   "license": "BSD-3-Clause",
