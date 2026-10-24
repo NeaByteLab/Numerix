@@ -1,0 +1,53 @@
+{
+  "name": "@neabyte/numerix",
+  "description": "-",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "unbuild --minify",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "rm -rf dist && npm run build"
+  },
+  "keywords": [],
+  "dependencies": {},
+  "devDependencies": {
+    "@typescript/typescript6": "^6.0.2",
+    "unbuild": "^3.6.1"
+  },
+  "author": {
+    "name": "NeaByteLab",
+    "email": "me@neabyte.com",
+    "url": "https://github.com/NeaByteLab"
+  },
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NeaByteLab/Numerix.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NeaByteLab/Numerix/issues"
+  },
+  "homepage": "https://github.com/NeaByteLab/Numerix#readme",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
