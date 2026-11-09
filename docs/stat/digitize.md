@@ -5,15 +5,15 @@ Find which bin each value falls into.
 ## API
 
 ```ts
-Numeric.stat.digitize(values, bins, right = false)
+Numeric.stat.digitize(values, edges, closed = false)
 ```
 
 Reports the bin index of every value.
 
 - Parameters:
   - `values`: Values placed into the bins
-  - `bins`: Bin edges used for the grouping
-  - `right`: When true returns the bin on the right of the edge
+  - `edges`: Bin edges used for the grouping
+  - `closed`: When true returns the bin on the right of the edge
 - Returns: Bin index for each value
 - NumPy: Equivalent to `np.digitize`.
 

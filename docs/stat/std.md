@@ -5,16 +5,16 @@ Compute the standard deviation of an array along an axis.
 ## API
 
 ```ts
-Numeric.stat.std(left, freedom = 0, nan = false, axis)
+Numeric.stat.std(values, freedom = 0, invalid = false, level)
 ```
 
 Measures the spread of the values around their mean.
 
 - Parameters:
-  - `left`: Vector or matrix of input values
+  - `values`: Vector or matrix of input values
   - `freedom`: Degrees of freedom correction applied
-  - `nan`: When true skips not a number entries
-  - `axis`: Axis along which the deviation is computed
+  - `invalid`: When true skips NaN entries
+  - `level`: Axis along which the deviation is computed
 - Returns: Standard deviation matching the requested axis
 - NumPy: Covers `np.std`, `np.nanstd`, `ndarray.std` through a single Numerix method.
 

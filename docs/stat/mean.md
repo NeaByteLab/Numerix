@@ -5,15 +5,15 @@ Compute the arithmetic mean of an array along an axis.
 ## API
 
 ```ts
-Numeric.stat.mean(left, nan = false, axis)
+Numeric.stat.mean(values, invalid = false, level)
 ```
 
 Averages the values of the array.
 
 - Parameters:
-  - `left`: Vector or matrix of input values
-  - `nan`: When true skips not a number entries
-  - `axis`: Axis along which the values are averaged
+  - `values`: Vector or matrix of input values
+  - `invalid`: When true skips NaN entries
+  - `level`: Axis along which the values are averaged
 - Returns: Mean matching the requested axis
 - NumPy: Covers `np.mean`, `np.nanmean`, `ndarray.mean` through a single Numerix method.
 
@@ -30,7 +30,7 @@ console.log(value)
 // 2
 ```
 
-### Mean while skipping not a number values
+### Mean while skipping NaN values
 
 ```ts
 import Numeric from '@neabyte/numerix'

@@ -5,16 +5,17 @@ Compute the quantile or percentile of an array.
 ## API
 
 ```ts
-Numeric.stat.quantile(values, probability, percentile = false, skip = false)
+Numeric.stat.quantile(values, chance, percent = false, ignore = false, level)
 ```
 
 Finds the requested quantile of the sorted entries.
 
 - Parameters:
   - `values`: Vector or matrix of input values
-  - `probability`: Quantile position between zero and one
-  - `percentile`: When true reads the probability as a percentage
-  - `skip`: Whether invalid entries are skipped
+  - `chance`: Quantile position between zero and one
+  - `percent`: When true reads the probability as a percentage
+  - `ignore`: Whether invalid entries are skipped
+  - `level`: Optional axis along which to compute quantiles
 - Returns: Quantile matching the requested probability
 - NumPy: Covers `np.quantile`, `np.nanquantile`, `np.percentile`, `np.nanpercentile` through a single Numerix method.
 

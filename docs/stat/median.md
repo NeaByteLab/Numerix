@@ -5,15 +5,15 @@ Compute the median value of an array along an axis.
 ## API
 
 ```ts
-Numeric.stat.median(values, nan = false, axis)
+Numeric.stat.median(values, invalid = false, level)
 ```
 
 Finds the middle value of the sorted entries.
 
 - Parameters:
   - `values`: Vector or matrix of input values
-  - `nan`: When true skips not a number entries
-  - `axis`: Axis along which the median is sought
+  - `invalid`: When true skips NaN entries
+  - `level`: Axis along which the median is sought
 - Returns: Median matching the requested axis
 - NumPy: Covers `np.median`, `np.nanmedian` through a single Numerix method.
 
@@ -41,7 +41,7 @@ console.log(value)
 // 2.5
 ```
 
-### Median while skipping not a number values
+### Median while skipping NaN values
 
 ```ts
 import Numeric from '@neabyte/numerix'

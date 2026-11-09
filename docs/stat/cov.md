@@ -5,15 +5,18 @@ Compute the covariance between two paired samples.
 ## API
 
 ```ts
-Numeric.stat.cov(values, partner, freedom = 1)
+Numeric.stat.cov(values, other, freedom = 1, layered, counts, factors)
 ```
 
 Measures how two samples vary together.
 
 - Parameters:
   - `values`: First sample of paired values
-  - `partner`: Second sample of paired values
-  - `freedom`: Degrees of freedom correction applied
+  - `other`: Second sample of paired values
+  - `freedom`: Degrees of freedom or row-variable flag
+  - `layered`: When true treats each row as a variable
+  - `counts`: Optional integer frequency weights
+  - `factors`: Optional analytic observation weights
 - Returns: Covariance matrix of the paired samples
 - NumPy: Equivalent to `np.cov`.
 

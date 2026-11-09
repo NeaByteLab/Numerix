@@ -5,15 +5,17 @@ Count the values falling into each bin of a histogram.
 ## API
 
 ```ts
-Numeric.stat.histogram(left, bins = 10, range)
+Numeric.stat.histogram(values, count = 10, bounds, density, final = false)
 ```
 
 Counts values falling into each bin.
 
 - Parameters:
-  - `left`: Values to distribute across the bins
-  - `bins`: Number of bins or explicit bin edges
-  - `range`: Value range covered by the bins
+  - `values`: Values to distribute across the bins
+  - `count`: Number of bins or explicit bin edges
+  - `bounds`: Value range covered by the bins or density flag
+  - `density`: Density flag or optional sample weights
+  - `final`: When true normalizes weighted counts to density
 - Returns: Bin counts with edges or a two dimensional grid
 - NumPy: Covers `np.histogram`, `np.histogram2d`, `np.histogramdd`, `np.histogram_bin_edges` through a single Numerix method.
 

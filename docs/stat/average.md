@@ -5,14 +5,15 @@ Compute the weighted arithmetic mean of an array.
 ## API
 
 ```ts
-Numeric.stat.average(left, weights)
+Numeric.stat.average(values, weights, level)
 ```
 
 Averages the values with the supplied weights.
 
 - Parameters:
-  - `left`: Vector or matrix of input values
+  - `values`: Vector or matrix of input values
   - `weights`: Weights applied to each value
+  - `level`: Optional axis along which to average
 - Returns: Weighted mean of the values
 - NumPy: Equivalent to `np.average`.
 

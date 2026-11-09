@@ -5,7 +5,7 @@ Count the occurrences of each non-negative integer value.
 ## API
 
 ```ts
-Numeric.stat.bincount(values, weights, minimum = 0)
+Numeric.stat.bincount(values, weights, lowest = 0)
 ```
 
 Counts how often each integer value appears.
@@ -13,7 +13,7 @@ Counts how often each integer value appears.
 - Parameters:
   - `values`: Non-negative integer values to count
   - `weights`: Weights added instead of plain counts
-  - `minimum`: Smallest counted index in the result
+  - `lowest`: Smallest counted index in the result
 - Returns: Count for each counted index
 - NumPy: Equivalent to `np.bincount`.
 
