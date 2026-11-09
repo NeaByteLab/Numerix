@@ -7,112 +7,95 @@ import ifft from '@app/fft/ifft.ts'
  * @description Rebuilds a real signal from its frequency spectrum.
  * @param spectrum - Frequency spectrum to transform
  * @param count - Length of the produced signal
- * @param axis - Axes along which the transform runs, or 'all' for every axis
+ * @param level - Axes along which the transform runs
  * @returns Real signal of the transformed spectrum
  */
 export default function irfft(
   spectrum: (Types.NumerixComplex | number)[] | (Types.NumerixComplex | number)[][],
-  count?: number,
-  axis?: Types.NumerixAxis
+  count?: number | Types.NumerixAxis,
+  level?: Types.NumerixAxis
 ): number[] | number[][] {
   if (Array.isArray(spectrum[0])) {
     const matrix = spectrum as (Types.NumerixComplex | number)[][]
-    const direction = Internal.axes(axis)
-    if (direction === 'all') {
-      const inverted = Internal.columns(
-        matrix,
-        (column) => ifft(column) as Types.NumerixComplex[]
-      )
-      return irfftRows(inverted)
+    const total = level !== undefined && typeof count === 'number'
+      ? count
+      : typeof count === 'number' && count > 1
+      ? count
+      : undefined
+    if (total !== undefined && total <= 0) {
+      throw new RangeError('Invalid number of FFT data points')
     }
-    if (direction === 'columns') {
-      const rows = matrix.length
-      const span = matrix[0]?.length ?? 0
-      const width = count ?? (rows - 1) * 2
-      const result = new Array<number[]>(width)
-      for (let index = 0; index < width; index++) {
-        result[index] = new Array<number>(span)
-      }
-      const buffer = new Array<Types.NumerixComplex | number>(rows)
-      for (let column = 0; column < span; column++) {
-        for (let row = 0; row < rows; row++) {
-          buffer[row] = matrix[row]?.[column] ?? 0
+    const target = level ?? (total === undefined ? count : undefined)
+    let current = matrix
+    let vertical = false
+    if (Array.isArray(target) && target.length >= 2) {
+      const resolved = target.map((entry) => {
+        const plane = entry < 0 ? entry + 2 : entry
+        if (plane !== 0 && plane !== 1) {
+          throw new RangeError('axis is out of bounds for array of dimension 2')
         }
-        const line = irfft1D(buffer, width)
-        for (let index = 0; index < width; index++) {
-          const target = result[index]
-          if (target) {
-            target[column] = line[index] ?? 0
-          }
-        }
+        return plane
+      })
+      for (let index = 0; index < resolved.length - 1; index++) {
+        current = Internal.transform(
+          current,
+          resolved[index],
+          (entry) => ifft(entry) as Types.NumerixComplex[]
+        )
       }
-      return result
+      vertical = (resolved[resolved.length - 1] ?? 1) === 0
+    } else {
+      const direction = Internal.axes(target)
+      if (direction === 'all') {
+        current = Internal.columns(matrix, (column) => ifft(column) as Types.NumerixComplex[])
+      } else {
+        vertical = direction === 'columns'
+      }
     }
-    return irfftRows(matrix, count)
-  }
-  const flat = spectrum as (Types.NumerixComplex | number)[]
-  return irfft1D(flat, count ?? (flat.length - 1) * 2)
-}
-
-/**
- * Transform one spectrum row.
- * @description Rebuilds a real signal from a single spectral row.
- * @param spectrum - Frequency spectrum row to transform
- * @param count - Length of the produced signal
- * @returns Real signal of the transformed row
- */
-function irfft1D(
-  spectrum: (Types.NumerixComplex | number)[],
-  count: number
-): number[] {
-  if (count <= 0) {
-    return []
-  }
-  const length = spectrum.length
-  const full = new Array<Types.NumerixComplex>(count)
-  const component = (index: number) => {
-    const entry = spectrum[index]
-    if (typeof entry === 'number') {
-      return { re: entry, im: 0 }
+    const width = total ?? ((vertical ? current.length : (current[0]?.length ?? 0)) - 1) * 2
+    if (width <= 0) {
+      throw new RangeError('Invalid number of FFT data points')
     }
-    return { re: entry?.re ?? 0, im: entry?.im ?? 0 }
+    return Internal.transform(
+      current,
+      vertical ? 0 : 1,
+      (entry) => irfft(entry, width) as number[]
+    )
   }
-  for (let index = 0; index < count; index++) {
-    full[index] = { re: 0, im: 0 }
-  }
-  for (let index = 0; index < length && index < count; index++) {
-    full[index] = component(index)
-  }
-  for (let index = 1; index < length && index < count; index++) {
-    const mirror = count - index
-    if (mirror > 0 && mirror < count) {
-      const source = component(index)
-      full[mirror] = { re: source.re, im: -source.im }
+  const chosen = level ?? (typeof count !== 'number' ? count : undefined)
+  if (
+    chosen !== undefined && chosen !== 'all' && chosen !== 'rows' && chosen !== 0 && chosen !== -1
+  ) {
+    if (!Array.isArray(chosen)) {
+      throw new RangeError('axis is out of bounds for array of dimension 1')
+    }
+    for (let index = 0; index < chosen.length; index++) {
+      const entry = chosen[index]
+      if (entry !== 0 && entry !== -1) {
+        throw new RangeError('axis is out of bounds for array of dimension 1')
+      }
     }
   }
-  const inverse = ifft(full) as Types.NumerixComplex[]
-  const result = new Array<number>(count)
-  for (let index = 0; index < count; index++) {
-    result[index] = inverse[index]?.re ?? 0
+  let slice = spectrum as (Types.NumerixComplex | number)[]
+  if (Array.isArray(chosen)) {
+    for (let index = 0; index < chosen.length - 1; index++) {
+      slice = ifft(slice) as Types.NumerixComplex[]
+    }
   }
-  return result
-}
-
-/**
- * Apply the real inverse transform.
- * @description Rebuilds a real signal from each spectral row.
- * @param matrix - Spectral rows to transform
- * @param count - Length of each produced signal
- * @returns Real signal of each transformed row
- */
-function irfftRows(
-  matrix: (Types.NumerixComplex | number)[][],
-  count?: number
-): number[][] {
-  const width = count ?? ((matrix[0]?.length ?? 0) - 1) * 2
-  const result = new Array<number[]>(matrix.length)
-  for (let row = 0; row < matrix.length; row++) {
-    result[row] = irfft1D(matrix[row] ?? [], width)
+  const width = typeof count === 'number' ? count : (slice.length - 1) * 2
+  if (width <= 0) {
+    throw new RangeError('Invalid number of FFT data points')
   }
-  return result
+  const middle = (width >> 1) + 1
+  const signal = new Array<Types.NumerixComplex | number>(width).fill(0)
+  for (let index = 0; index < (slice.length < middle ? slice.length : middle); index++) {
+    const entry = slice[index]
+    const reals = Internal.shape(entry) ? entry.re : Number(entry ?? 0)
+    const imags = Internal.shape(entry) ? entry.im : 0
+    signal[index] = index === 0 || ((width & 1) === 0 && index === middle - 1) ? reals : entry!
+    if (index > 0 && index < (width + 1) >> 1) {
+      signal[width - index] = imags === 0 ? reals : { re: reals, im: -imags }
+    }
+  }
+  return (ifft(signal) as Types.NumerixComplex[]).map((entry) => entry?.re ?? 0)
 }
