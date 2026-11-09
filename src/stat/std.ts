@@ -1,28 +1,20 @@
+import * as Internal from '@app/internal/index.ts'
 import variance from '@app/stat/variance.ts'
 
 /**
  * Compute the standard deviation.
  * @description Takes the square root of the variance.
- * @param left - Values whose deviation is computed
+ * @param values - Values whose deviation is computed
  * @param freedom - Degrees of freedom used in the divisor
- * @param nan - Whether invalid entries are skipped
- * @param axis - Axis along which the deviation is taken
+ * @param invalid - Whether invalid entries are skipped
+ * @param level - Axis along which the deviation is taken
  * @returns Standard deviation for the requested axis
  */
 export default function std(
-  left: unknown[],
+  values: unknown[],
   freedom: number | boolean = 0,
-  nan: boolean | number = false,
-  axis?: number
+  invalid: boolean | number = false,
+  level?: number | boolean
 ): number | number[] {
-  const result = variance(left, freedom, nan, axis)
-  if (Array.isArray(result)) {
-    const length = result.length
-    const deviations = new Array<number>(length)
-    for (let index = 0; index < length; index++) {
-      deviations[index] = Math.sqrt(result[index] ?? 0)
-    }
-    return deviations
-  }
-  return Math.sqrt(result)
+  return Internal.unary(variance(values, freedom, invalid, level), Math.sqrt) as number | number[]
 }
