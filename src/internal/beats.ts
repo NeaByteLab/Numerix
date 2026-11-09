@@ -13,5 +13,10 @@ export default function beats(
   second: number,
   direction: Types.NumerixDirection
 ): boolean {
+  if (first === 0 && second === 0) {
+    return direction === 'min'
+      ? Object.is(first, -0) && !Object.is(second, -0)
+      : Object.is(second, -0) && !Object.is(first, -0)
+  }
   return direction === 'min' ? first < second : first > second
 }
