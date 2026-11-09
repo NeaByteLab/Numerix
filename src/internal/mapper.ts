@@ -1,23 +1,20 @@
 /**
  * Map a function over values.
  * @description Applies a function to each element and collects results.
- * @param values - Single value or array of values
- * @param apply - Function applied to each element
- * @returns Mapped value or array of mapped values
  * @template T - Input element type
  * @template R - Result element type
+ * @param values - Single value, vector, or matrix of values
+ * @param apply - Function applied to each element
+ * @returns Mapped value, vector, or matrix of mapped values
  */
 export default function mapper<T, R>(
-  values: T | T[],
+  values: T | T[] | T[][],
   apply: (value: T) => R
-): R | R[] {
+): R | R[] | R[][] {
   if (!Array.isArray(values)) {
     return apply(values)
   }
-  const length = values.length
-  const result = new Array<R>(length)
-  for (let index = 0; index < length; index++) {
-    result[index] = apply(values[index] as T)
-  }
-  return result
+  return Array.isArray(values[0])
+    ? (values as T[][]).map((slice) => (slice ?? []).map(apply))
+    : (values as T[]).map(apply)
 }
