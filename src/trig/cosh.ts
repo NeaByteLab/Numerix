@@ -1,13 +1,62 @@
+import type * as Types from '@app/types.ts'
 import * as Internal from '@app/internal/index.ts'
 
 /**
- * Compute hyperbolic cosine of each element.
+ * Compute the hyperbolic cosine of each real element.
  * @description Applies the hyperbolic cosine across nested numeric inputs.
- * @param value - Scalar, vector, or matrix input values
+ * @param input - Scalar, vector, or matrix input values
  * @returns Hyperbolic cosine values matching the input shape
  */
 export default function cosh(
-  value: number | number[] | number[][]
-): number | number[] | number[][] {
-  return Internal.unary(value, Math.cosh)
+  input: number | number[] | number[][]
+): number | number[] | number[][]
+/**
+ * Compute the complex or real hyperbolic cosine.
+ * @description Applies the hyperbolic cosine across nested inputs.
+ * @param input - Complex or real input values
+ * @returns Hyperbolic cosine values matching the input shape
+ */
+export default function cosh(
+  input: Types.NumerixValue
+): Types.NumerixValue
+/**
+ * Compute the complex or real hyperbolic cosine.
+ * @description Applies the hyperbolic cosine across nested inputs.
+ * @param input - Complex or real input values
+ * @returns Hyperbolic cosine values matching the input shape
+ */
+export default function cosh(
+  input: Types.NumerixValue
+): Types.NumerixValue {
+  return Internal.traverse(input, (entry) => {
+    if (Internal.shape(entry)) {
+      const cosine = Math.cosh(entry.re)
+      const hyper = Math.sinh(entry.re)
+      const angle = Math.cos(entry.im)
+      const sines = Math.sin(entry.im)
+      const magnitude = Math.abs(entry.re)
+      let reals: number
+      let imags: number
+      if (
+        (!Number.isFinite(cosine) || !Number.isFinite(hyper)) &&
+        Number.isFinite(entry.re) &&
+        entry.im !== 0
+      ) {
+        const factor = Math.exp(0.5 * magnitude)
+        reals = 0.5 * factor * angle * factor
+        imags = (entry.re < 0 ? -0.5 : 0.5) * factor * sines * factor
+      } else {
+        reals = entry.re === 0 ? angle : entry.im === 0 ||
+            (entry.im === Infinity || Number.isNaN(entry.im)) && magnitude === Infinity
+          ? cosine
+          : cosine * angle
+        imags = entry.re === 0 || entry.im === 0 ? 0 : hyper * sines
+      }
+      return {
+        re: reals === 0 ? 0 : reals,
+        im: imags === 0 ? 0 : imags
+      }
+    }
+    return Math.cosh(Number(entry))
+  }) as Types.NumerixValue
 }
