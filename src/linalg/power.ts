@@ -1,3 +1,5 @@
+import type * as Types from '@app/types.ts'
+import * as Create from '@app/create/index.ts'
 import * as Internal from '@app/internal/index.ts'
 import inv from '@app/linalg/inv.ts'
 import matmul from '@app/linalg/matmul.ts'
@@ -9,32 +11,40 @@ import matmul from '@app/linalg/matmul.ts'
  * @param exponent - Integer exponent applied to the matrix
  * @returns Matrix raised to the requested power
  */
-export default function power(matrix: number[][], exponent: number): number[][] {
+export default function power(
+  matrix: number[][] | Types.NumerixComplex[][],
+  exponent: number
+): number[][] | Types.NumerixComplex[][] {
   const order = matrix.length
-  let remaining = Math.abs(Math.trunc(exponent))
-  if (remaining === 0) {
-    const identity = new Array<number[]>(order)
-    for (let row = 0; row < order; row++) {
-      const current = new Array<number>(order).fill(0)
-      current[row] = 1
-      identity[row] = current
-    }
-    return identity
+  if (order > 0 && (matrix[0]?.length ?? 0) !== order) {
+    throw new RangeError('Last 2 dimensions of the array must be square')
   }
-  let factor: number[][]
-  if (exponent < 0) {
-    factor = inv(matrix)
-  } else {
-    factor = Internal.working(matrix)
+  if (!Number.isInteger(exponent)) {
+    throw new TypeError('matrix power requires an integer exponent')
   }
-  let result: number[][] | undefined
+  let remaining = Math.abs(exponent)
+  const complex = Internal.classify(matrix, true, true) === true
+  if (remaining === 0 || order === 0) {
+    const identity = Create.eye(order)
+    return (complex ? Internal.nested(identity) : identity) as
+      | number[][]
+      | Types.NumerixComplex[][]
+  }
+  let factor = (
+    exponent < 0
+      ? inv(matrix)
+      : complex
+      ? Internal.nested(matrix)
+      : Internal.working(matrix as number[][])
+  ) as number[][] | Types.NumerixComplex[][]
+  let result: number[][] | Types.NumerixComplex[][] | undefined
   while (remaining > 0) {
     if ((remaining & 1) === 1) {
-      result = result ? matmul(result, factor) : factor
+      result = result ? (matmul(result, factor) as number[][] | Types.NumerixComplex[][]) : factor
     }
     remaining >>= 1
     if (remaining > 0) {
-      factor = matmul(factor, factor)
+      factor = matmul(factor, factor) as number[][] | Types.NumerixComplex[][]
     }
   }
   return result!
