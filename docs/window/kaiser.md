@@ -5,14 +5,14 @@ Build a window shaped by a modified Bessel function.
 ## API
 
 ```ts
-Numeric.window.kaiser(length, beta = 14)
+Numeric.window.kaiser(length, shape = 14)
 ```
 
 Generates a window shaped by a Bessel function.
 
 - Parameters:
   - `length`: Window length or lengths to produce
-  - `beta`: Shape parameter of the Bessel function
+  - `shape`: Shape parameter of the Bessel function
 - Returns: Kaiser window values matching the input shape
 - NumPy: Covers `np.kaiser`, `np.i0` through a single Numerix method.
 
@@ -26,10 +26,10 @@ import Numeric from '@neabyte/numerix'
 const window = Numeric.window.kaiser(4)
 
 console.log(window)
-// [0.000007726866835270366,0.46271649780079094,0.46271649780079094,0.000007726866835270366]
+// [0.000007726866835270368,0.46271649780079116,0.46271649780079116,0.000007726866835270368]
 ```
 
-### Build a window with a smaller beta
+### Build a window with a smaller shape
 
 ```ts
 import Numeric from '@neabyte/numerix'
@@ -37,7 +37,7 @@ import Numeric from '@neabyte/numerix'
 const window = Numeric.window.kaiser(5, 5)
 
 console.log(window)
-// [0.03671089227128667,0.5528517696991324,1,0.5528517696991324,0.03671089227128667]
+// [0.036710892271286676,0.5528517696991324,1,0.5528517696991324,0.036710892271286676]
 ```
 
 ### Evaluate the modified Bessel function
