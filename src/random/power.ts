@@ -3,34 +3,19 @@ import * as Internal from '@app/internal/index.ts'
 
 /**
  * Draw samples from a power distribution.
- * @description Produces variates from a power law distribution.
- * @param left - Exponent parameter of the distribution
- * @param size - Number of samples to draw when given
+ * @description Produces variates from a power-law distribution.
+ * @param first - Exponent parameter of the distribution
+ * @param count - Number of samples to draw when given
  * @param generator - Generator supplying uniform samples
  * @returns Single sample or array of samples
  */
 export default function power(
-  left: number,
-  size?: number,
+  first: number,
+  count?: number,
   generator?: Types.NumerixGenerator
 ): number | number[] {
-  const inverse = 1 / left
-  if (size === undefined) {
-    return samplePower(inverse, generator)
+  if (first <= 0) {
+    throw new RangeError('a <= 0')
   }
-  return Internal.draw(size, () => samplePower(inverse, generator))
-}
-
-/**
- * Draw one power variate.
- * @description Produces a single sample from a power law.
- * @param inverse - Reciprocal of the exponent parameter
- * @param generator - Generator supplying uniform samples
- * @returns Single power variate
- */
-function samplePower(
-  inverse: number,
-  generator?: Types.NumerixGenerator
-): number {
-  return Math.pow(Internal.source(generator), inverse)
+  return Internal.draw(count, () => Math.pow(Internal.source(generator), 1 / first))
 }
