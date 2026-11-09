@@ -1,55 +1,46 @@
-import type * as Types from '@app/types.ts'
-
-/**
- * Count leaf values in an array.
- * @description Walks the array and tallies every scalar entry.
- * @param source - Nested array to inspect
- * @returns Number of leaf values found
- */
-function countLeaves(source: unknown[]): number {
-  let total = 0
-  for (let index = 0; index < source.length; index++) {
-    const entry = source[index]
-    if (Array.isArray(entry)) {
-      total += countLeaves(entry)
-    } else {
-      total++
-    }
-  }
-  return total
-}
-
-/**
- * Copy leaf values into an array.
- * @description Walks the source and writes each leaf in order.
- * @param source - Nested array to read from
- * @param target - Flat array receiving the leaf values
- * @param state - Tracks the next write position
- * @template T - Type of the flattened values
- */
-function fillFlat<T>(source: unknown[], target: T[], state: Types.NumerixPosition): void {
-  for (let index = 0; index < source.length; index++) {
-    const entry = source[index]
-    if (Array.isArray(entry)) {
-      fillFlat(entry, target, state)
-    } else {
-      target[state.position++] = entry as T
-    }
-  }
-}
+import * as Internal from '@app/internal/index.ts'
+import transpose from '@app/shape/transpose.ts'
 
 /**
  * Flatten nested arrays into one dimension.
  * @description Collects every leaf value into a single array.
- * @param input - Nested array to flatten
- * @returns Flat array of all leaf values
  * @template T - Type of the flattened values
+ * @param input - Nested array to flatten
+ * @param order - Memory layout order, row-major or column-major
+ * @returns Flat array of all leaf values
  */
-export default function flatten<T = number>(input: unknown[]): T[] {
-  if (!Array.isArray(input[0])) {
-    return input.slice() as T[]
+export default function flatten<T = number>(input: unknown[], order: 'C' | 'F' = 'C'): T[] {
+  if (order !== 'C' && order !== 'F') {
+    throw new RangeError("order must be one of 'C' or 'F'")
   }
-  const result = new Array<T>(countLeaves(input))
-  fillFlat(input, result, { position: 0 })
-  return result
+  const complex = Internal.classify(input, true, true) === true
+  if (!Array.isArray(input[0])) {
+    return complex ? (Internal.nested(input) as unknown as T[]) : (input.slice() as T[])
+  }
+  if (!Array.isArray((input[0] as unknown[])[0])) {
+    const matrix = input as unknown[][]
+    const height = matrix.length
+    if (order === 'C') {
+      const result: unknown[] = []
+      for (let outer = 0; outer < height; outer++) {
+        const slice = matrix[outer]
+        if (slice) {
+          for (let inner = 0; inner < slice.length; inner++) {
+            result.push(slice[inner])
+          }
+        }
+      }
+      return (complex ? Internal.nested(result) : result) as T[]
+    }
+    const width = matrix[0]?.length ?? 0
+    const result = new Array<unknown>(height * width)
+    for (let column = 0; column < width; column++) {
+      for (let outer = 0; outer < height; outer++) {
+        result[column * height + outer] = matrix[outer]?.[column]
+      }
+    }
+    return (complex ? Internal.nested(result) : result) as T[]
+  }
+  const result = (order === 'F' ? transpose(input) : input).flat(Infinity) as T[]
+  return complex ? (Internal.nested(result) as unknown as T[]) : result
 }
