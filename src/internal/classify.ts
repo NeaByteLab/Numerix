@@ -2,44 +2,45 @@ import nested from '@app/internal/nested.ts'
 import shape from '@app/internal/shape.ts'
 
 /**
- * Classify values as complex or real.
+ * Classify values as complex, real, or boolean.
  * @description Reports the container or entry type.
  * @param value - Scalar, vector, or matrix values to inspect
- * @param objects - When true inspects the container type instead of values
- * @param complex - When true reports complex entries, otherwise real ones
+ * @param objects - When true, inspects the container type instead of values
+ * @param complex - Target category of complex, real, or boolean entries
  * @returns Match results matching the input nesting shape
  */
 export default function classify(
   value: unknown,
   objects: boolean,
-  complex: boolean
+  complex: boolean | null
 ): boolean | boolean[] | boolean[][] {
-  if (objects) {
-    return containerTyped(value) === complex
-  }
-  return nested(value, (entry) => {
-    if (!shape(entry)) {
-      return !complex
+  if (complex === null) {
+    if (typeof value === 'boolean') {
+      return true
     }
-    const imaginary = (entry as { im: number }).im
-    return complex ? imaginary !== 0 : imaginary === 0
-  }) as boolean | boolean[] | boolean[][]
-}
-
-/**
- * Report whether a container is complex-typed.
- * @description Checks the entries for complex components.
- * @param value - Value to inspect
- * @returns True when the container holds a complex-typed entry
- */
-function containerTyped(value: unknown): boolean {
-  if (Array.isArray(value)) {
+    if (!Array.isArray(value) || value.length === 0) {
+      return false
+    }
     for (let index = 0; index < value.length; index++) {
-      if (containerTyped(value[index])) {
-        return true
+      if (classify(value[index], true, null) !== true) {
+        return false
       }
     }
-    return false
+    return true
   }
-  return shape(value)
+  if (objects) {
+    if (Array.isArray(value)) {
+      for (let index = 0; index < value.length; index++) {
+        if (classify(value[index], true, true) === true) {
+          return complex
+        }
+      }
+      return !complex
+    }
+    return shape(value) === complex
+  }
+  return nested(
+    value,
+    (entry) => (shape(entry) && entry.im !== 0) === complex
+  ) as boolean | boolean[] | boolean[][]
 }
