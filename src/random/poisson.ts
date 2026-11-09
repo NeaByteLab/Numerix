@@ -5,35 +5,40 @@ import * as Internal from '@app/internal/index.ts'
  * Draw samples from a Poisson distribution.
  * @description Produces counts of events in an interval.
  * @param intensity - Expected number of events per interval
- * @param size - Number of samples to draw when given
+ * @param count - Number of samples to draw when given
  * @param generator - Generator supplying uniform samples
  * @returns Single sample or array of samples
  */
 export default function poisson(
   intensity: number = 1,
-  size?: number,
+  count?: number,
   generator?: Types.NumerixGenerator
 ): number | number[] {
-  const threshold = Math.exp(-intensity)
-  if (size === undefined) {
-    return samplePoisson(threshold, generator)
+  if (intensity < 0 || Number.isNaN(intensity)) {
+    throw new RangeError('lam < 0')
   }
-  return Internal.draw(size, () => samplePoisson(threshold, generator))
-}
-
-/**
- * Draw one Poisson variate.
- * @description Produces a single event count.
- * @param threshold - Cached exponential threshold of the distribution
- * @param generator - Generator supplying uniform samples
- * @returns Single Poisson variate
- */
-function samplePoisson(threshold: number, generator?: Types.NumerixGenerator): number {
-  let index = 0
-  let probability = 1
-  do {
-    index++
-    probability *= Internal.source(generator)
-  } while (probability > threshold)
-  return index - 1
+  if (!Number.isFinite(intensity) || intensity >= 9.223372036854776e18) {
+    throw new RangeError('lam value too large')
+  }
+  return Internal.draw(count, () => {
+    if (intensity === 0) {
+      return 0
+    }
+    if (intensity >= 1e5) {
+      return Math.max(0, Math.round(intensity + Math.sqrt(intensity) * Internal.deviate(generator)))
+    }
+    let remaining = intensity
+    let total = 0
+    while (remaining > 0) {
+      const threshold = Math.exp(-(remaining > 500 ? 500 : remaining))
+      let chance = 1
+      do {
+        total++
+        chance *= Internal.source(generator)
+      } while (chance > threshold)
+      total--
+      remaining -= 500
+    }
+    return total
+  })
 }
