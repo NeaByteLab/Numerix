@@ -5,13 +5,14 @@ Compute the condition number of a matrix.
 ## API
 
 ```ts
-Numeric.linalg.cond(matrix)
+Numeric.linalg.cond(matrix, order)
 ```
 
 Ratios the largest and smallest singular values.
 
 - Parameters:
   - `matrix`: Matrix whose condition number is computed
+  - `order`: Optional norm order used for the condition number
 - Returns: Condition number of the given matrix
 - NumPy: Equivalent to `np.linalg.cond`.
 

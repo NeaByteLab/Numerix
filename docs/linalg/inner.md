@@ -5,13 +5,13 @@ Compute the inner product of two vectors.
 ## API
 
 ```ts
-Numeric.linalg.inner(left, right)
+Numeric.linalg.inner(alpha, right)
 ```
 
 Multiplies matching entries and sums the results.
 
 - Parameters:
-  - `left`: First vector or array of vectors
+  - `alpha`: First vector or array of vectors
   - `right`: Second vector or array of vectors
 - Returns: Inner products matching the input shape
 - NumPy: Equivalent to `np.inner`.

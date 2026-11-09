@@ -5,13 +5,13 @@ Compute the outer product of two vectors.
 ## API
 
 ```ts
-Numeric.linalg.outer(left, right)
+Numeric.linalg.outer(alpha, right)
 ```
 
-Multiplies every entry of the left vector by the right vector.
+Multiplies every entry of the alpha vector by the right vector.
 
 - Parameters:
-  - `left`: First vector of values
+  - `alpha`: First vector of values
   - `right`: Second vector of values
 - Returns: Outer product matrix
 - NumPy: Covers `np.outer`, `np.linalg.outer` through a single Numerix method.

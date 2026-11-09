@@ -5,14 +5,15 @@ Multiply matching entries and sum the results.
 ## API
 
 ```ts
-Numeric.linalg.dot(left, right)
+Numeric.linalg.dot(first, right, conjugate)
 ```
 
 Multiplies matching entries and sums the results.
 
 - Parameters:
-  - `left`: First vector or array of vectors
+  - `first`: First vector or array of vectors
   - `right`: Second vector or array of vectors
+  - `conjugate`: When true conjugates and flattens the operands
 - Returns: Dot products matching the input shape
 - NumPy: Covers `np.dot`, `np.vdot`, `np.vecdot`, `np.linalg.vecdot`, `ndarray.dot` through a single Numerix method.
 

@@ -5,13 +5,13 @@ Compute the cross product of two vectors.
 ## API
 
 ```ts
-Numeric.linalg.cross(left, right)
+Numeric.linalg.cross(first, right)
 ```
 
 Computes the cross product of the two operands.
 
 - Parameters:
-  - `left`: First vector of values
+  - `first`: First vector of values
   - `right`: Second vector of values
 - Returns: Cross product matching the input shape
 - NumPy: Covers `np.cross`, `np.linalg.cross` through a single Numerix method.

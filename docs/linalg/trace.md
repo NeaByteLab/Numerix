@@ -5,7 +5,7 @@ Sum the diagonal entries of a matrix.
 ## API
 
 ```ts
-Numeric.linalg.trace(matrix, offset = 0)
+Numeric.linalg.trace(matrix, offset = 0, first = 0, second = 1)
 ```
 
 Sums the diagonal entries along the requested offset.
@@ -13,6 +13,8 @@ Sums the diagonal entries along the requested offset.
 - Parameters:
   - `matrix`: Matrix whose diagonal entries are summed
   - `offset`: Diagonal offset used for the summation
+  - `first`: First axis of the two-dimensional plane
+  - `second`: Second axis of the two-dimensional plane
 - Returns: Sum of the selected diagonal entries
 - NumPy: Covers `np.trace`, `np.linalg.trace`, `ndarray.trace` through a single Numerix method.
 

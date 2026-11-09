@@ -5,15 +5,15 @@ Contract the requested axes of two operands.
 ## API
 
 ```ts
-Numeric.linalg.tensordot(left, right, axes = 1)
+Numeric.linalg.tensordot(first, right, levels = 2)
 ```
 
 Contracts the requested axes of both operands.
 
 - Parameters:
-  - `left`: First operand of the contraction
+  - `first`: First operand of the contraction
   - `right`: Second operand of the contraction
-  - `axes`: Number of axes contracted on each operand
+  - `levels`: Number of axes or explicit axis lists contracted on each operand
 - Returns: Contracted scalar or matrix
 - NumPy: Covers `np.tensordot`, `np.linalg.tensordot` through a single Numerix method.
 
@@ -60,5 +60,5 @@ import Numeric from '@neabyte/numerix'
 const value = Numeric.linalg.tensordot([[1, 2], [3, 4]], [[1, 0], [0, 1]])
 
 console.log(value)
-// [[1,2],[3,4]]
+// 5
 ```

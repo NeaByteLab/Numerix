@@ -5,13 +5,13 @@ Compute the Kronecker product of two arrays.
 ## API
 
 ```ts
-Numeric.linalg.kron(left, right)
+Numeric.linalg.kron(first, right)
 ```
 
 Forms the Kronecker product of the two operands.
 
 - Parameters:
-  - `left`: First array of values
+  - `first`: First array of values
   - `right`: Second array of values
 - Returns: Kronecker product of the two arrays
 - NumPy: Equivalent to `np.kron`.

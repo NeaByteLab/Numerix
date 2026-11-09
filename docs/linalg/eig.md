@@ -5,14 +5,14 @@ Compute the eigenvalues and eigenvectors of a matrix.
 ## API
 
 ```ts
-Numeric.linalg.eig(matrix, only = false)
+Numeric.linalg.eig(matrix, compact = false)
 ```
 
 Uses Jacobi iteration for symmetric matrices, otherwise QR.
 
 - Parameters:
   - `matrix`: Square matrix to decompose
-  - `only`: When true returns eigenvalues without eigenvectors
+  - `compact`: When true returns eigenvalues without eigenvectors
 - Returns: Eigenvalues alone or eigenvalues with eigenvectors
 - NumPy: Covers `np.linalg.eig`, `np.linalg.eigh`, `np.linalg.eigvals`, `np.linalg.eigvalsh` through a single Numerix method.
 
@@ -26,7 +26,7 @@ import Numeric from '@neabyte/numerix'
 const value = Numeric.linalg.eig([[1, 2], [3, 4]])
 
 console.log(value)
-// {"values":[-0.3722813232690143,5.372281323269014],"vectors":[[0.8245648401323936,-0.5657674649689922],[0.41597355791928425,0.9093767091321241]]}
+// {"values":[-0.37228132326901164,5.372281323269014],"vectors":[[0.8245648401323938,-0.5657674649689922],[0.4159735579192842,0.909376709132124]]}
 ```
 
 ### Eigenvalues of the identity matrix

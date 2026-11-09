@@ -5,13 +5,14 @@ Compute the QR decomposition of a matrix.
 ## API
 
 ```ts
-Numeric.linalg.qr(matrix)
+Numeric.linalg.qr(matrix, method)
 ```
 
 Decomposes the matrix into orthogonal and upper triangular factors.
 
 - Parameters:
-  - `matrix`: Matrix to decompose
+  - `matrix`: Matrix to factorize
+  - `method`: Decomposition mode returning only the upper-triangular factor
 - Returns: Orthogonal factor with the upper triangular factor
 - NumPy: Equivalent to `np.linalg.qr`.
 
@@ -47,7 +48,7 @@ import Numeric from '@neabyte/numerix'
 const value = Numeric.linalg.qr([[3, 4]])
 
 console.log(value)
-// {"Q":[[-1,0]],"R":[[-3,-4],[0,0]]}
+// {"Q":[[1]],"R":[[3,4]]}
 ```
 
 ### Decompose a triangular matrix

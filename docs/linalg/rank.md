@@ -5,14 +5,14 @@ Compute the numerical rank of a matrix.
 ## API
 
 ```ts
-Numeric.linalg.rank(matrix, tolerance = 1e-10)
+Numeric.linalg.rank(matrix, tolerance)
 ```
 
 Counts the linearly independent rows of the matrix.
 
 - Parameters:
   - `matrix`: Matrix whose rank is computed
-  - `tolerance`: Threshold below which a value counts as zero
+  - `tolerance`: Threshold below which a value counts as zero, falling back to a scaled machine epsilon
 - Returns: Rank of the given matrix
 - NumPy: Equivalent to `np.linalg.matrix_rank`.
 
