@@ -1,52 +1,68 @@
-/** Pattern matching tab characters */
-const tab = /\t/g
+import * as Internal from '@app/internal/index.ts'
 
 /**
  * Expand tab characters in one string.
  * @description Replaces tab stops with spaces up to the width.
- * @param text - String to expand
+ * @param input - String to expand
  * @param width - Column width of each tab stop
  * @returns Expanded string
  */
-function expandTabs(text: string, width: number): string {
-  if (width <= 0) {
-    return text.replace(tab, '')
-  }
-  let result = ''
-  let column = 0
-  for (let index = 0; index < text.length; index++) {
-    const character = text.charAt(index)
-    if (character === '\t') {
-      const spaces = width - (column % width)
-      result += ' '.repeat(spaces)
-      column += spaces
-    } else {
-      result += character
-      if (character === '\n' || character === '\r') {
-        column = 0
-      } else {
-        column++
-      }
-    }
-  }
-  return result
-}
-
+export default function pad(input: string, width?: number): string
 /**
- * Expand tab characters in text.
+ * Expand tabs in a string vector.
+ * @description Replaces tab stops with spaces across a vector.
+ * @param input - String or vector of strings to expand
+ * @param width - Column width or vector of widths
+ * @returns Vector of expanded strings
+ */
+export default function pad(input: string | string[], width?: number | number[]): string[]
+/**
+ * Expand tabs in string arrays.
  * @description Replaces tab stops with spaces up to the width.
- * @param text - String or array of strings to expand
- * @param width - Column width of each tab stop
+ * @param input - String, vector, or matrix of strings to expand
+ * @param width - Column width or vector of widths
  * @returns Expanded strings matching the input shape
  */
-export default function pad(text: string | string[], width: number = 8): string | string[] {
-  if (!Array.isArray(text)) {
-    return expandTabs(text, width)
+export default function pad(
+  input: string | string[] | string[][],
+  width?: number | number[] | number[][]
+): string | string[] | string[][]
+/**
+ * Expand tabs in string arrays.
+ * @description Replaces tab stops with spaces up to the width.
+ * @param input - String, vector, or matrix of strings to expand
+ * @param width - Column width or vector of widths
+ * @returns Expanded strings matching the input shape
+ */
+export default function pad(
+  input: string | string[] | string[][],
+  width: number | number[] | number[][] = 8
+): string | string[] | string[][] {
+  if (typeof width === 'number') {
+    return Internal.mapper<string, string>(input, (source) => {
+      const entry = typeof source === 'string' ? source : ''
+      if (width <= 0) {
+        return entry.replace(/\t/g, '')
+      }
+      let expanded = ''
+      let column = 0
+      for (const character of entry) {
+        if (character === '\t') {
+          const spaces = width - (column % width)
+          expanded += ' '.repeat(spaces)
+          column += spaces
+        } else {
+          expanded += character
+          column = character === '\n' || character === '\r' ? 0 : column + 1
+        }
+      }
+      return expanded
+    })
   }
-  const length = text.length
-  const result = new Array<string>(length)
-  for (let index = 0; index < length; index++) {
-    result[index] = expandTabs(text[index] ?? '', width)
-  }
-  return result
+  return Internal.broadcast<string>(
+    input,
+    width,
+    (source, stops) => pad(String(source ?? ''), stops),
+    8
+  )
 }
