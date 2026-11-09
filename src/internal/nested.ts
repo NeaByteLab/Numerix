@@ -1,22 +1,29 @@
+import type * as Types from '@app/types.ts'
+import shape from '@app/internal/shape.ts'
+
 /**
  * Map a function over nested values.
- * @description Applies a transform to every leaf entry.
+ * @description Applies a transform or complex promotion to every leaf entry.
+ * @template Output - Result element type
  * @param value - Scalar, vector, or matrix input
- * @param apply - Transform applied to each leaf entry
+ * @param apply - Optional transform applied to each leaf entry
  * @returns Transformed values matching the input nesting shape
- * @template R - Result element type
  */
-export default function nested<R>(
+export default function nested<Output = Types.NumerixComplex>(
   value: unknown,
-  apply: (entry: unknown) => R
-): R | R[] | R[][] {
+  apply?: (entry: unknown) => Output
+): Output | Output[] | Output[][] {
   if (Array.isArray(value)) {
-    const length = value.length
-    const result = new Array<R>(length)
-    for (let index = 0; index < length; index++) {
-      result[index] = nested(value[index], apply) as R
-    }
-    return result as R[] | R[][]
+    return value.map((entry) => nested(entry, apply) as Output) as Output[] | Output[][]
   }
-  return apply(value)
+  if (apply) {
+    return apply(value)
+  }
+  if (typeof value === 'number') {
+    return { re: value, im: 0 } as unknown as Output
+  }
+  if (shape(value)) {
+    return { re: value.re, im: value.im } as unknown as Output
+  }
+  return value as Output
 }
