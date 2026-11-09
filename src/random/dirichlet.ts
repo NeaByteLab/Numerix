@@ -1,53 +1,60 @@
 import type * as Types from '@app/types.ts'
+import * as Internal from '@app/internal/index.ts'
 import gamma from '@app/random/gamma.ts'
 
 /**
  * Draw samples from a Dirichlet distribution.
  * @description Produces probability vectors from given concentration values.
  * @param alpha - Concentration parameter for each component
- * @param size - Number of samples to draw when given
+ * @param count - Number of samples to draw when given
  * @param generator - Generator supplying uniform samples
  * @returns Single sample vector or array of sample vectors
  */
 export default function dirichlet(
   alpha: number[],
-  size?: number,
+  count?: number | Types.NumerixGenerator,
   generator?: Types.NumerixGenerator
 ): number[] | number[][] {
-  const dimension = alpha.length
-  if (size === undefined) {
-    return sampleDirichlet(alpha, dimension, generator)
+  if (alpha.length === 0) {
+    throw new RangeError('alpha must not be empty')
   }
-  const result = new Array<number[]>(size)
-  for (let index = 0; index < size; index++) {
-    result[index] = sampleDirichlet(alpha, dimension, generator)
+  for (let index = 0; index < alpha.length; index++) {
+    if ((alpha[index] ?? 0) <= 0) {
+      throw new RangeError('alpha <= 0')
+    }
   }
-  return result
-}
-
-/**
- * Draw one Dirichlet variate.
- * @description Produces a single probability vector.
- * @param alpha - Concentration parameter for each component
- * @param dimension - Number of components in the result
- * @param generator - Generator supplying uniform samples
- * @returns Single Dirichlet variate
- */
-function sampleDirichlet(
-  alpha: number[],
-  dimension: number,
-  generator?: Types.NumerixGenerator
-): number[] {
-  const values = new Array<number>(dimension)
-  let total = 0
-  for (let index = 0; index < dimension; index++) {
-    const value = Number(gamma(alpha[index] ?? 1, 1, undefined, generator))
-    values[index] = value
-    total += value
-  }
-  const inverse = 1 / (total || 1)
-  for (let index = 0; index < dimension; index++) {
-    values[index] = (values[index] ?? 0) * inverse
-  }
-  return values
+  const source = typeof count === 'object' ? count : generator
+  return Internal.draw(typeof count === 'number' ? count : undefined, () => {
+    let total = 0
+    const values = new Array<number>(alpha.length)
+    for (let index = 0; index < alpha.length; index++) {
+      const value = Number(gamma(alpha[index] ?? 1, 1, undefined, source))
+      values[index] = value
+      total += value
+    }
+    if (Number.isNaN(total)) {
+      return values.fill(NaN)
+    }
+    if (total === 0) {
+      let crest = -Infinity
+      for (let index = 0; index < alpha.length; index++) {
+        const shape = alpha[index] ?? 1
+        const entry = Math.log(Number(gamma(shape + 1, 1, undefined, source))) +
+          Math.log(Internal.source(source)) / shape
+        values[index] = entry
+        if (entry > crest) {
+          crest = entry
+        }
+      }
+      for (let index = 0; index < values.length; index++) {
+        const weight = Math.exp((values[index] ?? 0) - crest)
+        values[index] = weight
+        total += weight
+      }
+    }
+    for (let index = 0; index < values.length; index++) {
+      values[index] = (values[index] ?? 0) / (total || 1)
+    }
+    return values
+  })
 }
