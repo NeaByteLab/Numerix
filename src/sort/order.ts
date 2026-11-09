@@ -1,60 +1,104 @@
 import type * as Types from '@app/types.ts'
 import * as Internal from '@app/internal/index.ts'
+import * as Shape from '@app/shape/index.ts'
+import argsort from '@app/sort/argsort.ts'
 
 /**
- * Sort values into order.
+ * Sort values along an axis.
  * @description Sorts numbers or complex values along an axis.
  * @param values - Values to sort
- * @param descending - When true sorts from largest to smallest
- * @param axis - Axis along which the values are sorted
+ * @param reverse - When true, sorts from largest to smallest, or specifies the axis
+ * @param level - Axis along which the values are sorted
  * @returns Sorted values matching the input shape
  */
 export default function order(
-  values: number[] | number[][] | Types.NumerixComplex[],
-  descending = false,
-  axis: number = -1
-): number[] | number[][] | Types.NumerixComplex[] {
-  if (values.length > 0 && typeof values[0] === 'object' && !Array.isArray(values[0])) {
-    const complex = values as Types.NumerixComplex[]
-    return complex.slice().sort((first, second) => {
-      const difference = first.re !== second.re ? first.re - second.re : first.im - second.im
-      return descending ? -difference : difference
-    })
+  values:
+    | number[]
+    | number[][]
+    | Types.NumerixComplex[]
+    | Types.NumerixComplex[][]
+    | (number | Types.NumerixComplex)[]
+    | (number | Types.NumerixComplex)[][],
+  reverse: boolean | number | null = false,
+  level: number | null = -1
+): number[] | number[][] | Types.NumerixComplex[] | Types.NumerixComplex[][] {
+  const descending = typeof reverse === 'boolean' ? reverse : false
+  const target = typeof reverse === 'number' || reverse === null ? reverse : level
+  const vector = !Array.isArray(values[0])
+  if (!vector && target === null) {
+    return order(Shape.flatten(values) as number[], descending, 0)
   }
-  if (Array.isArray(values[0])) {
-    const matrix = values as number[][]
-    const rows = matrix.length
-    if (axis === 1 || axis === -1) {
-      const result = new Array<number[]>(rows)
-      for (let row = 0; row < rows; row++) {
-        const values = Internal.values(matrix[row] ?? [])
-        result[row] = descending ? values.reverse() : values
+  const resolved = target === null ? 1 : target < 0 ? (vector ? 1 : 2) + target : target
+  if (target !== null && (resolved < 0 || resolved >= (vector ? 1 : 2))) {
+    throw new RangeError(`axis is out of bounds for array of dimension ${vector ? 1 : 2}`)
+  }
+  if (!vector) {
+    if (Internal.classify(values, true, true) !== true) {
+      if (resolved === 1) {
+        return (values as number[][]).map((slice) => Internal.values(slice ?? [], descending))
       }
-      return result
-    }
-    if (axis === 0 || axis === -2) {
-      const columns = matrix[0]?.length ?? 0
-      const result = new Array<number[]>(rows)
-      for (let row = 0; row < rows; row++) {
-        result[row] = new Array<number>(columns)
+      const height = values.length
+      const width = (values[0] as number[] | undefined)?.length ?? 0
+      if (width === 0) {
+        return values.map(() => [])
       }
-      const buffer = new Array<number>(rows)
-      for (let column = 0; column < columns; column++) {
+      const result = Array.from({ length: height }, () => new Array<number>(width))
+      const buffer = new Array<number>(height)
+      for (let column = 0; column < width; column++) {
         const sorted = Internal.values(
-          Internal.column(matrix, rows, column, buffer, 0)
+          Internal.column(values as number[][], height, column, buffer, 0),
+          descending
         )
-        const values = descending ? sorted.reverse() : sorted
-        for (let row = 0; row < rows; row++) {
-          const target = result[row]
-          if (target) {
-            target[column] = values[row] ?? 0
-          }
+        for (let outer = 0; outer < height; outer++) {
+          result[outer]![column] = sorted[outer] ?? 0
         }
       }
       return result
     }
+    if (resolved === 1) {
+      return (values as (number | Types.NumerixComplex)[][]).map((slice) =>
+        (argsort(slice ?? [], descending) as number[]).map((index) => {
+          const entry = slice?.[index]
+          return Internal.shape(entry)
+            ? { re: entry.re, im: entry.im }
+            : { re: Number(entry ?? 0), im: 0 }
+        })
+      )
+    }
+    const height = values.length
+    const width = (values[0] as unknown[] | undefined)?.length ?? 0
+    if (width === 0) {
+      return values.map(() => [])
+    }
+    const result = Array.from({ length: height }, () => new Array<Types.NumerixComplex>(width))
+    const buffer = new Array<number | Types.NumerixComplex>(height)
+    for (let column = 0; column < width; column++) {
+      const indices = argsort(
+        Internal.column(
+          values as (number | Types.NumerixComplex)[][],
+          height,
+          column,
+          buffer,
+          0
+        ),
+        descending
+      ) as number[]
+      for (let outer = 0; outer < height; outer++) {
+        const entry = buffer[indices[outer] ?? 0]
+        result[outer]![column] = Internal.shape(entry)
+          ? { re: entry.re, im: entry.im }
+          : { re: Number(entry ?? 0), im: 0 }
+      }
+    }
+    return result
   }
-  const flat = values as number[]
-  const sorted = Internal.values(flat)
-  return descending ? sorted.reverse() : sorted
+  if (Internal.classify(values, true, true) !== true) {
+    return Internal.values(values as number[], descending)
+  }
+  return (argsort(values as Types.NumerixComplex[], descending) as number[]).map((index) => {
+    const entry = (values as unknown[])[index]
+    return Internal.shape(entry)
+      ? { re: entry.re, im: entry.im }
+      : { re: Number(entry ?? 0), im: 0 }
+  })
 }
