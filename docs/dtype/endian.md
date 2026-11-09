@@ -5,14 +5,14 @@ Inspect or swap the byte order of a buffer.
 ## API
 
 ```ts
-Numeric.dtype.endian(bytes, swap = false)
+Numeric.dtype.endian(bytes, reverse = false)
 ```
 
 Reports endianness or reverses byte sequences.
 
 - Parameters:
   - `bytes`: Buffer or bytes whose order is inspected
-  - `swap`: When true reverses the byte sequence
+  - `reverse`: When true reverses the byte sequence
 - Returns: Endianness descriptor or the swapped bytes
 - NumPy: Covers `np.lib.array_utils.byte_bounds`, `ndarray.byteswap` through a single Numerix method.
 

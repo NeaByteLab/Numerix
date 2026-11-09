@@ -25,7 +25,7 @@ import Numeric from '@neabyte/numerix'
 const descriptor = Numeric.dtype.info('uint8')
 
 console.log(descriptor)
-// {"dtype":"uint8","bits":8,"itemSize":1,"min":0,"max":255,"eps":1,"shape":[],"ndim":0,"size":0,"nbytes":0}
+// {"dtype":"uint8","bits":8,"eps":1,"itemSize":1,"max":255,"min":0,"shape":[],"ndim":0,"size":0,"nbytes":0}
 ```
 
 ### Describe the default floating point type
@@ -36,7 +36,7 @@ import Numeric from '@neabyte/numerix'
 const descriptor = Numeric.dtype.info('float64')
 
 console.log(descriptor)
-// {"dtype":"float64","bits":64,"itemSize":8,"min":-1.7976931348623157e+308,"max":1.7976931348623157e+308,"eps":2.220446049250313e-16,"shape":[],"ndim":0,"size":0,"nbytes":0}
+// {"dtype":"float64","bits":64,"eps":2.220446049250313e-16,"itemSize":8,"max":1.7976931348623157e+308,"min":-1.7976931348623157e+308,"tiny":2.2250738585072014e-308,"shape":[],"ndim":0,"size":0,"nbytes":0}
 ```
 
 ### Describe an array of values
@@ -47,7 +47,7 @@ import Numeric from '@neabyte/numerix'
 const descriptor = Numeric.dtype.info([1, 2, 3])
 
 console.log(descriptor)
-// {"dtype":"float64","bits":64,"itemSize":8,"min":-1.7976931348623157e+308,"max":1.7976931348623157e+308,"eps":2.220446049250313e-16,"shape":[3],"ndim":1,"size":3,"nbytes":24}
+// {"dtype":"float64","bits":64,"eps":2.220446049250313e-16,"itemSize":8,"max":1.7976931348623157e+308,"min":-1.7976931348623157e+308,"tiny":2.2250738585072014e-308,"shape":[3],"ndim":1,"size":3,"nbytes":24}
 ```
 
 ### Describe a single floating point value
@@ -58,5 +58,5 @@ import Numeric from '@neabyte/numerix'
 const descriptor = Numeric.dtype.info(1.5)
 
 console.log(descriptor)
-// {"dtype":"float64","bits":64,"itemSize":8,"min":-1.7976931348623157e+308,"max":1.7976931348623157e+308,"eps":2.220446049250313e-16,"shape":[],"ndim":0,"size":1,"nbytes":8}
+// {"dtype":"float64","bits":64,"eps":2.220446049250313e-16,"itemSize":8,"max":1.7976931348623157e+308,"min":-1.7976931348623157e+308,"tiny":2.2250738585072014e-308,"shape":[],"ndim":0,"size":1,"nbytes":8}
 ```
