@@ -1,54 +1,41 @@
+import * as Internal from '@app/internal/index.ts'
+
 /**
  * Count the entries in an array.
  * @description Counts valid values across rows or the whole array.
  * @param values - Values to count
- * @param axis - Axis along which the counts are taken
+ * @param level - Axis along which the counts are taken
  * @returns Entry counts for the requested axis
  */
-export default function count(values: unknown[], axis?: number): number | number[] {
-  if (axis !== undefined && Array.isArray(values[0])) {
-    const matrix = values as unknown[][]
-    const rows = matrix.length
-    if (axis === 1 || axis === -1) {
-      const result = new Array<number>(rows)
-      for (let row = 0; row < rows; row++) {
-        result[row] = countFlat(matrix[row] ?? [])
-      }
-      return result
+export default function count(values: unknown[], level?: number | null): number | number[] {
+  const layered = Array.isArray(values[0])
+  if (level !== undefined && level !== null) {
+    const normalized = level < 0 ? (layered ? 2 : 1) + level : level
+    if (normalized < 0 || normalized > (layered ? 1 : 0)) {
+      throw new RangeError(`axis is out of bounds for array of dimension ${layered ? 2 : 1}`)
     }
-    if (axis === 0 || axis === -2) {
+    if (layered) {
+      const matrix = values as unknown[][]
+      if (normalized === 1) {
+        return matrix.map((slice) => count(slice ?? []) as number)
+      }
       const width = matrix[0]?.length ?? 0
-      const result = new Array<number>(width)
-      for (let column = 0; column < width; column++) {
-        let total = 0
-        for (let row = 0; row < rows; row++) {
-          if (matrix[row]?.[column]) {
-            total++
+      const totals = new Array<number>(width).fill(0)
+      for (let outer = 0; outer < matrix.length; outer++) {
+        const slice = matrix[outer] ?? []
+        for (let column = 0; column < width; column++) {
+          if (Internal.settle('any', slice[column])) {
+            totals[column] = (totals[column] ?? 0) + 1
           }
         }
-        result[column] = total
       }
-      return result
+      return totals
     }
   }
-  return countFlat(values)
-}
-
-/**
- * Count entries in a flat array.
- * @description Tallies the valid entries of a flat array.
- * @param values - Entries to count
- * @returns Number of counted entries
- */
-function countFlat(values: unknown[]): number {
   let total = 0
   for (let index = 0; index < values.length; index++) {
     const entry = values[index]
-    if (Array.isArray(entry)) {
-      total += countFlat(entry)
-    } else if (entry) {
-      total++
-    }
+    total += Array.isArray(entry) ? (count(entry) as number) : Internal.settle('any', entry) ? 1 : 0
   }
   return total
 }
