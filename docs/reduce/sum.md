@@ -5,15 +5,15 @@ Sum the values of an array along an axis.
 ## API
 
 ```ts
-Numeric.reduce.sum(values, nan = false, axis)
+Numeric.reduce.sum(values, invalid = false, level)
 ```
 
 Adds up the values of the array.
 
 - Parameters:
   - `values`: Vector or matrix of input values
-  - `nan`: When true skips not a number entries
-  - `axis`: Axis along which the values are summed
+  - `invalid`: When true skips NaN entries
+  - `level`: Axis along which the values are summed
 - Returns: Sum matching the requested axis
 - NumPy: Covers `np.sum`, `np.nansum`, `ndarray.sum` through a single Numerix method.
 
@@ -52,7 +52,7 @@ console.log(totals)
 // [3,7]
 ```
 
-### Sum while skipping not a number values
+### Sum while skipping NaN values
 
 ```ts
 import Numeric from '@neabyte/numerix'

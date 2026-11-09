@@ -8,8 +8,8 @@ Access every method through the namespace form `Numeric.reduce.method`.
 | --------------------- | --------------------------------------------------- |
 | [all](all.md)         | Combines truthiness along the requested axis.       |
 | [any](any.md)         | Combines truthiness along the requested axis.       |
-| [argmax](argmax.md)   | Searches a flat vector for the maximum entry.       |
-| [argmin](argmin.md)   | Searches a flat vector for the minimum entry.       |
+| [argmax](argmax.md)   | Finds the position of the largest entry.            |
+| [argmin](argmin.md)   | Finds the position of the smallest entry.           |
 | [count](count.md)     | Counts valid values across rows or the whole array. |
 | [cumprod](cumprod.md) | Multiplies running values along the requested axis. |
 | [cumsum](cumsum.md)   | Adds running values along the requested axis.       |

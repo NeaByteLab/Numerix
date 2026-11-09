@@ -1,19 +1,19 @@
 # argmax
 
-Find the position of the largest value along an axis.
+Find the position of the largest value in the array or along an axis.
 
 ## API
 
 ```ts
-Numeric.reduce.argmax(values, nan = false, axis)
+Numeric.reduce.argmax(values, invalid = false, level)
 ```
 
 Locates the position of the maximum entry.
 
 - Parameters:
   - `values`: Vector or matrix of input values
-  - `nan`: When true skips not a number entries
-  - `axis`: Axis along which the position is sought
+  - `invalid`: When true skips NaN entries
+  - `level`: Axis along which the position is sought
 - Returns: Position of the largest entry
 - NumPy: Covers `np.argmax`, `np.nanargmax`, `ndarray.argmax` through a single Numerix method.
 
@@ -41,7 +41,7 @@ console.log(indices)
 // [0,1]
 ```
 
-### Position while skipping not a number values
+### Position while skipping NaN values
 
 ```ts
 import Numeric from '@neabyte/numerix'

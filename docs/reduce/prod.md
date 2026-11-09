@@ -5,15 +5,15 @@ Multiply the values of an array along an axis.
 ## API
 
 ```ts
-Numeric.reduce.prod(values, nan = false, axis)
+Numeric.reduce.prod(values, invalid = false, level)
 ```
 
 Multiplies the values of the array.
 
 - Parameters:
   - `values`: Vector or matrix of input values
-  - `nan`: When true skips not a number entries
-  - `axis`: Axis along which the values are multiplied
+  - `invalid`: When true skips NaN entries
+  - `level`: Axis along which the values are multiplied
 - Returns: Product matching the requested axis
 - NumPy: Covers `np.prod`, `np.nanprod`, `ndarray.prod` through a single Numerix method.
 
@@ -52,7 +52,7 @@ console.log(totals)
 // [2,12]
 ```
 
-### Product while skipping not a number values
+### Product while skipping NaN values
 
 ```ts
 import Numeric from '@neabyte/numerix'

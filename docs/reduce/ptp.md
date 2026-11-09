@@ -5,14 +5,14 @@ Compute the peak to peak range of an array along an axis.
 ## API
 
 ```ts
-Numeric.reduce.ptp(values, axis)
+Numeric.reduce.ptp(values, level)
 ```
 
 Measures the spread between the largest and smallest values.
 
 - Parameters:
   - `values`: Vector or matrix of input values
-  - `axis`: Axis along which the range is measured
+  - `level`: Axis along which the range is measured
 - Returns: Range matching the requested axis
 - NumPy: Equivalent to `np.ptp`.
 

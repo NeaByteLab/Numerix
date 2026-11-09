@@ -5,14 +5,14 @@ Check whether any entry along an axis is truthy.
 ## API
 
 ```ts
-Numeric.reduce.any(values, axis)
+Numeric.reduce.any(values, level)
 ```
 
 Tests whether any entry of the array holds a truthy value.
 
 - Parameters:
   - `values`: Vector or matrix of input values
-  - `axis`: Axis along which the test is applied
+  - `level`: Axis along which the test is applied
 - Returns: True when at least one entry holds a truthy value
 - NumPy: Covers `np.any`, `ndarray.any` through a single Numerix method.
 

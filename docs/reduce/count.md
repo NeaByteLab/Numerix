@@ -5,14 +5,14 @@ Count the non-zero entries along an axis.
 ## API
 
 ```ts
-Numeric.reduce.count(values, axis)
+Numeric.reduce.count(values, level)
 ```
 
 Counts the entries holding a non-zero value.
 
 - Parameters:
   - `values`: Vector or matrix of input values
-  - `axis`: Axis along which the entries are counted
+  - `level`: Axis along which the entries are counted
 - Returns: Count matching the requested axis
 - NumPy: Equivalent to `np.count_nonzero`.
 

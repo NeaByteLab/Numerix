@@ -5,16 +5,16 @@ Find the largest value along an axis.
 ## API
 
 ```ts
-Numeric.reduce.max(values, nan, skip = false, axis)
+Numeric.reduce.max(values, invalid, ignore = false, level)
 ```
 
 Searches for the maximum entry along an axis.
 
 - Parameters:
   - `values`: Values to search for the maximum
-  - `nan`: Invalid entries or a flag to skip them
-  - `skip`: Whether invalid entries are skipped
-  - `axis`: Axis along which the maximum is sought
+  - `invalid`: Invalid entries or a flag to skip them
+  - `ignore`: Whether invalid entries are skipped
+  - `level`: Axis along which the maximum is sought
 - Returns: Maximum value for the requested axis
 - NumPy: Covers `np.max`, `np.amax`, `np.nanmax`, `np.maximum`, `np.fmax`, `ndarray.max` through a single Numerix method.
 
@@ -42,7 +42,7 @@ console.log(values)
 // [3,4]
 ```
 
-### Largest value while skipping not a number entries
+### Largest value while skipping NaN entries
 
 ```ts
 import Numeric from '@neabyte/numerix'

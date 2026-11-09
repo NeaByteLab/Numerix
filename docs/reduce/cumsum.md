@@ -5,15 +5,15 @@ Compute the running sum of an array along an axis.
 ## API
 
 ```ts
-Numeric.reduce.cumsum(values, nan = false, axis)
+Numeric.reduce.cumsum(values, invalid = false, level)
 ```
 
 Accumulates the running sum of the array.
 
 - Parameters:
   - `values`: Vector or matrix of input values
-  - `nan`: When true skips not a number entries
-  - `axis`: Axis along which the values are accumulated
+  - `invalid`: When true skips NaN entries
+  - `level`: Axis along which the values are accumulated
 - Returns: Running sums matching the input shape
 - NumPy: Covers `np.cumsum`, `np.nancumsum`, `np.cumulative_sum`, `ndarray.cumsum` through a single Numerix method.
 
@@ -41,7 +41,7 @@ console.log(values)
 // [[1,2],[4,6]]
 ```
 
-### Running sum while skipping not a number values
+### Running sum while skipping NaN values
 
 ```ts
 import Numeric from '@neabyte/numerix'
