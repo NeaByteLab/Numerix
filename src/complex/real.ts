@@ -10,5 +10,9 @@ import * as Internal from '@app/internal/index.ts'
 export default function real(
   value: Types.NumerixValue
 ): number | number[] | number[][] {
-  return Internal.traverse(value, (entry) => Internal.components(entry).re)
+  return Internal.traverse(
+    value,
+    (entry) => (Internal.shape(entry) ? entry.re : Number(entry)),
+    false
+  )
 }
