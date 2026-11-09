@@ -1,3 +1,4 @@
+import * as Dtype from '@app/dtype/index.ts'
 import * as Internal from '@app/internal/index.ts'
 
 /**
@@ -5,95 +6,74 @@ import * as Internal from '@app/internal/index.ts'
  * @description Expands nested inputs to the requested dimensions.
  * @param input - Value or nested array to broadcast
  * @param shape - Target shape of the broadcast result
- * @param mode - Broadcast mode or shape inference variant
+ * @param method - Broadcast mode or shape inference variant
  * @returns Broadcast value or inferred shape
  */
 export default function broadcast(
   input: unknown,
-  shape: number[],
-  mode: 'to' | 'shape' = 'to'
+  shape: number[] | unknown[],
+  method: 'to' | 'shape' | 'arrays' = 'to'
 ): unknown {
-  if (mode === 'shape' && Array.isArray(input)) {
-    const source = Array.isArray(input[0])
-      ? (input as number[][]).map((row) => row.length)
-      : (input as number[]).length > 0
-      ? [input.length]
-      : []
-    const leftSize = source.length
-    const rightSize = shape.length
-    const count = leftSize > rightSize ? leftSize : rightSize
-    const result = new Array<number>(count)
-    for (let index = 0; index < count; index++) {
-      const leftScale = index >= count - leftSize ? (source[index - (count - leftSize)] ?? 1) : 1
-      const rightScale = index >= count - rightSize ? (shape[index - (count - rightSize)] ?? 1) : 1
-      result[index] = leftScale > rightScale ? leftScale : rightScale
-    }
-    return result
+  if (method !== 'to' && method !== 'shape' && method !== 'arrays') {
+    throw new RangeError("mode must be one of 'to', 'shape', or 'arrays'")
   }
-  return buildBroadcast(input, Internal.depth(input), shape, 0)
-}
-
-/**
- * Build a broadcast value.
- * @description Recursively expands values into the target shape.
- * @param value - Value to expand at this level
- * @param level - Remaining nesting depth of the source value
- * @param target - Target shape of the broadcast result
- * @param offset - Current position within the target shape
- * @returns Expanded value for the current level
- */
-function buildBroadcast(
-  value: unknown,
-  level: number,
-  target: number[],
-  offset: number
-): unknown {
-  if (offset >= target.length) {
-    return value
-  }
-  const head = target[offset] ?? 0
-  const remaining = target.length - offset
-  if (level < remaining) {
-    const result = new Array<unknown>(head)
-    const template = buildBroadcast(value, level, target, offset + 1)
-    for (let index = 0; index < head; index++) {
-      result[index] = index === 0 ? template : copyValue(template)
-    }
-    return result
-  }
-  const source = value as unknown[]
-  if (source.length === 1 && head > 1) {
-    const result = new Array<unknown>(head)
-    const first = source[0]
-    for (let index = 0; index < head; index++) {
-      result[index] = buildBroadcast(first, level - 1, target, offset + 1)
-    }
-    return result
-  }
-  const length = source.length
-  const result = new Array<unknown>(length)
-  for (let index = 0; index < length; index++) {
-    result[index] = buildBroadcast(source[index], level - 1, target, offset + 1)
-  }
-  return result
-}
-
-/**
- * Copy a nested value into structure.
- * @description Duplicates every level of a nested list.
- * @param value - Nested value to copy
- * @returns Independent copy holding the same entries
- */
-function copyValue(value: unknown): unknown {
-  if (Array.isArray(value)) {
-    const copy = (value as unknown[]).slice()
-    for (let index = 0; index < copy.length; index++) {
-      const element = copy[index]
-      if (Array.isArray(element)) {
-        copy[index] = copyValue(element)
+  if (method === 'arrays' || (method === 'shape' && Array.isArray(input))) {
+    const first = method === 'arrays' || Array.isArray((input as unknown[])[0])
+      ? Dtype.info(input).shape
+      : (input as unknown[]).map((value) => Number(value ?? 1))
+    const second = method === 'arrays' || Array.isArray((shape as unknown[])[0])
+      ? Dtype.info(shape).shape
+      : (shape as unknown[]).map((value) => Number(value ?? 1))
+    const count = Math.max(first.length, second.length)
+    const common = Array.from({ length: count }, (_outer, index) => {
+      const primary = index >= count - first.length
+        ? (first[index - (count - first.length)] ?? 1)
+        : 1
+      const scaled = index >= count - second.length
+        ? (second[index - (count - second.length)] ?? 1)
+        : 1
+      if (primary < 0 || scaled < 0) {
+        throw new RangeError('negative dimensions are not allowed')
       }
-    }
-    return copy
+      if (primary !== scaled && primary !== 1 && scaled !== 1) {
+        throw new RangeError('operands could not be broadcast together')
+      }
+      return primary === 1 ? scaled : primary
+    })
+    return method === 'shape' ? common : [
+      broadcast(input, common, 'to'),
+      broadcast(shape, common, 'to')
+    ]
   }
-  return value
+  const target = shape as number[]
+  const depth = Internal.depth(input)
+  if (depth > target.length) {
+    throw new RangeError('input operand has more dimensions than allowed by the axis remapping')
+  }
+  if (target.length === 0) {
+    return Internal.classify(input, true, true) === true ? Internal.nested(input) : input
+  }
+  const length = target[0] ?? 0
+  if (length < 0) {
+    throw new RangeError('negative dimensions are not allowed')
+  }
+  const remaining = target.slice(1)
+  if (depth < target.length || ((input as unknown[]).length === 1 && length !== 1)) {
+    const template = broadcast(
+      depth < target.length ? input : (input as unknown[])[0],
+      remaining,
+      'to'
+    )
+    return Internal.classify(input, true, true) === true
+      ? Internal.nested(Array.from({ length }, () => template))
+      : Array.from(
+        { length },
+        (_outer, index) => index === 0 ? template : Internal.nested(template, (entry) => entry)
+      )
+  }
+  if ((input as unknown[]).length !== length) {
+    throw new RangeError('operands could not be broadcast together')
+  }
+  const mapped = (input as unknown[]).map((entry) => broadcast(entry, remaining, 'to'))
+  return Internal.classify(input, true, true) === true ? Internal.nested(mapped) : mapped
 }
