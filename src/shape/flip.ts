@@ -4,61 +4,64 @@ import * as Internal from '@app/internal/index.ts'
  * Reverse entries along an axis.
  * @description Reverses rows, columns, or every axis.
  * @param input - Nested array to reverse
- * @param axis - Axis or named direction to reverse
+ * @param chosen - Axis or named reverse direction
  * @returns Reversed array matching the input nesting
  */
 export default function flip(
-  input: unknown[],
-  axis: number | 'ud' | 'lr' | 'all' = 0
-): unknown[] {
-  if (axis === 'all') {
-    return flipAll(input)
-  }
-  if (axis === 'ud') {
-    return flipAxis(input, 0)
-  }
-  if (axis === 'lr') {
-    return flipAxis(input, 1)
-  }
-  const normalized = axis < 0 ? Internal.depth(input) + axis : axis
-  return flipAxis(input, normalized)
-}
-
-/**
- * Reverse every axis of an array.
- * @description Recursively reverses rows and columns together.
- * @param input - Nested array to reverse
- * @returns Array reversed along every axis
- */
-function flipAll(input: unknown[]): unknown[] {
-  const length = input.length
-  const result = new Array<unknown>(length)
-  for (let index = 0; index < length; index++) {
-    const entry = input[length - 1 - index]
-    result[index] = Array.isArray(entry) ? flipAll(entry) : entry
-  }
-  return result
-}
-
-/**
- * Reverse one axis of an array.
- * @description Reverses entries along the requested axis.
- * @param input - Nested array to reverse
- * @param axis - Axis to reverse
- * @returns Array reversed along the given axis
- */
-function flipAxis(input: unknown[], axis: number): unknown[] {
-  const length = input.length
-  const result = new Array<unknown>(length)
-  if (axis <= 0) {
-    for (let index = 0; index < length; index++) {
-      result[index] = input[length - 1 - index]
+  input: unknown[] | unknown[][],
+  chosen: number | number[] | 'ud' | 'lr' | 'all' | null = 0
+): unknown[] | unknown[][] {
+  if (chosen === 'all' || chosen === null) {
+    if (Array.isArray(input[0])) {
+      return Array.from(
+        { length: input.length },
+        (_unused, index) => flip(input[input.length - 1 - index] as unknown[], 'all')
+      ) as unknown[][]
     }
-    return result
+    const reversed = Array.from(
+      { length: input.length },
+      (_unused, index) => input[input.length - 1 - index]
+    )
+    return (
+      Internal.classify(input, true, true) === true ? Internal.nested(reversed) : reversed
+    ) as unknown[]
   }
-  for (let index = 0; index < length; index++) {
-    const row = input[index]
-    result[index] = Array.isArray(row) ? flipAxis(row, axis - 1) : row
+  const depth = Internal.depth(input)
+  if (chosen === 'ud') {
+    if (depth < 1) {
+      throw new RangeError('Input must be >= 1-d')
+    }
+    return flip(input, 0)
   }
-  return result
+  if (chosen === 'lr') {
+    if (depth < 2) {
+      throw new RangeError('Input must be >= 2-d')
+    }
+    return flip(input, 1)
+  }
+  if (typeof chosen !== 'number' && !Array.isArray(chosen)) {
+    throw new RangeError("axis must be an integer, 'ud', 'lr', 'all', or null")
+  }
+  const items = Array.isArray(chosen) ? chosen : [chosen]
+  const visited = new Set<number>()
+  let result: unknown[] = (input as unknown[]).map((entry) =>
+    Array.isArray(entry) ? entry.slice() : entry
+  )
+  for (let cursor = 0; cursor < items.length; cursor++) {
+    const entry = items[cursor] ?? 0
+    const normalized = entry < 0 ? depth + entry : entry
+    if (normalized < 0 || normalized >= depth) {
+      throw new RangeError('axis is out of bounds for array of dimension ' + depth)
+    }
+    if (visited.has(normalized)) {
+      throw new RangeError('repeated axis')
+    }
+    visited.add(normalized)
+    result = normalized > 0
+      ? result.map((entry) => flip(entry as unknown[], normalized - 1))
+      : result.reverse()
+  }
+  return (
+    Internal.classify(input, true, true) === true ? Internal.nested(result) : result
+  ) as unknown[] | unknown[][]
 }
