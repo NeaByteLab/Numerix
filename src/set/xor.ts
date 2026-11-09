@@ -1,45 +1,70 @@
+import type * as Types from '@app/types.ts'
 import * as Internal from '@app/internal/index.ts'
+import * as Shape from '@app/shape/index.ts'
+import * as Sort from '@app/sort/index.ts'
+import distinct from '@app/set/unique.ts'
 
 /**
  * Compute the symmetric difference of sets.
  * @description Keeps values present in only one of the sets.
- * @param left - Values of the first set
+ * @param first - Values of the first set
  * @param right - Values of the second set
+ * @param unique - When true, treats both inputs as already unique
  * @returns Values found in exactly one set
  */
-export default function xor(left: number[], right: number[]): number[] {
-  const source = Internal.distinct(Internal.finite(left))
-  const target = Internal.distinct(Internal.finite(right))
-  const difference: number[] = []
-  let sourceCursor = 0
-  let targetCursor = 0
-  while (sourceCursor < source.length && targetCursor < target.length) {
-    const left = source[sourceCursor] ?? 0
-    const right = target[targetCursor] ?? 0
-    if (left < right) {
-      difference.push(left)
-      sourceCursor++
-    } else if (right < left) {
-      difference.push(right)
-      targetCursor++
+export default function xor(
+  first: number[] | number[][] | Types.NumerixComplex[] | Types.NumerixComplex[][],
+  right: number[] | number[][] | Types.NumerixComplex[] | Types.NumerixComplex[][],
+  unique = false
+): number[] | Types.NumerixComplex[] {
+  const source = Array.isArray(first[0]) ? Shape.flatten(first) : (first as unknown[])
+  const second = Array.isArray(right[0]) ? Shape.flatten(right) : (right as unknown[])
+  const merged = (unique ? source : (distinct(source, false) as unknown[])).concat(
+    unique ? second : (distinct(second, false) as unknown[])
+  )
+  if (
+    Internal.classify(source, true, true) !== true &&
+    Internal.classify(second, true, true) !== true
+  ) {
+    const sorted = Sort.order(
+      unique
+        ? merged.map((entry) => {
+          const reals = Number(entry ?? 0)
+          return reals === 0 ? 0 : reals
+        })
+        : (merged as number[])
+    ) as number[]
+    const result: number[] = []
+    for (let index = 0; index < sorted.length; index++) {
+      const current = sorted[index] ?? 0
+      if (index + 1 < sorted.length && current === sorted[index + 1]) {
+        index++
+      } else {
+        result.push(current)
+      }
+    }
+    return result
+  }
+  const combined = Sort.order(
+    unique
+      ? merged.map((entry) => {
+        const reals = Internal.shape(entry) ? entry.re : Number(entry ?? 0)
+        const imags = Internal.shape(entry) ? entry.im : 0
+        return {
+          re: reals === 0 ? 0 : reals,
+          im: imags === 0 ? 0 : imags
+        }
+      })
+      : (merged as Types.NumerixComplex[])
+  ) as Types.NumerixComplex[]
+  const result: Types.NumerixComplex[] = []
+  for (let index = 0; index < combined.length; index++) {
+    const current = combined[index] ?? { re: 0, im: 0 }
+    if (Internal.equals(current, combined[index + 1])) {
+      index++
     } else {
-      sourceCursor++
-      targetCursor++
+      result.push(current)
     }
   }
-  while (sourceCursor < source.length) {
-    difference.push(source[sourceCursor] ?? 0)
-    sourceCursor++
-  }
-  while (targetCursor < target.length) {
-    difference.push(target[targetCursor] ?? 0)
-    targetCursor++
-  }
-  if (left.some((value) => Number.isNaN(value))) {
-    difference.push(NaN)
-  }
-  if (right.some((value) => Number.isNaN(value))) {
-    difference.push(NaN)
-  }
-  return difference
+  return result
 }
