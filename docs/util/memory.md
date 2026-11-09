@@ -5,14 +5,14 @@ Inspect array memory layout or test whether two buffers overlap.
 ## API
 
 ```ts
-Numeric.util.memory(left, right)
+Numeric.util.memory(first, second)
 ```
 
 Reports strides and ordering for an array.
 
 - Parameters:
-  - `left`: Array whose layout is inspected
-  - `right`: Array compared against the first one
+  - `first`: Array whose layout is inspected
+  - `second`: Array compared against the first one
 - Returns: Layout descriptor or a shared memory flag
 - NumPy: Covers `np.shares_memory`, `np.may_share_memory`, `ndarray.data`, `ndarray.base`, `ndarray.strides`, `ndarray.flags`, `ndarray.setflags` through a single Numerix method.
 

@@ -5,15 +5,15 @@ Apply an operation to each slice of a matrix along one axis.
 ## API
 
 ```ts
-Numeric.util.apply(operation, array, axis = 0)
+Numeric.util.apply(operation, source, level = 0)
 ```
 
 Runs an operation on each row of a matrix.
 
 - Parameters:
   - `operation`: Operation applied to each slice
-  - `array`: Vector or matrix the operation runs on
-  - `axis`: Axis along which the slices are taken
+  - `source`: Vector or matrix on which the operation runs
+  - `level`: Axis along which the slices are taken
 - Returns: Results of the operation for each slice
 - NumPy: Covers `np.apply_along_axis`, `np.apply_over_axes`, `np.vectorize`, `np.frompyfunc` through a single Numerix method.
 

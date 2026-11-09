@@ -5,16 +5,16 @@ Render numbers and nested arrays as text with a chosen notation.
 ## API
 
 ```ts
-Numeric.util.format(value, precision = 4, mode = 'fixed', base = 10)
+Numeric.util.format(value, places, notation = 'fixed', radix)
 ```
 
 Renders numbers using the requested notation.
 
 - Parameters:
   - `value`: Value or array of values to format
-  - `precision`: Number of digits kept after the decimal
-  - `mode`: Notation used to render the values
-  - `base`: Logarithm base for base notation
+  - `places`: Number of digits kept after the decimal
+  - `notation`: Notation used to render the values
+  - `radix`: Logarithm base for base notation
 - Returns: Formatted representation of the value
 - NumPy: Covers `np.array2string`, `np.array_repr`, `np.array_str`, `np.format_float_positional`, `np.format_float_scientific`, `np.base_repr`, `np.binary_repr` through a single Numerix method.
 
