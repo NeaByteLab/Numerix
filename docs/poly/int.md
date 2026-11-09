@@ -15,7 +15,9 @@ Applies integration repeatedly to reach the order.
   - `order`: Number of integrations to apply
   - `constant`: Constant term added to the result
   - `lower`: Lower bound used for the integration
-  - `basis`: Polynomial basis of the coefficients
+  - `basis`: Polynomial basis or scale factor
+  - `output`: Target polynomial basis or axis
+  - `level`: Axis index when the output is numeric
 - Returns: Coefficients of the integrated polynomial
 - NumPy: Covers `np.polynomial.polynomial.polyint`, `np.polynomial.chebyshev.chebint`, `np.polynomial.legendre.legint`, `np.polynomial.hermite.hermint`, `np.polynomial.hermite_e.hermeint`, `np.polynomial.laguerre.lagint`, `np.polyint` through a single Numerix method.
 

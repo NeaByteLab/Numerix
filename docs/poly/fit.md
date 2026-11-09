@@ -14,7 +14,8 @@ Solves a least squares system for the coefficients.
   - `samples`: Sample points where the function is evaluated
   - `targets`: Observed values at the sample points
   - `degree`: Degree of the fitted polynomial
-  - `basis`: Polynomial basis of the fitted coefficients
+  - `basis`: Polynomial basis of the fitted coefficients or sample weights
+  - `weights`: Optional sample weights for weighted least-squares fitting
 - Returns: Coefficients of the fitted polynomial
 - NumPy: Covers `np.polynomial.polynomial.polyfit`, `np.polynomial.chebyshev.chebfit`, `np.polynomial.legendre.legfit`, `np.polynomial.hermite.hermfit`, `np.polynomial.hermite_e.hermefit`, `np.polynomial.laguerre.lagfit`, `np.polyfit` through a single Numerix method.
 
@@ -28,7 +29,7 @@ import Numeric from '@neabyte/numerix'
 const coefficients = Numeric.poly.fit([0, 1, 2], [1, 3, 5], 1)
 
 console.log(coefficients)
-// [1,2]
+// [0.9999999999999993,2]
 ```
 
 ### Fit a quadratic
@@ -39,7 +40,7 @@ import Numeric from '@neabyte/numerix'
 const coefficients = Numeric.poly.fit([0, 1, 2], [1, 3, 5], 2)
 
 console.log(coefficients)
-// [1.0000000000000004,2,0]
+// [0,0,1]
 ```
 
 ### Fit a constant
@@ -50,7 +51,7 @@ import Numeric from '@neabyte/numerix'
 const coefficients = Numeric.poly.fit([0, 1, 2], [1, 3, 5], 0)
 
 console.log(coefficients)
-// [3]
+// [3.000000000000001]
 ```
 
 ### Fit a line through the origin
@@ -61,5 +62,5 @@ import Numeric from '@neabyte/numerix'
 const coefficients = Numeric.poly.fit([1, 2, 3], [2, 4, 6], 1)
 
 console.log(coefficients)
-// [0,2]
+// [7.105427357601002e-15,1.9999999999999976]
 ```

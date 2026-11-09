@@ -60,5 +60,5 @@ import Numeric from '@neabyte/numerix'
 const result = Numeric.poly.div([1, 2, 1], [1, 2, 1])
 
 console.log(result)
-// [[1],[0,0]]
+// [[1],[0]]
 ```

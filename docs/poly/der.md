@@ -14,7 +14,8 @@ Applies differentiation repeatedly to reach the order.
   - `coefficients`: Coefficients of the source polynomial
   - `order`: Number of derivatives to apply
   - `scale`: Scaling factor applied to each derivative
-  - `basis`: Polynomial basis of the coefficients
+  - `basis`: Polynomial basis or axis index
+  - `level`: Axis index when the basis is numeric
 - Returns: Coefficients of the differentiated polynomial
 - NumPy: Covers `np.polynomial.polynomial.polyder`, `np.polynomial.chebyshev.chebder`, `np.polynomial.legendre.legder`, `np.polynomial.hermite.hermder`, `np.polynomial.hermite_e.hermeder`, `np.polynomial.laguerre.lagder`, `np.polyder` through a single Numerix method.
 

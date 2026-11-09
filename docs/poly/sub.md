@@ -5,13 +5,13 @@ Subtract two polynomials coefficient by coefficient.
 ## API
 
 ```ts
-Numeric.poly.sub(left, right)
+Numeric.poly.sub(first, right)
 ```
 
 Aligns coefficients and subtracts them entry by entry.
 
 - Parameters:
-  - `left`: Coefficients of the minuend polynomial
+  - `first`: Coefficients of the minuend polynomial
   - `right`: Coefficients of the subtrahend polynomial
 - Returns: Coefficients of the difference polynomial
 - NumPy: Covers `np.polynomial.polynomial.polysub`, `np.polynomial.chebyshev.chebsub`, `np.polynomial.legendre.legsub`, `np.polynomial.hermite.hermsub`, `np.polynomial.hermite_e.hermesub`, `np.polynomial.laguerre.lagsub`, `np.polysub` through a single Numerix method.

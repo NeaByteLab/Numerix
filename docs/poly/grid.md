@@ -5,13 +5,13 @@ Evaluate a polynomial across a grid of points.
 ## API
 
 ```ts
-Numeric.poly.grid(rows, columns, coefficients, basis = 'poly')
+Numeric.poly.grid(first, columns, coefficients, basis = 'poly')
 ```
 
 Computes polynomial values at grid intersections.
 
 - Parameters:
-  - `rows`: Row positions of the evaluation grid
+  - `first`: Row positions of the evaluation grid
   - `columns`: Column positions of the evaluation grid
   - `coefficients`: Coefficients of the source polynomial
   - `basis`: Polynomial basis of the coefficients

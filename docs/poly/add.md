@@ -5,13 +5,13 @@ Add two polynomials coefficient by coefficient.
 ## API
 
 ```ts
-Numeric.poly.add(left, right)
+Numeric.poly.add(first, right)
 ```
 
 Aligns coefficients and sums them entry by entry.
 
 - Parameters:
-  - `left`: Coefficients of the first polynomial
+  - `first`: Coefficients of the first polynomial
   - `right`: Coefficients of the second polynomial
 - Returns: Coefficients of the summed polynomial
 - NumPy: Covers `np.polynomial.polynomial.polyadd`, `np.polynomial.chebyshev.chebadd`, `np.polynomial.legendre.legadd`, `np.polynomial.hermite.hermadd`, `np.polynomial.hermite_e.hermeadd`, `np.polynomial.laguerre.lagadd`, `np.polyadd` through a single Numerix method.

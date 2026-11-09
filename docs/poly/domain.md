@@ -5,7 +5,7 @@ Inspect or transform the domain of a polynomial.
 ## API
 
 ```ts
-Numeric.poly.domain(values, source, target, mode = 'bounds', tolerance = 0)
+Numeric.poly.domain(values, source, target, method = 'bounds', tolerance = 0)
 ```
 
 Reports bounds, maps values, or trims trailing zeros.
@@ -14,7 +14,7 @@ Reports bounds, maps values, or trims trailing zeros.
   - `values`: Coefficients describing the domain
   - `source`: Source interval used for mapping
   - `target`: Target interval used for mapping
-  - `mode`: Domain operation applied to the values
+  - `method`: Domain operation applied to the values
   - `tolerance`: Threshold used when trimming
 - Returns: Domain bounds or mapped values
 - NumPy: Covers `np.polynomial.polyutils.getdomain`, `np.polynomial.polyutils.mapdomain`, `np.polynomial.polyutils.mapparms`, `np.polynomial.polyutils.trimcoef`, `np.polynomial.polyutils.trimseq`, `np.polynomial.polynomial.polytrim`, `np.polynomial.chebyshev.chebtrim`, `np.polynomial.legendre.legtrim`, `np.polynomial.hermite.hermtrim`, `np.polynomial.hermite_e.hermetrim`, `np.polynomial.laguerre.lagtrim` through a single Numerix method.

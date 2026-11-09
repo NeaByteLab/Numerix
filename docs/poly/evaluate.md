@@ -13,7 +13,8 @@ Computes polynomial values using Horner iteration.
 - Parameters:
   - `sample`: Point or points where the polynomial is evaluated
   - `coefficients`: Coefficients of the source polynomial
-  - `basis`: Polynomial basis of the coefficients
+  - `basis`: Polynomial basis, roots mode, boolean flag, or coefficient matrix
+  - `surface`: Polynomial basis for two-dimensional evaluation or tensor flag
 - Returns: Polynomial values at the sample points
 - NumPy: Covers `np.polynomial.polynomial.polyval`, `np.polynomial.polynomial.polyval2d`, `np.polynomial.polynomial.polyval3d`, `np.polynomial.polynomial.polyvalnd`, `np.polynomial.polynomial.polyvalfromroots`, `np.polynomial.chebyshev.chebval`, `np.polynomial.legendre.legval`, `np.polynomial.hermite.hermval`, `np.polynomial.hermite_e.hermeval`, `np.polynomial.laguerre.lagval`, `np.polyval` through a single Numerix method.
 

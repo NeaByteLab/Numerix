@@ -5,7 +5,7 @@ Sample a polynomial or a callback over a point range.
 ## API
 
 ```ts
-Numeric.poly.sample(count, degree, fn, kind = 'first')
+Numeric.poly.sample(count, degree, callback, family = 'first')
 ```
 
 Evaluates a polynomial or callback over sample points.
@@ -13,8 +13,8 @@ Evaluates a polynomial or callback over sample points.
 - Parameters:
   - `count`: Number of sample points to generate
   - `degree`: Degree used when sampling a polynomial
-  - `fn`: Callback evaluated when sampling a function
-  - `kind`: Sample point distribution to use
+  - `callback`: Callback evaluated when sampling a function
+  - `family`: Sample point distribution to use
 - Returns: Sampled values for the generated points
 - NumPy: Covers `np.polynomial.chebyshev.chebpts1`, `np.polynomial.chebyshev.chebpts2`, `np.polynomial.chebyshev.chebinterpolate` through a single Numerix method.
 

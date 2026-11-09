@@ -13,7 +13,8 @@ Uses repeated squaring for the polynomial power.
 - Parameters:
   - `coefficients`: Coefficients of the source polynomial
   - `exponent`: Integer exponent applied to the polynomial
-  - `basis`: Polynomial basis of the coefficients
+  - `basis`: Polynomial basis or maximum allowed exponent
+  - `limit`: Maximum allowed exponent
 - Returns: Coefficients of the powered polynomial
 - NumPy: Covers `np.polynomial.polynomial.polypow`, `np.polynomial.chebyshev.chebpow`, `np.polynomial.legendre.legpow`, `np.polynomial.hermite.hermpow`, `np.polynomial.hermite_e.hermepow`, `np.polynomial.laguerre.lagpow` through a single Numerix method.
 

@@ -5,13 +5,13 @@ Multiply two polynomials together.
 ## API
 
 ```ts
-Numeric.poly.mul(left, right, basis = 'poly')
+Numeric.poly.mul(first, right, basis = 'poly')
 ```
 
 Convolves the coefficient arrays together.
 
 - Parameters:
-  - `left`: Coefficients of the first polynomial
+  - `first`: Coefficients of the first polynomial
   - `right`: Coefficients of the second polynomial
   - `basis`: Polynomial basis of the coefficients
 - Returns: Coefficients of the multiplied polynomial
