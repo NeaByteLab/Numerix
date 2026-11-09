@@ -1,23 +1,48 @@
 import * as Internal from '@app/internal/index.ts'
-import * as Numerix from '@app/math/index.ts'
 
 /**
  * Compute the least common multiple.
- * @description Combines operands with NumPy style broadcast.
- * @param left - First operand as scalar, vector, or matrix
- * @param right - Second operand as scalar, vector, or matrix
+ * @description Combines operands with NumPy-style broadcast.
+ * @param first - First operand as a scalar, vector, or matrix
+ * @param right - Second operand as a scalar, vector, or matrix
  * @returns Multiples matching the broadcast shape of the operands
  */
 export default function lcm(
-  left: number | number[] | number[][],
+  first: number | number[] | number[][],
   right: number | number[] | number[][]
 ): number | number[] | number[][] {
-  return Internal.broadcast(left, right, (first, second) => {
-    const dividend = Math.abs(Math.trunc(first))
-    const divisor = Math.abs(Math.trunc(second))
+  if (typeof right === 'number' && Internal.classify(first, true, true) === false) {
+    return Internal.mapper(first, (leading) => {
+      if (!Number.isInteger(leading) || !Number.isInteger(right)) {
+        throw new TypeError('lcm requires integer operands')
+      }
+      const dividend = Math.abs(leading)
+      const divisor = Math.abs(right)
+      if (dividend === 0 || divisor === 0) {
+        return 0
+      }
+      let alpha = dividend
+      let omega = divisor
+      while (omega !== 0) {
+        ;[alpha, omega] = [omega, alpha % omega]
+      }
+      return (dividend / alpha) * divisor
+    })
+  }
+  return Internal.broadcast(first, right, (first, second) => {
+    if (!Number.isInteger(first) || !Number.isInteger(second)) {
+      throw new TypeError('lcm requires integer operands')
+    }
+    const dividend = Math.abs(first)
+    const divisor = Math.abs(second)
     if (dividend === 0 || divisor === 0) {
       return 0
     }
-    return (dividend / (Numerix.gcd(dividend, divisor) as number)) * divisor
+    let alpha = dividend
+    let omega = divisor
+    while (omega !== 0) {
+      ;[alpha, omega] = [omega, alpha % omega]
+    }
+    return (dividend / alpha) * divisor
   })
 }
