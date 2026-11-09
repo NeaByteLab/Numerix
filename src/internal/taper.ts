@@ -7,7 +7,7 @@
  */
 export default function taper(
   length: number,
-  value: (index: number, last: number) => number
+  value: (index: number, final: number) => number
 ): number[] {
   if (length <= 0) {
     return []
@@ -16,12 +16,11 @@ export default function taper(
     return [1]
   }
   const result = new Array<number>(length)
-  const last = length - 1
-  const half = last >> 1
-  for (let index = 0; index <= half; index++) {
-    const sample = value(index, last)
+  const final = length - 1
+  for (let index = 0; index <= final >> 1; index++) {
+    const sample = value(index, final)
     result[index] = sample
-    result[last - index] = sample
+    result[final - index] = sample
   }
   return result
 }
