@@ -1,109 +1,219 @@
 import type * as Types from '@app/types.ts'
+import * as Internal from '@app/internal/index.ts'
 
 /**
  * Compute a QR decomposition.
- * @description Factorizes a matrix into orthogonal and upper triangular factors.
+ * @description Factorizes a matrix into orthogonal and upper-triangular factors.
  * @param matrix - Matrix to factorize
- * @returns Orthogonal and upper triangular factors
+ * @param method - Decomposition mode
+ * @returns Orthogonal and upper-triangular factors or the upper-triangular factor alone
  */
-export default function qr(matrix: number[][]): Types.NumerixQr {
-  const rows = matrix.length
-  const columns = matrix[0]?.length ?? 0
-  const working = new Float64Array(rows * columns)
-  for (let row = 0; row < rows; row++) {
-    const source = matrix[row] ?? []
-    for (let column = 0; column < columns; column++) {
-      working[column * rows + row] = source[column] ?? 0
+export default function qr(
+  matrix: number[][],
+  method?: 'reduced' | 'complete'
+): Types.NumerixQr
+/**
+ * Compute the upper-triangular QR factor.
+ * @description Returns only the upper-triangular factor of a QR decomposition.
+ * @param matrix - Matrix to factorize
+ * @param method - Decomposition mode returning only the upper-triangular factor
+ * @returns Upper-triangular factor matrix
+ */
+export default function qr(
+  matrix: number[][],
+  method: 'r'
+): number[][]
+/**
+ * Compute a complex QR decomposition.
+ * @description Factorizes a complex matrix into unitary factors.
+ * @param matrix - Complex matrix to factorize
+ * @param method - Decomposition mode
+ * @returns Unitary and upper-triangular factors or the upper-triangular factor alone
+ */
+export default function qr(
+  matrix: (number | Types.NumerixComplex)[][],
+  method?: 'reduced' | 'complete'
+): { Q: Types.NumerixComplex[][]; R: Types.NumerixComplex[][] }
+/**
+ * Compute the complex upper-triangular QR factor.
+ * @description Returns only the upper-triangular factor of a complex QR decomposition.
+ * @param matrix - Complex matrix to factorize
+ * @param method - Decomposition mode returning only the upper-triangular factor
+ * @returns Complex upper-triangular factor matrix
+ */
+export default function qr(
+  matrix: (number | Types.NumerixComplex)[][],
+  method: 'r'
+): Types.NumerixComplex[][]
+/**
+ * Compute a QR decomposition.
+ * @description Factorizes a matrix into orthogonal and upper-triangular factors.
+ * @param matrix - Matrix to factorize
+ * @param method - Decomposition mode
+ * @returns Orthogonal and upper-triangular factors or the upper-triangular factor alone
+ */
+export default function qr(
+  matrix: (number | Types.NumerixComplex)[][],
+  method: 'reduced' | 'complete' | 'r' = 'reduced'
+):
+  | Types.NumerixQr
+  | number[][]
+  | { Q: Types.NumerixComplex[][]; R: Types.NumerixComplex[][] }
+  | Types.NumerixComplex[][] {
+  if (method !== 'reduced' && method !== 'complete' && method !== 'r') {
+    throw new RangeError(`Unrecognized mode '${method}'`)
+  }
+  const height = matrix.length
+  const width = matrix[0]?.length ?? 0
+  const complex = Internal.classify(matrix, true, true) === true
+  const reals = new Float64Array(height * width)
+  const imags = new Float64Array(height * width)
+  for (let outer = 0; outer < height; outer++) {
+    for (let column = 0; column < width; column++) {
+      const entry = matrix[outer]?.[column]
+      const index = column * height + outer
+      if (typeof entry === 'number') {
+        reals[index] = entry
+      } else {
+        reals[index] = Internal.shape(entry) ? entry.re : Number(entry ?? 0)
+        imags[index] = Internal.shape(entry) ? entry.im : 0
+      }
     }
   }
-  const reflectors = new Array<Float64Array>(columns)
-  const steps = Math.min(columns, rows)
-  for (let step = 0; step < steps; step++) {
-    const base = step * rows
-    let squared = 0
-    for (let row = step; row < rows; row++) {
-      const entry = working[base + row] ?? 0
-      squared += entry * entry
+  const steps = Math.min(width, height)
+  const first = new Array<Float64Array>(steps)
+  const second = new Array<Float64Array>(steps)
+  const third = new Float64Array(steps)
+  const fourth = new Float64Array(steps)
+  for (let stage = 0; stage < steps; stage++) {
+    const origin = stage * height
+    const alpha = reals[origin + stage] ?? 0
+    const omega = imags[origin + stage] ?? 0
+    let maximum = Math.max(Math.abs(alpha), Math.abs(omega))
+    for (let outer = stage + 1; outer < height; outer++) {
+      maximum = Math.max(
+        maximum,
+        Math.abs(reals[origin + outer] ?? 0),
+        Math.abs(imags[origin + outer] ?? 0)
+      )
     }
-    const norm = Math.sqrt(squared)
-    if (norm === 0) {
-      reflectors[step] = new Float64Array(0)
+    let tails = 0
+    if (maximum > 0) {
+      for (let outer = stage + 1; outer < height; outer++) {
+        tails += ((reals[origin + outer] ?? 0) / maximum) ** 2 +
+          ((imags[origin + outer] ?? 0) / maximum) ** 2
+      }
+    }
+    if (tails === 0 && omega === 0) {
       continue
     }
-    const vector = new Float64Array(rows)
-    const alpha = (working[base + step] ?? 0) >= 0 ? -norm : norm
-    for (let row = step; row < rows; row++) {
-      vector[row] = working[base + row] ?? 0
+    const cosine = alpha / maximum
+    const sines = omega / maximum
+    const pivot = (cosine >= 0 ? -1 : 1) * Math.sqrt(cosine * cosine + sines * sines + tails)
+    third[stage] = (pivot - cosine) / pivot
+    fourth[stage] = -sines / pivot
+    const delta = cosine - pivot
+    const denom = maximum * (delta * delta + sines * sines)
+    const items = new Float64Array(height)
+    const pairs = new Float64Array(height)
+    items[stage] = 1
+    for (let outer = stage + 1; outer < height; outer++) {
+      const entry = reals[origin + outer] ?? 0
+      const other = imags[origin + outer] ?? 0
+      items[outer] = (entry * delta + other * sines) / denom
+      pairs[outer] = (other * delta - entry * sines) / denom
     }
-    vector[step] = (vector[step] ?? 0) - alpha
-    let square = 0
-    for (let row = step; row < rows; row++) {
-      const entry = vector[row] ?? 0
-      square += entry * entry
+    first[stage] = items
+    second[stage] = pairs
+    reals[origin + stage] = pivot * maximum
+    imags[origin + stage] = 0
+    for (let outer = stage + 1; outer < height; outer++) {
+      reals[origin + outer] = 0
+      imags[origin + outer] = 0
     }
-    const length = Math.sqrt(square)
-    if (length === 0) {
-      reflectors[step] = new Float64Array(0)
+    const gamma = third[stage] ?? 0
+    const theta = -(fourth[stage] ?? 0)
+    for (let column = stage + 1; column < width; column++) {
+      const offset = column * height
+      let inner = 0
+      let cross = 0
+      for (let outer = stage; outer < height; outer++) {
+        const point = items[outer] ?? 0
+        const phase = -(pairs[outer] ?? 0)
+        const value = reals[offset + outer] ?? 0
+        const extra = imags[offset + outer] ?? 0
+        inner += point * value - phase * extra
+        cross += point * extra + phase * value
+      }
+      const shift = gamma * inner - theta * cross
+      const twist = gamma * cross + theta * inner
+      for (let outer = stage; outer < height; outer++) {
+        const point = items[outer] ?? 0
+        const phase = pairs[outer] ?? 0
+        reals[offset + outer] = (reals[offset + outer] ?? 0) - (point * shift - phase * twist)
+        imags[offset + outer] = (imags[offset + outer] ?? 0) - (point * twist + phase * shift)
+      }
+    }
+  }
+  const count = method === 'complete' ? height : steps
+  const upper = Array.from(
+    { length: count },
+    (_outer, outer) =>
+      Array.from({ length: width }, (_inner, column) => {
+        if (outer <= column) {
+          const entry = (reals[column * height + outer] ?? 0) || 0
+          return complex ? { re: entry, im: (imags[column * height + outer] ?? 0) || 0 } : entry
+        }
+        return complex ? { re: 0, im: 0 } : 0
+      })
+  ) as number[][] | Types.NumerixComplex[][]
+  if (method === 'r') {
+    return upper
+  }
+  const bases = new Float64Array(height * count)
+  const signs = new Float64Array(height * count)
+  for (let column = 0; column < count; column++) {
+    bases[column * height + column] = 1
+  }
+  for (let stage = steps - 1; stage >= 0; stage--) {
+    const items = first[stage]
+    if (!items) {
       continue
     }
-    for (let row = step; row < rows; row++) {
-      vector[row] = (vector[row] ?? 0) / length
-    }
-    reflectors[step] = vector
-    for (let column = step + 1; column < columns; column++) {
-      const offset = column * rows
-      let projection = 0
-      for (let row = step; row < rows; row++) {
-        projection += (vector[row] ?? 0) * (working[offset + row] ?? 0)
+    const pairs = second[stage]!
+    const gamma = third[stage] ?? 0
+    const theta = fourth[stage] ?? 0
+    for (let column = stage; column < count; column++) {
+      const offset = column * height
+      let inner = 0
+      let cross = 0
+      for (let outer = stage; outer < height; outer++) {
+        const point = items[outer] ?? 0
+        const phase = -(pairs[outer] ?? 0)
+        const value = bases[offset + outer] ?? 0
+        const extra = signs[offset + outer] ?? 0
+        inner += point * value - phase * extra
+        cross += point * extra + phase * value
       }
-      const factor = 2 * projection
-      for (let row = step; row < rows; row++) {
-        working[offset + row] = (working[offset + row] ?? 0) -
-          factor * (vector[row] ?? 0)
+      const shift = gamma * inner - theta * cross
+      const twist = gamma * cross + theta * inner
+      for (let outer = stage; outer < height; outer++) {
+        const point = items[outer] ?? 0
+        const phase = pairs[outer] ?? 0
+        bases[offset + outer] = (bases[offset + outer] ?? 0) - (point * shift - phase * twist)
+        signs[offset + outer] = (signs[offset + outer] ?? 0) - (point * twist + phase * shift)
       }
-    }
-    working[base + step] = alpha
-    for (let row = step + 1; row < rows; row++) {
-      working[base + row] = 0
     }
   }
-  const upper = new Array<number[]>(columns)
-  for (let row = 0; row < columns; row++) {
-    const values = new Array<number>(columns)
-    for (let column = 0; column < columns; column++) {
-      values[column] = row <= column ? working[column * rows + row] ?? 0 : 0
-    }
-    upper[row] = values
-  }
-  const lanes = new Array<Float64Array>(columns)
-  const candidate = new Float64Array(rows)
-  for (let column = 0; column < columns; column++) {
-    candidate.fill(0)
-    candidate[column] = 1
-    const last = Math.min(column, steps - 1)
-    for (let step = last; step >= 0; step--) {
-      const vector = reflectors[step] ?? new Float64Array(0)
-      if (vector.length === 0) {
-        continue
-      }
-      let projection = 0
-      for (let row = 0; row < rows; row++) {
-        projection += (vector[row] ?? 0) * (candidate[row] ?? 0)
-      }
-      const factor = 2 * projection
-      for (let row = 0; row < rows; row++) {
-        candidate[row] = (candidate[row] ?? 0) - factor * (vector[row] ?? 0)
-      }
-    }
-    lanes[column] = candidate.slice()
-  }
-  const orthogonal = new Array<number[]>(rows)
-  for (let row = 0; row < rows; row++) {
-    const values = new Array<number>(columns)
-    for (let column = 0; column < columns; column++) {
-      values[column] = lanes[column]?.[row] ?? 0
-    }
-    orthogonal[row] = values
-  }
-  return { Q: orthogonal, R: upper }
+  return {
+    Q: Array.from(
+      { length: height },
+      (_outer, outer) =>
+        Array.from({ length: count }, (_inner, column) => {
+          const entry = (bases[column * height + outer] ?? 0) || 0
+          return complex ? { re: entry, im: (signs[column * height + outer] ?? 0) || 0 } : entry
+        })
+    ),
+    R: upper
+  } as Types.NumerixQr | { Q: Types.NumerixComplex[][]; R: Types.NumerixComplex[][] }
 }
