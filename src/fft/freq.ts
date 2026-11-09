@@ -3,30 +3,23 @@
  * @description Reports the frequency of each spectral bin.
  * @param count - Number of bins in the transform
  * @param spacing - Sample spacing of the original signal
- * @param real - When true returns only the positive bins
+ * @param positive - When true, returns only the positive bins
  * @returns Frequency of each spectral bin
  */
 export default function freq(
   count: number,
   spacing: number = 1,
-  real: boolean = false
+  positive: boolean = false
 ): number[] {
-  const scale = 1 / (spacing * count)
-  if (real) {
-    const length = (count >> 1) + 1
-    const result = new Array<number>(length)
-    for (let index = 0; index < length; index++) {
-      result[index] = index * scale
-    }
-    return result
+  if (count <= 0) {
+    throw new RangeError('Window length must be a positive integer')
   }
-  const middle = Math.ceil(count / 2)
-  const result = new Array<number>(count)
-  for (let index = 0; index < middle; index++) {
-    result[index] = index * scale
+  if (spacing === 0) {
+    throw new RangeError('Sample spacing must be non-zero')
   }
-  for (let index = middle; index < count; index++) {
-    result[index] = (index - count) * scale
-  }
-  return result
+  return Array.from(
+    { length: positive ? (count >> 1) + 1 : count },
+    (_outer, index) =>
+      (positive || index < (count + 1) >> 1 ? index : index - count) / (spacing * count)
+  )
 }
