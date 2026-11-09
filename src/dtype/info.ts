@@ -1,32 +1,86 @@
 import type * as Types from '@app/types.ts'
+import * as Internal from '@app/internal/index.ts'
 
 /** Default specification for unknown data types */
 const fallback: Types.NumerixSpec = {
+  /** Bit width */
   bits: 64,
+  /** Machine epsilon */
+  eps: Number.EPSILON,
+  /** Byte width */
   itemSize: 8,
-  min: -Number.MAX_VALUE,
+  /** Maximum value */
   max: Number.MAX_VALUE,
-  eps: Number.EPSILON
+  /** Minimum value */
+  min: -Number.MAX_VALUE,
+  /** Smallest positive normal number */
+  tiny: 2.2250738585072014e-308
 }
 
 /** Specifications keyed by data type name */
 const table: Record<string, Types.NumerixSpec> = {
-  bool: { bits: 8, itemSize: 1, min: 0, max: 1, eps: 1 },
-  int8: { bits: 8, itemSize: 1, min: -128, max: 127, eps: 1 },
-  uint8: { bits: 8, itemSize: 1, min: 0, max: 255, eps: 1 },
-  int16: { bits: 16, itemSize: 2, min: -32768, max: 32767, eps: 1 },
-  uint16: { bits: 16, itemSize: 2, min: 0, max: 65535, eps: 1 },
-  int32: { bits: 32, itemSize: 4, min: -2147483648, max: 2147483647, eps: 1 },
-  uint32: { bits: 32, itemSize: 4, min: 0, max: 4294967295, eps: 1 },
-  float16: { bits: 16, itemSize: 2, min: -65504, max: 65504, eps: 0.0009765625 },
+  /** Boolean specification */
+  bool: { bits: 1, eps: 1, itemSize: 1, max: 1, min: 0 },
+  /** 128-bit complex specification */
+  complex128: {
+    bits: 128,
+    eps: Number.EPSILON,
+    itemSize: 16,
+    max: Number.MAX_VALUE,
+    min: -Number.MAX_VALUE,
+    tiny: 2.2250738585072014e-308
+  },
+  /** 64-bit complex specification */
+  complex64: {
+    bits: 64,
+    eps: 1.1920928955078125e-7,
+    itemSize: 8,
+    max: 3.4028234663852886e38,
+    min: -3.4028234663852886e38,
+    tiny: 1.1754943508222875e-38
+  },
+  /** 16-bit float specification */
+  float16: {
+    bits: 16,
+    eps: 0.0009765625,
+    itemSize: 2,
+    max: 65504,
+    min: -65504,
+    tiny: 6.103515625e-05
+  },
+  /** 32-bit float specification */
   float32: {
     bits: 32,
+    eps: 1.1920928955078125e-7,
     itemSize: 4,
-    min: -3.4028234663852886e38,
     max: 3.4028234663852886e38,
-    eps: 1.1920928955078125e-7
+    min: -3.4028234663852886e38,
+    tiny: 1.1754943508222875e-38
   },
-  float64: fallback
+  /** 64-bit float specification */
+  float64: fallback,
+  /** Signed 16-bit integer specification */
+  int16: { bits: 16, eps: 1, itemSize: 2, max: 32767, min: -32768 },
+  /** Signed 32-bit integer specification */
+  int32: { bits: 32, eps: 1, itemSize: 4, max: 2147483647, min: -2147483648 },
+  /** Signed 64-bit integer specification */
+  int64: {
+    bits: 64,
+    eps: 1,
+    itemSize: 8,
+    max: 9223372036854775807,
+    min: -9223372036854775808
+  },
+  /** Signed 8-bit integer specification */
+  int8: { bits: 8, eps: 1, itemSize: 1, max: 127, min: -128 },
+  /** Unsigned 16-bit integer specification */
+  uint16: { bits: 16, eps: 1, itemSize: 2, max: 65535, min: 0 },
+  /** Unsigned 32-bit integer specification */
+  uint32: { bits: 32, eps: 1, itemSize: 4, max: 4294967295, min: 0 },
+  /** Unsigned 64-bit integer specification */
+  uint64: { bits: 64, eps: 1, itemSize: 8, max: 18446744073709551615, min: 0 },
+  /** Unsigned 8-bit integer specification */
+  uint8: { bits: 8, eps: 1, itemSize: 1, max: 255, min: 0 }
 }
 
 /**
@@ -37,14 +91,12 @@ const table: Record<string, Types.NumerixSpec> = {
  */
 export default function info(input: unknown = 'float64'): Types.NumerixDtype {
   if (typeof input === 'string') {
-    const specification = table[input] ?? fallback
+    if (!(input in table)) {
+      throw new TypeError(`data type '${input}' not understood`)
+    }
     return {
-      dtype: table[input] ? input : 'float64',
-      bits: specification.bits,
-      itemSize: specification.itemSize,
-      min: specification.min,
-      max: specification.max,
-      eps: specification.eps,
+      dtype: input,
+      ...(table[input] ?? fallback),
       shape: [],
       ndim: 0,
       size: 0,
@@ -52,46 +104,48 @@ export default function info(input: unknown = 'float64'): Types.NumerixDtype {
     }
   }
   if (ArrayBuffer.isView(input) && !(input instanceof DataView)) {
-    const name = input.constructor.name.replace('Array', '').toLowerCase()
-    const specification = table[name] ?? fallback
-    const size = input.byteLength / specification.itemSize
+    const token = input.constructor.name.replace('Array', '').toLowerCase()
+    const label = token === 'bigint64'
+      ? 'int64'
+      : token === 'biguint64'
+      ? 'uint64'
+      : token === 'uint8clamped'
+      ? 'uint8'
+      : token
+    const specification = table[label] ?? fallback
+    const count = input.byteLength / specification.itemSize
     return {
-      dtype: name,
-      bits: specification.bits,
-      itemSize: specification.itemSize,
-      min: specification.min,
-      max: specification.max,
-      eps: specification.eps,
-      shape: [size],
+      dtype: label,
+      ...specification,
+      shape: [count],
       ndim: 1,
-      size,
+      size: count,
       nbytes: input.byteLength
     }
   }
   const shape: number[] = []
   let cursor = input
-  let size = 1
+  let count = 1
   while (Array.isArray(cursor)) {
-    const length = cursor.length
-    shape.push(length)
-    size *= length
+    shape.push(cursor.length)
+    count *= cursor.length
     cursor = cursor[0]
   }
   if (shape.length === 0) {
-    size = input === undefined || input === null ? 0 : 1
+    count = input === undefined || input === null ? 0 : 1
   }
-  const name = typeof cursor === 'boolean' ? 'bool' : 'float64'
-  const specification = table[name] ?? fallback
+  const label = Internal.classify(input, true, true) === true
+    ? 'complex128'
+    : Internal.classify(input, true, null) === true
+    ? 'bool'
+    : 'float64'
+  const specification = table[label] ?? fallback
   return {
-    dtype: name,
-    bits: specification.bits,
-    itemSize: specification.itemSize,
-    min: specification.min,
-    max: specification.max,
-    eps: specification.eps,
+    dtype: label,
+    ...specification,
     shape,
     ndim: shape.length,
-    size,
-    nbytes: size * specification.itemSize
+    size: count,
+    nbytes: count * specification.itemSize
   }
 }
