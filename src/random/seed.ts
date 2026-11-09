@@ -8,14 +8,14 @@ import type * as Types from '@app/types.ts'
  */
 export default function seed(value: number = Date.now()): Types.NumerixGenerator {
   let state = (value >>> 0) || 1
-  const next = (): number => {
+  const sample = (): number => {
     state ^= state << 13
     state ^= state >>> 17
     state ^= state << 5
     return (state >>> 0) / 4294967296
   }
   return {
-    next,
-    spawn: (): Types.NumerixGenerator => seed(Math.floor(next() * 0xffffffff))
+    next: sample,
+    spawn: (): Types.NumerixGenerator => seed(Math.floor(sample() * 0xffffffff))
   }
 }
