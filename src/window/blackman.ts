@@ -7,9 +7,8 @@ import * as Internal from '@app/internal/index.ts'
  * @returns Blackman window values
  */
 export default function blackman(length: number): number[] {
-  const step = length > 1 ? (2 * Math.PI) / (length - 1) : 0
   return Internal.taper(length, (index) => {
-    const phase = step * index
+    const phase = ((2 * Math.PI) / (length - 1)) * index
     return 0.42 - 0.5 * Math.cos(phase) + 0.08 * Math.cos(2 * phase)
   })
 }
