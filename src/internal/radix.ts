@@ -1,164 +1,109 @@
-import type * as Types from '@app/types.ts'
-
 /**
- * Run a mixed radix transform.
+ * Run a mixed-radix transform.
  * @description Transforms a signal whose length factors into small radices.
- * @param real - Real components of the signal, overwritten with the spectrum
+ * @param values - Real components of the signal, overwritten with the spectrum
  * @param imaginary - Imaginary components of the signal, overwritten with the spectrum
  * @returns True when the length is supported
  */
 export default function radix(
-  real: Float64Array,
+  values: Float64Array,
   imaginary: Float64Array
 ): boolean {
-  const length = real.length
+  const length = values.length
   if (length <= 1) {
     return true
   }
-  const factors = factorize(length)
-  for (const factor of factors) {
-    if (factor > 13) {
-      return false
+  if ((length & (length - 1)) === 0) {
+    let cursor = 0
+    for (let index = 0; index < length; index++) {
+      if (index < cursor) {
+        ;[values[index], values[cursor]] = [values[cursor] ?? 0, values[index] ?? 0]
+        ;[imaginary[index], imaginary[cursor]] = [imaginary[cursor] ?? 0, imaginary[index] ?? 0]
+      }
+      let place = length >> 1
+      while (place > 0 && (cursor & place) !== 0) {
+        cursor ^= place
+        place >>= 1
+      }
+      cursor |= place
     }
+    for (let width = 2; width <= length; width <<= 1) {
+      const middle = width >> 1
+      for (let offset = 0; offset < middle; offset++) {
+        const angle = ((-2 * Math.PI) / width) * offset
+        const rotator = Math.cos(angle)
+        const twister = Math.sin(angle)
+        for (let start = offset; start < length; start += width) {
+          const paired = start + middle
+          const alpha = values[paired] ?? 0
+          const omega = imaginary[paired] ?? 0
+          const shifted = rotator * alpha - twister * omega
+          const turned = rotator * omega + twister * alpha
+          const prior = values[start] ?? 0
+          const former = imaginary[start] ?? 0
+          values[start] = prior + shifted
+          imaginary[start] = former + turned
+          values[paired] = prior - shifted
+          imaginary[paired] = former - turned
+        }
+      }
+    }
+    return true
   }
-  const root: Types.NumerixComplex[] = new Array(length).fill(null).map(() => ({
-    re: 0,
-    im: 0
-  }))
-  for (let index = 0; index < length; index++) {
-    const angle = (-2 * Math.PI * index) / length
-    root[index] = { re: Math.cos(angle), im: Math.sin(angle) }
-  }
-  const source: Types.NumerixComplex[] = new Array(length).fill(null).map(() => ({
-    re: 0,
-    im: 0
-  }))
-  for (let index = 0; index < length; index++) {
-    source[index] = { re: real[index] ?? 0, im: imaginary[index] ?? 0 }
-  }
-  const result: Types.NumerixComplex[] = new Array(length).fill(null).map(() => ({
-    re: 0,
-    im: 0
-  }))
-  transform(
-    source,
-    0,
-    1,
-    length,
-    length,
-    result,
-    0,
-    root
-  )
-  for (let index = 0; index < length; index++) {
-    real[index] = result[index]?.re ?? 0
-    imaginary[index] = result[index]?.im ?? 0
-  }
-  return true
-}
-
-/**
- * Factor a length into small radices.
- * @description Splits the length into accepted radices.
- * @param length - Signal length to factor
- * @returns Radix factors in descending preference order
- */
-function factorize(length: number): number[] {
   const factors: number[] = []
-  let rest = length
-  for (const radix of [4, 2, 3, 5, 7, 11, 13]) {
-    while (rest % radix === 0) {
-      factors.push(radix)
-      rest /= radix
+  let remainder = length
+  for (const factor of [4, 2, 3, 5, 7, 11, 13]) {
+    while (remainder % factor === 0) {
+      factors.push(factor)
+      remainder /= factor
     }
   }
-  if (rest > 1) {
-    factors.push(rest)
+  if (remainder > 1) {
+    return false
   }
-  return factors
-}
-
-/**
- * Transform a strided signal block.
- * @description Applies the mixed radix butterflies of one recursion level.
- * @param source - Complex components of the source signal
- * @param start - Index of the first sample of the block
- * @param step - Distance between consecutive samples of the block
- * @param size - Number of samples in the block
- * @param length - Length of the whole signal
- * @param target - Complex components of the transformed block
- * @param offset - Index of the first result of the block
- * @param root - Complex components of the roots of unity
- */
-function transform(
-  source: Types.NumerixComplex[],
-  start: number,
-  step: number,
-  size: number,
-  length: number,
-  target: Types.NumerixComplex[],
-  offset: number,
-  root: Types.NumerixComplex[]
-): void {
-  if (size === 1) {
-    target[offset] = source[start] ?? { re: 0, im: 0 }
-    return
-  }
-  const radix = factorize(size)[0] ?? size
-  const inner = size / radix
-  if (radix === size) {
-    for (let bin = 0; bin < size; bin++) {
-      let total: Types.NumerixComplex = { re: 0, im: 0 }
-      for (let trial = 0; trial < size; trial++) {
-        const index = (trial * bin * (length / size)) % length
-        const phase = root[index] ?? { re: 0, im: 0 }
-        const point = source[start + trial * step] ?? { re: 0, im: 0 }
-        total = {
-          re: total.re + point.re * phase.re - point.im * phase.im,
-          im: total.im + point.re * phase.im + point.im * phase.re
+  let reals = Float64Array.from(values)
+  let imags = Float64Array.from(imaginary)
+  let outputs = new Float64Array(length)
+  let phases = new Float64Array(length)
+  const cosines = new Float64Array(13)
+  const sines = new Float64Array(13)
+  let stride = 1
+  for (let stage = 0; stage < factors.length; stage++) {
+    const factor = factors[stage] ?? 1
+    const extent = stride * factor
+    const groups = length / extent
+    const pitch = groups * stride
+    for (let index = 0; index < stride; index++) {
+      for (let branch = 0; branch < factor; branch++) {
+        const offset = branch * stride + index
+        for (let outer = 0; outer < factor; outer++) {
+          const angle = (-2 * Math.PI * outer * offset) / extent
+          cosines[outer] = Math.cos(angle)
+          sines[outer] = Math.sin(angle)
+        }
+        for (let group = 0; group < groups; group++) {
+          let total = 0
+          let tally = 0
+          for (let outer = 0; outer < factor; outer++) {
+            const alpha = cosines[outer] ?? 0
+            const omega = sines[outer] ?? 0
+            const source = group * stride + outer * pitch + index
+            const point = reals[source] ?? 0
+            const phase = imags[source] ?? 0
+            total += point * alpha - phase * omega
+            tally += point * omega + phase * alpha
+          }
+          const target = group * extent + offset
+          outputs[target] = total
+          phases[target] = tally
         }
       }
-      target[offset + bin] = total
     }
-    return
+    ;[reals, outputs] = [outputs, reals]
+    ;[imags, phases] = [phases, imags]
+    stride = extent
   }
-  const block: Types.NumerixComplex[] = new Array(size).fill(null).map(() => ({
-    re: 0,
-    im: 0
-  }))
-  for (let lane = 0; lane < radix; lane++) {
-    transform(
-      source,
-      start + lane * step,
-      step * radix,
-      inner,
-      length,
-      block,
-      lane * inner,
-      root
-    )
-  }
-  const outerStep = length / size
-  const laneStep = length / radix
-  for (let bin = 0; bin < inner; bin++) {
-    for (let lane = 0; lane < radix; lane++) {
-      let total: Types.NumerixComplex = { re: 0, im: 0 }
-      for (let step = 0; step < radix; step++) {
-        const first = (step * bin * outerStep) % length
-        const second = (step * lane * laneStep) % length
-        const left = root[first] ?? { re: 0, im: 0 }
-        const right = root[second] ?? { re: 0, im: 0 }
-        const phase = {
-          re: left.re * right.re - left.im * right.im,
-          im: left.re * right.im + left.im * right.re
-        }
-        const point = block[step * inner + bin] ?? { re: 0, im: 0 }
-        total = {
-          re: total.re + point.re * phase.re - point.im * phase.im,
-          im: total.im + point.re * phase.im + point.im * phase.re
-        }
-      }
-      target[offset + bin + inner * lane] = total
-    }
-  }
+  values.set(reals)
+  imaginary.set(imags)
+  return true
 }
