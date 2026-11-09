@@ -1,106 +1,205 @@
 import type * as Types from '@app/types.ts'
-
-/**
- * Compute histogram bin edges.
- * @description Derives evenly spaced edges from the sample range.
- * @param samples - Values covered by the histogram
- * @param bins - Number of bins to create
- * @param range - Explicit value range covered by the bins
- * @returns Bin boundary positions
- */
-function computeEdges(samples: number[], bins: number, range?: [number, number]): number[] {
-  let low: number
-  let high: number
-  if (range) {
-    low = range[0]
-    high = range[1]
-  } else {
-    low = Infinity
-    high = -Infinity
-    for (let index = 0; index < samples.length; index++) {
-      const sample = samples[index] ?? 0
-      if (sample < low) {
-        low = sample
-      }
-      if (sample > high) {
-        high = sample
-      }
-    }
-    if (!Number.isFinite(low)) {
-      low = 0
-      high = 1
-    }
-  }
-  const step = (high - low) / bins || 1
-  const edges = new Array<number>(bins + 1)
-  for (let index = 0; index <= bins; index++) {
-    edges[index] = low + index * step
-  }
-  return edges
-}
+import * as Shape from '@app/shape/index.ts'
 
 /**
  * Compute a histogram of values.
  * @description Counts values falling into each bin.
- * @param left - Values to distribute across the bins
- * @param bins - Number of bins or explicit bin edges
- * @param range - Value range covered by the bins
- * @returns Bin counts with edges or a two dimensional grid
+ * @param values - Values to distribute across the bins
+ * @param count - Number of bins or explicit bin edges
+ * @param bounds - Value range covered by the bins or density flag
+ * @param density - Density flag or optional sample weights
+ * @param final - When true, normalizes weighted counts to density
+ * @returns Bin counts with edges or a two-dimensional grid
  */
 export default function histogram(
-  left: number[],
-  bins: number | number[] = 10,
-  range?: [number, number] | number
+  values: number[] | number[][],
+  count: number | number[] = 10,
+  bounds?: [number, number] | number | boolean | number[] | number[][],
+  density?: boolean | number[] | number[][],
+  final = false
 ): Types.NumerixHistogram | Types.NumerixGrid {
-  if (Array.isArray(bins)) {
-    const right = bins
-    const count = typeof range === 'number' ? range : 10
-    const xEdges = computeEdges(left, count)
-    const yEdges = computeEdges(right, count)
-    const xLow = xEdges[0] ?? 0
-    const xHigh = xEdges[count] ?? 1
-    const yLow = yEdges[0] ?? 0
-    const yHigh = yEdges[count] ?? 1
-    const xStep = (xHigh - xLow) / count || 1
-    const yStep = (yHigh - yLow) / count || 1
-    const counts = new Array<number[]>(count)
-    for (let bin = 0; bin < count; bin++) {
-      counts[bin] = new Array<number>(count).fill(0)
-    }
-    const length = Math.min(left.length, right.length)
-    for (let index = 0; index < length; index++) {
-      const xValue = left[index] ?? 0
-      const yValue = right[index] ?? 0
-      if (xValue < xLow || xValue > xHigh || yValue < yLow || yValue > yHigh) {
-        continue
-      }
-      const xBin = xValue === xHigh
-        ? count - 1
-        : Math.min(count - 1, Math.floor((xValue - xLow) / xStep))
-      const yBin = yValue === yHigh
-        ? count - 1
-        : Math.min(count - 1, Math.floor((yValue - yLow) / yStep))
-      const row = counts[xBin]
-      if (row) {
-        row[yBin] = (row[yBin] ?? 0) + 1
-      }
-    }
-    return { counts, xEdges, yEdges }
+  const samples = Array.isArray(values[0]) ? Shape.flatten<number>(values) : (values as number[])
+  const normalized = typeof bounds === 'boolean'
+    ? bounds
+    : typeof density === 'boolean'
+    ? density || final
+    : final
+  const supplied = Array.isArray(density) ? density : Array.isArray(bounds) &&
+      (
+        Array.isArray(count) ||
+        bounds.length !== 2 ||
+        Array.isArray(bounds[0]) ||
+        typeof density === 'boolean'
+      )
+    ? bounds
+    : undefined
+  const weights = supplied
+    ? (Array.isArray(supplied[0]) ? Shape.flatten<number>(supplied) : (supplied as number[]))
+    : undefined
+  if (weights !== undefined && weights.length !== samples.length) {
+    throw new RangeError('weights should have the same shape as a.')
   }
-  const count = bins
-  const bounds = Array.isArray(range) ? range : undefined
-  const edges = computeEdges(left, count, bounds)
-  const low = edges[0] ?? 0
-  const high = edges[count] ?? 1
-  const step = (high - low) / count || 1
-  const counts = new Array<number>(count).fill(0)
-  for (let index = 0; index < left.length; index++) {
-    const value = left[index] ?? 0
-    if (value < low || value > high) {
-      continue
+  if (Array.isArray(count) && typeof bounds === 'number') {
+    if (samples.length !== count.length) {
+      throw new RangeError('x and y must have the same length.')
     }
-    const bin = value === high ? count - 1 : Math.min(count - 1, Math.floor((value - low) / step))
-    counts[bin] = (counts[bin] ?? 0) + 1
+    const horizontals = (histogram(samples, bounds) as Types.NumerixHistogram).edges
+    const verticals = (histogram(count, bounds) as Types.NumerixHistogram).edges
+    const limit = horizontals[bounds] ?? 1
+    const ceiling = verticals[bounds] ?? 1
+    const counts = Array.from({ length: bounds }, () => new Array<number>(bounds).fill(0))
+    let total = 0
+    for (let index = 0; index < samples.length; index++) {
+      const across = samples[index] ?? 0
+      const downward = count[index] ?? 0
+      if (
+        across >= (horizontals[0] ?? 0) &&
+        across <= limit &&
+        downward >= (verticals[0] ?? 0) &&
+        downward <= ceiling
+      ) {
+        let lower = 0
+        let upper = verticals.length
+        if (downward === ceiling) {
+          lower = bounds
+        } else {
+          while (lower < upper) {
+            const middle = (lower + upper) >> 1
+            if (downward < (verticals[middle] ?? 0)) {
+              upper = middle
+            } else {
+              lower = middle + 1
+            }
+          }
+        }
+        const depth = lower - 1
+        lower = 0
+        upper = horizontals.length
+        if (across === limit) {
+          lower = bounds
+        } else {
+          while (lower < upper) {
+            const middle = (lower + upper) >> 1
+            if (across < (horizontals[middle] ?? 0)) {
+              upper = middle
+            } else {
+              lower = middle + 1
+            }
+          }
+        }
+        const place = lower - 1
+        const weight = weights ? (weights[index] ?? 0) : 1
+        counts[place]![depth] = (counts[place]![depth] ?? 0) + weight
+        total += weight
+      }
+    }
+    return {
+      counts: normalized
+        ? counts.map((slice, across) => {
+          const width = ((horizontals[across + 1] ?? 0) - (horizontals[across] ?? 0)) * total
+          return slice.map(
+            (entry, downward) =>
+              entry / (width * ((verticals[downward + 1] ?? 0) - (verticals[downward] ?? 0)))
+          )
+        })
+        : counts,
+      xEdges: horizontals,
+      yEdges: verticals
+    }
   }
-  return { counts, edges }
+  let edges: number[]
+  if (Array.isArray(count)) {
+    edges = count
+    if (edges.length < 1) {
+      throw new RangeError('`bins` must increase monotonically, when an array')
+    }
+    for (let index = 0; index < edges.length; index++) {
+      const entry = edges[index] ?? 0
+      if (Number.isNaN(entry) || (index > 0 && entry < (edges[index - 1] ?? 0))) {
+        throw new RangeError('`bins` must increase monotonically, when an array')
+      }
+    }
+  } else {
+    if (!Number.isInteger(count) || count < 1) {
+      throw new RangeError('`bins` must be positive, when an integer')
+    }
+    const limits = (!supplied || Array.isArray(density)) && Array.isArray(bounds) &&
+        !Array.isArray(bounds[0]) && bounds.length === 2
+      ? (bounds as [number, number])
+      : undefined
+    let lower = limits ? limits[0] : Infinity
+    let upper = limits ? limits[1] : -Infinity
+    if (limits) {
+      if (!Number.isFinite(lower) || !Number.isFinite(upper)) {
+        throw new RangeError('range parameter must be finite.')
+      }
+      if (lower > upper) {
+        throw new RangeError('max must be larger than min in range parameter.')
+      }
+    } else {
+      for (let index = 0; index < samples.length; index++) {
+        const sample = samples[index] ?? 0
+        if (!Number.isFinite(sample)) {
+          throw new RangeError('autodetected range of [nan, nan] is not finite')
+        }
+        if (sample < lower) {
+          lower = sample
+        }
+        if (sample > upper) {
+          upper = sample
+        }
+      }
+      if (!Number.isFinite(lower)) {
+        lower = 0
+        upper = 1
+      }
+    }
+    if (lower === upper) {
+      lower -= 0.5
+      upper += 0.5
+    }
+    edges = Array.from(
+      { length: count + 1 },
+      (_outer, index) => (index === count ? upper : lower + index * ((upper - lower) / count))
+    )
+  }
+  const slots = Math.max(0, edges.length - 1)
+  const counts = new Array<number>(slots).fill(0)
+  let total = 0
+  if (slots > 0) {
+    const minimum = edges[0] ?? 0
+    const maximum = edges[slots] ?? minimum
+    for (let index = 0; index < samples.length; index++) {
+      const value = samples[index] ?? 0
+      if (value >= minimum && value <= maximum) {
+        let lower = 0
+        let upper = edges.length
+        if (value === maximum) {
+          lower = slots
+        } else {
+          while (lower < upper) {
+            const middle = (lower + upper) >> 1
+            if (value < (edges[middle] ?? 0)) {
+              upper = middle
+            } else {
+              lower = middle + 1
+            }
+          }
+        }
+        const place = lower - 1
+        const weight = weights ? (weights[index] ?? 0) : 1
+        counts[place] = (counts[place] ?? 0) + weight
+        total += weight
+      }
+    }
+  }
+  if (!normalized) {
+    return { counts, edges }
+  }
+  return {
+    counts: counts.map(
+      (entry, index) => (entry ?? 0) / ((edges[index + 1] ?? 0) - (edges[index] ?? 0)) / total
+    ),
+    edges
+  }
 }
