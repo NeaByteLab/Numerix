@@ -1,27 +1,36 @@
 import * as Internal from '@app/internal/index.ts'
 
 /**
- * Compute the log of summed exponentials.
- * @description Combines operands with NumPy style broadcast.
- * @param left - First operand as scalar, vector, or matrix
- * @param right - Second operand as scalar, vector, or matrix
- * @param binary - When true computes the base two logarithm
+ * Compute the logarithm of summed exponentials.
+ * @description Combines operands with NumPy-style broadcast.
+ * @param first - First operand as a scalar, vector, or matrix
+ * @param right - Second operand as a scalar, vector, or matrix
+ * @param binary - When true, computes the base-two logarithm
  * @returns Logarithms matching the broadcast shape of the operands
  */
 export default function logaddexp(
-  left: number | number[] | number[][],
+  first: number | number[] | number[][],
   right: number | number[] | number[][],
   binary = false
 ): number | number[] | number[][] {
-  return Internal.broadcast(left, right, (first, second) => {
+  if (typeof right === 'number' && Internal.classify(first, true, true) === false) {
+    return Internal.mapper(first, (leading) => {
+      if (leading === right) {
+        return leading + (binary ? 1 : Math.LN2)
+      }
+      const larger = Math.max(leading, right)
+      const delta = Math.min(leading, right) - larger
+      return larger +
+        (binary ? Math.log1p(Math.pow(2, delta)) / Math.LN2 : Math.log1p(Math.exp(delta)))
+    })
+  }
+  return Internal.broadcast(first, right, (first, second) => {
     if (first === second) {
       return first + (binary ? 1 : Math.LN2)
     }
     const larger = Math.max(first, second)
-    const smaller = Math.min(first, second)
-    if (binary) {
-      return larger + Math.log2(1 + Math.pow(2, smaller - larger))
-    }
-    return larger + Math.log1p(Math.exp(smaller - larger))
+    const delta = Math.min(first, second) - larger
+    return larger +
+      (binary ? Math.log1p(Math.pow(2, delta)) / Math.LN2 : Math.log1p(Math.exp(delta)))
   })
 }
