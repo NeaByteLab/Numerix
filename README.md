@@ -14,7 +14,7 @@ Numerix is a numeric library for JavaScript and TypeScript that follows the NumP
 
 ## Installation
 
-The package is not published to any registry yet, so clone it from source.
+The package is unpublished, so clone it from source.
 
 ```bash
 git clone https://github.com/NeaByteLab/Numerix.git
