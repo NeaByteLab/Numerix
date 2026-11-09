@@ -5,14 +5,15 @@ Partially sort an array so a rank holds the smaller values.
 ## API
 
 ```ts
-Numeric.sort.partition(values, rank)
+Numeric.sort.partition(values, order, level)
 ```
 
 Partially sorts the values around the given rank.
 
 - Parameters:
   - `values`: Vector of input values
-  - `rank`: Position holding the partition boundary
+  - `order`: Position holding the partition boundary
+  - `level`: Optional axis along which to partition a matrix
 - Returns: Partially sorted values
 - NumPy: Covers `np.partition`, `ndarray.partition` through a single Numerix method.
 

@@ -5,14 +5,15 @@ Return the positions that would partially sort an array.
 ## API
 
 ```ts
-Numeric.sort.argpartition(values, rank)
+Numeric.sort.argpartition(values, order, level)
 ```
 
 Reports the positions of the partially sorted entries.
 
 - Parameters:
   - `values`: Vector of input values
-  - `rank`: Position holding the partition boundary
+  - `order`: Position holding the partition boundary
+  - `level`: Optional axis along which to partition a matrix
 - Returns: Positions of the values in partitioned order
 - NumPy: Covers `np.argpartition`, `ndarray.argpartition` through a single Numerix method.
 

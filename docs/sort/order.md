@@ -5,15 +5,15 @@ Sort the values of an array in ascending or descending order.
 ## API
 
 ```ts
-Numeric.sort.order(values, descending = false, axis = -1)
+Numeric.sort.order(values, reverse = false, level = -1)
 ```
 
 Sorts the entries of the array.
 
 - Parameters:
   - `values`: Vector or matrix of input values
-  - `descending`: When true sorts from largest to smallest
-  - `axis`: Axis along which the values are sorted
+  - `reverse`: When true sorts from largest to smallest
+  - `level`: Axis along which the values are sorted
 - Returns: Sorted values matching the input shape
 - NumPy: Covers `np.sort`, `np.sort_complex`, `ndarray.sort` through a single Numerix method.
 

@@ -5,7 +5,7 @@ Find the insertion position of target values in a sorted array.
 ## API
 
 ```ts
-Numeric.sort.search(values, targets, side = 'left')
+Numeric.sort.search(values, targets, where, sorter)
 ```
 
 Locates where the targets would sit in the sorted values.
@@ -13,7 +13,8 @@ Locates where the targets would sit in the sorted values.
 - Parameters:
   - `values`: Sorted vector of input values
   - `targets`: Values whose positions are sought
-  - `side`: Side of the match used for the position
+  - `where`: Side of the match used for the position
+  - `sorter`: Optional permutation indices that sort values
 - Returns: Insertion position for each target
 - NumPy: Covers `np.searchsorted`, `ndarray.searchsorted` through a single Numerix method.
 

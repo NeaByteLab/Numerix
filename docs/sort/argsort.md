@@ -5,15 +5,16 @@ Return the positions that would sort an array.
 ## API
 
 ```ts
-Numeric.sort.argsort(values, descending = false, lexical = false)
+Numeric.sort.argsort(values, reverse = false, textual = false, level)
 ```
 
 Reports the positions of the sorted entries.
 
 - Parameters:
   - `values`: Vector of input values
-  - `descending`: When true sorts from largest to smallest
-  - `lexical`: When true compares values as text
+  - `reverse`: When true sorts from largest to smallest
+  - `textual`: When true compares values as text
+  - `level`: Axis along which to sort
 - Returns: Positions of the values in sorted order
 - NumPy: Covers `np.argsort`, `np.lexsort`, `ndarray.argsort` through a single Numerix method.
 
