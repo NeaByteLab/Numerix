@@ -1,48 +1,67 @@
 import type * as Types from '@app/types.ts'
+import column from '@app/internal/column.ts'
 import settle from '@app/internal/settle.ts'
-import witness from '@app/internal/witness.ts'
 
 /**
  * Reduce truthiness across an array.
  * @description Combines truthiness along the requested axis.
  * @param values - Values to inspect
- * @param axis - Axis along which the results are combined
- * @param mode - Truthiness mode applied to the entries
+ * @param level - Axis along which the results are combined
+ * @param policy - Truthiness mode applied to the entries
  * @returns Combined truthiness for the requested axis
  */
 export default function truthy(
   values: unknown[],
-  axis: number | undefined,
-  mode: Types.NumerixTruthy
+  level: number | null | undefined,
+  policy: Types.NumerixTruthy
 ): boolean | boolean[] {
-  const invert = mode === 'all'
-  if (axis !== undefined && Array.isArray(values[0])) {
-    const matrix = values as unknown[][]
-    const rows = matrix.length
-    if (axis === 1 || axis === -1) {
-      const result = new Array<boolean>(rows)
-      for (let row = 0; row < rows; row++) {
-        const found = witness(matrix[row] ?? [], mode)
-        result[row] = invert ? !found : found
-      }
-      return result
+  if (level !== undefined && level !== null && Array.isArray(values[0])) {
+    if (level !== 1 && level !== -1 && level !== 0 && level !== -2) {
+      throw new RangeError('axis is out of bounds for array of dimension 2')
     }
-    if (axis === 0 || axis === -2) {
-      const columns = matrix[0]?.length ?? 0
-      const result = new Array<boolean>(columns)
-      for (let column = 0; column < columns; column++) {
-        let found = false
-        for (let row = 0; row < rows; row++) {
-          if (settle(mode, matrix[row]?.[column])) {
-            found = true
-            break
+    const matrix = values as unknown[][]
+    const height = matrix.length
+    const horizontal = level === 1 || level === -1
+    const buffer = horizontal ? undefined : new Array<unknown>(height)
+    return Array.from(
+      { length: horizontal ? height : (matrix[0]?.length ?? 0) },
+      (_outer, index) => {
+        const slice = horizontal ? (matrix[index] ?? []) : column(matrix, height, index, buffer!, 0)
+        for (let cursor = 0; cursor < slice.length; cursor++) {
+          const entry = slice[cursor]
+          if (
+            typeof entry === 'number'
+              ? (policy === 'all' ? entry === 0 : entry !== 0)
+              : settle(policy, entry)
+          ) {
+            return policy !== 'all'
           }
         }
-        result[column] = invert ? !found : found
+        return policy === 'all'
       }
-      return result
+    )
+  }
+  if (
+    !Array.isArray(values[0]) && level !== undefined && level !== null && level !== 0 &&
+    level !== -1
+  ) {
+    throw new RangeError('axis is out of bounds for array of dimension 1')
+  }
+  const queue: unknown[][] = [values]
+  while (queue.length > 0) {
+    const current = queue.pop()!
+    for (let index = 0; index < current.length; index++) {
+      const entry = current[index]
+      if (Array.isArray(entry)) {
+        queue.push(entry)
+      } else if (
+        typeof entry === 'number'
+          ? (policy === 'all' ? entry === 0 : entry !== 0)
+          : settle(policy, entry)
+      ) {
+        return policy !== 'all'
+      }
     }
   }
-  const found = witness(values, mode)
-  return invert ? !found : found
+  return policy === 'all'
 }
