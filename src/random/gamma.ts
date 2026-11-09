@@ -6,51 +6,49 @@ import * as Internal from '@app/internal/index.ts'
  * @description Produces variates with the given shape and scale.
  * @param shape - Shape parameter of the distribution
  * @param scale - Scale parameter of the distribution
- * @param size - Number of samples to draw when given
+ * @param count - Number of samples to draw when given
  * @param generator - Generator supplying uniform samples
  * @returns Single sample or array of samples
  */
 export default function gamma(
   shape: number,
   scale: number = 1,
-  size?: number,
+  count?: number,
   generator?: Types.NumerixGenerator
 ): number | number[] {
-  if (size === undefined) {
-    return sampleGamma(shape, scale, generator)
+  if (shape < 0) {
+    throw new RangeError('shape < 0')
   }
-  return Internal.draw(size, () => sampleGamma(shape, scale, generator))
-}
-
-/**
- * Draw one gamma variate.
- * @description Produces a single sample from the gamma distribution.
- * @param shape - Shape parameter of the distribution
- * @param scale - Scale parameter of the distribution
- * @param generator - Generator supplying uniform samples
- * @returns Single gamma variate
- */
-function sampleGamma(shape: number, scale: number, generator?: Types.NumerixGenerator): number {
-  if (shape < 1) {
-    return sampleGamma(shape + 1, 1, generator) * Math.pow(Internal.source(generator), 1 / shape) *
-      scale
+  if (scale < 0) {
+    throw new RangeError('scale < 0')
   }
-  const spacing = shape - 1 / 3
-  const coefficients = 1 / Math.sqrt(9 * spacing)
-  while (true) {
-    const normal = Internal.deviate(generator)
-    const values = 1 + coefficients * normal
-    if (values <= 0) {
-      continue
+  const spacing = (shape < 1 ? shape + 1 : shape) - 1 / 3
+  return Internal.draw(count, () => {
+    if (Number.isNaN(shape) || Number.isNaN(scale)) {
+      return NaN
     }
-    const cubic = values * values * values
-    const acceptance = Internal.source(generator)
-    const squared = normal * normal
-    if (acceptance < 1 - 0.0331 * squared * squared) {
-      return spacing * cubic * scale
+    if (shape === 0 || scale === 0) {
+      return 0
     }
-    if (Math.log(acceptance) < 0.5 * squared + spacing * (1 - cubic + Math.log(cubic))) {
-      return spacing * cubic * scale
+    if (!Number.isFinite(shape) || !Number.isFinite(scale)) {
+      return Infinity
     }
-  }
+    while (true) {
+      const normal = Internal.deviate(generator)
+      const value = 1 + normal / Math.sqrt(9 * spacing)
+      if (value <= 0) {
+        continue
+      }
+      const cubic = value * value * value
+      const chance = Internal.source(generator)
+      const squared = normal * normal
+      if (
+        chance < 1 - 0.0331 * squared * squared ||
+        Math.log(chance) < 0.5 * squared + spacing * (1 - cubic + Math.log(cubic))
+      ) {
+        return spacing * scale * cubic *
+          (shape < 1 ? Math.pow(Internal.source(generator), 1 / shape) : 1)
+      }
+    }
+  })
 }
