@@ -1,5 +1,5 @@
 /**
- * Measure nesting depth of a value.
+ * Measure the nesting depth of a value.
  * @description Counts array levels until a non-array value is reached.
  * @param value - Value whose nesting depth is measured
  * @returns Number of nested array levels
