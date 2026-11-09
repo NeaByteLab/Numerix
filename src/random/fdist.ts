@@ -7,36 +7,26 @@ import chisquare from '@app/random/chisquare.ts'
  * @description Produces variance ratio variates from given degrees of freedom.
  * @param numerator - Degrees of freedom of the numerator
  * @param denominator - Degrees of freedom of the denominator
- * @param size - Number of samples to draw when given
+ * @param count - Number of samples to draw when given
  * @param generator - Generator supplying uniform samples
  * @returns Single sample or array of samples
  */
 export default function fdist(
   numerator: number,
   denominator: number,
-  size?: number,
+  count?: number,
   generator?: Types.NumerixGenerator
 ): number | number[] {
-  if (size === undefined) {
-    return sampleFdist(numerator, denominator, generator)
+  if (numerator <= 0) {
+    throw new RangeError('dfnum <= 0')
   }
-  return Internal.draw(size, () => sampleFdist(numerator, denominator, generator))
-}
-
-/**
- * Draw one F variate.
- * @description Produces a single variance ratio sample.
- * @param numerator - Degrees of freedom of the numerator
- * @param denominator - Degrees of freedom of the denominator
- * @param generator - Generator supplying uniform samples
- * @returns Single F variate
- */
-function sampleFdist(
-  numerator: number,
-  denominator: number,
-  generator?: Types.NumerixGenerator
-): number {
-  const ratio = Number(chisquare(numerator, undefined, generator)) / numerator
-  const reciprocal = Number(chisquare(denominator, undefined, generator)) / denominator
-  return ratio / reciprocal
+  if (denominator <= 0) {
+    throw new RangeError('dfden <= 0')
+  }
+  return Internal.draw(
+    count,
+    () =>
+      (Number(chisquare(numerator, undefined, generator)) / numerator) /
+      (Number(chisquare(denominator, undefined, generator)) / denominator)
+  )
 }
