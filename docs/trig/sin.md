@@ -5,13 +5,13 @@ Compute the sine of every element in nested numeric inputs.
 ## API
 
 ```ts
-Numeric.trig.sin(value)
+Numeric.trig.sin(input)
 ```
 
 Applies the sine function across nested numeric inputs.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Sines matching the input nesting shape
 - NumPy: Equivalent to `np.sin`.
 

@@ -5,13 +5,13 @@ Compute the inverse hyperbolic tangent of every element in nested numeric inputs
 ## API
 
 ```ts
-Numeric.trig.atanh(value)
+Numeric.trig.atanh(input)
 ```
 
 Applies the inverse hyperbolic tangent across nested inputs.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Inverse hyperbolic tangents matching the input nesting shape
 - NumPy: Covers `np.atanh`, `np.arctanh`, `np.emath.arctanh` through a single Numerix method.
 

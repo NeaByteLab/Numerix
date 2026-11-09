@@ -5,14 +5,14 @@ Compute the square root of the sum of squares without overflow.
 ## API
 
 ```ts
-Numeric.trig.hypot(left, right = 0)
+Numeric.trig.hypot(first, second = 0)
 ```
 
 Combines operands element-wise with stable square roots.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `second`: Second operand as a scalar, vector, or matrix
 - Returns: Hypotenuses matching the broadcast shape of the operands
 - NumPy: Equivalent to `np.hypot`.
 

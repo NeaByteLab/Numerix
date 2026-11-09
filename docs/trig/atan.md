@@ -5,14 +5,14 @@ Compute the inverse tangent, using atan2 when two operands are given.
 ## API
 
 ```ts
-Numeric.trig.atan(opposite, adjacent)
+Numeric.trig.atan(first, second)
 ```
 
 Uses atan2 when both operands are supplied.
 
 - Parameters:
-  - `opposite`: Numerator of the tangent ratio
-  - `adjacent`: Denominator of the tangent ratio when given
+  - `first`: Numerator of the tangent ratio
+  - `second`: Denominator of the tangent ratio when given
 - Returns: Arctangent values matching the input nesting shape
 - NumPy: Covers `np.atan`, `np.arctan`, `np.atan2`, `np.arctan2` through a single Numerix method.
 

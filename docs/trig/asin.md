@@ -5,13 +5,13 @@ Compute the inverse sine of every element in nested numeric inputs.
 ## API
 
 ```ts
-Numeric.trig.asin(value)
+Numeric.trig.asin(input)
 ```
 
 Applies the arcsine function across nested numeric inputs.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Arcsines matching the input nesting shape
 - NumPy: Covers `np.asin`, `np.arcsin`, `np.emath.arcsin` through a single Numerix method.
 

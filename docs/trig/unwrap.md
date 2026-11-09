@@ -5,15 +5,16 @@ Unwrap phase angles so consecutive jumps stay below a threshold.
 ## API
 
 ```ts
-Numeric.trig.unwrap(phases, discontinuity = Math.PI, period = 2 * Math.PI)
+Numeric.trig.unwrap(samples, discontinuity, period, along)
 ```
 
 Removes jumps larger than the discontinuity threshold.
 
 - Parameters:
-  - `phases`: Phase angles to unwrap
+  - `samples`: Phase angles to unwrap
   - `discontinuity`: Largest jump treated as a wrap
   - `period`: Length of one full angle cycle
+  - `along`: Axis along which to unwrap two-dimensional matrices
 - Returns: Unwrapped phases matching the input nesting shape
 - NumPy: Equivalent to `np.unwrap`.
 

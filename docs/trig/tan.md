@@ -5,13 +5,13 @@ Compute the tangent of every element in nested numeric inputs.
 ## API
 
 ```ts
-Numeric.trig.tan(value)
+Numeric.trig.tan(input)
 ```
 
 Applies the tangent function across nested numeric inputs.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Tangents matching the input nesting shape
 - NumPy: Equivalent to `np.tan`.
 

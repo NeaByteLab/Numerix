@@ -5,13 +5,13 @@ Compute the hyperbolic sine of every element in nested numeric inputs.
 ## API
 
 ```ts
-Numeric.trig.sinh(value)
+Numeric.trig.sinh(input)
 ```
 
 Applies the hyperbolic sine across nested numeric inputs.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Hyperbolic sines matching the input nesting shape
 - NumPy: Equivalent to `np.sinh`.
 

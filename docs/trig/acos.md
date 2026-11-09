@@ -5,13 +5,13 @@ Compute the inverse cosine of every element in nested numeric inputs.
 ## API
 
 ```ts
-Numeric.trig.acos(value)
+Numeric.trig.acos(input)
 ```
 
 Applies the arccosine function across nested numeric inputs.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Arccosines matching the input nesting shape
 - NumPy: Covers `np.acos`, `np.arccos`, `np.emath.arccos` through a single Numerix method.
 

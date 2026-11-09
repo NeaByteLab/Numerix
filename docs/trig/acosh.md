@@ -5,13 +5,13 @@ Compute the inverse hyperbolic cosine of every element in nested numeric inputs.
 ## API
 
 ```ts
-Numeric.trig.acosh(value)
+Numeric.trig.acosh(input)
 ```
 
 Applies the inverse hyperbolic cosine across nested inputs.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Inverse hyperbolic cosines matching the input nesting shape
 - NumPy: Covers `np.acosh`, `np.arccosh` through a single Numerix method.
 

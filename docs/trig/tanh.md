@@ -5,13 +5,13 @@ Compute the hyperbolic tangent of every element in nested numeric inputs.
 ## API
 
 ```ts
-Numeric.trig.tanh(value)
+Numeric.trig.tanh(input)
 ```
 
 Applies the hyperbolic tangent across nested numeric inputs.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Hyperbolic tangents matching the input nesting shape
 - NumPy: Equivalent to `np.tanh`.
 

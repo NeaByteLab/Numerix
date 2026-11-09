@@ -5,13 +5,13 @@ Compute the inverse hyperbolic sine of every element in nested numeric inputs.
 ## API
 
 ```ts
-Numeric.trig.asinh(value)
+Numeric.trig.asinh(input)
 ```
 
 Applies the inverse hyperbolic sine across nested inputs.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Inverse hyperbolic sines matching the input nesting shape
 - NumPy: Covers `np.asinh`, `np.arcsinh` through a single Numerix method.
 

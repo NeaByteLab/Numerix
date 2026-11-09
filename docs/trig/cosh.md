@@ -5,13 +5,13 @@ Compute the hyperbolic cosine of every element in nested numeric inputs.
 ## API
 
 ```ts
-Numeric.trig.cosh(value)
+Numeric.trig.cosh(input)
 ```
 
 Applies the hyperbolic cosine across nested numeric inputs.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Hyperbolic cosines matching the input nesting shape
 - NumPy: Equivalent to `np.cosh`.
 

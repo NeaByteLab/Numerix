@@ -5,13 +5,13 @@ Convert angles from degrees into radians for every nested element.
 ## API
 
 ```ts
-Numeric.trig.rad(value)
+Numeric.trig.rad(input)
 ```
 
 Scales each element by the degree to radian factor.
 
 - Parameters:
-  - `value`: Scalar, vector, or matrix input values
+  - `input`: Scalar, vector, or matrix input values
 - Returns: Radians matching the input nesting shape
 - NumPy: Covers `np.radians`, `np.deg2rad` through a single Numerix method.
 
