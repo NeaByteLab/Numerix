@@ -5,15 +5,15 @@ Draw samples spread evenly over a range.
 ## API
 
 ```ts
-Numeric.random.uniform(low = 0, high = 1, size, generator)
+Numeric.random.uniform(lower = 0, upper = 1, count, generator)
 ```
 
 Produces variates spread evenly over the given range.
 
 - Parameters:
-  - `low`: Lower bound of the distribution
-  - `high`: Upper bound of the distribution
-  - `size`: Number of samples to draw when given
+  - `lower`: Lower bound of the distribution
+  - `upper`: Upper bound of the distribution
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Covers `Generator.random`, `Generator.uniform` through a single Numerix method.

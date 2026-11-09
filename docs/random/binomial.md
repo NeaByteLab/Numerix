@@ -5,7 +5,7 @@ Draw samples from a binomial distribution.
 ## API
 
 ```ts
-Numeric.random.binomial(count, probability, size, generator)
+Numeric.random.binomial(count, probability, amount, generator)
 ```
 
 Produces counts of successes across fixed trials.
@@ -13,7 +13,7 @@ Produces counts of successes across fixed trials.
 - Parameters:
   - `count`: Number of independent trials per sample
   - `probability`: Success probability for each trial
-  - `size`: Number of samples to draw when given
+  - `amount`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Covers `Generator.binomial`, `Generator.negative_binomial` through a single Numerix method.

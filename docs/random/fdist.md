@@ -5,7 +5,7 @@ Draw samples from an F distribution.
 ## API
 
 ```ts
-Numeric.random.fdist(numerator, denominator, size, generator)
+Numeric.random.fdist(numerator, denominator, count, generator)
 ```
 
 Produces variance ratio variates from given degrees of freedom.
@@ -13,7 +13,7 @@ Produces variance ratio variates from given degrees of freedom.
 - Parameters:
   - `numerator`: Degrees of freedom of the numerator
   - `denominator`: Degrees of freedom of the denominator
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Covers `Generator.f`, `Generator.noncentral_f` through a single Numerix method.

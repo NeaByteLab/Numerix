@@ -5,7 +5,7 @@ Draw counts across several outcome categories.
 ## API
 
 ```ts
-Numeric.random.multinomial(trials, probabilities, generator)
+Numeric.random.multinomial(trials, probabilities, amount, generator)
 ```
 
 Produces counts across several outcome categories.
@@ -13,6 +13,7 @@ Produces counts across several outcome categories.
 - Parameters:
   - `trials`: Number of independent trials to distribute
   - `probabilities`: Outcome probability for each category
+  - `amount`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Count of outcomes in each category
 - NumPy: Equivalent to `Generator.multinomial`.

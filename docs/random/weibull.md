@@ -5,14 +5,14 @@ Draw samples from a Weibull distribution.
 ## API
 
 ```ts
-Numeric.random.weibull(left, size, generator)
+Numeric.random.weibull(first, count, generator)
 ```
 
 Produces positive variates with the given shape.
 
 - Parameters:
-  - `left`: Shape parameter of the distribution
-  - `size`: Number of samples to draw when given
+  - `first`: Shape parameter of the distribution
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.weibull`.

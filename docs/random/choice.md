@@ -5,16 +5,17 @@ Select entries from an array at random.
 ## API
 
 ```ts
-Numeric.random.choice(values, size, replace = true, generator)
+Numeric.random.choice(source, count, replace = true, generator)
 ```
 
 Selects entries with or without replacement.
 
 - Parameters:
-  - `values`: Source array of selectable values
-  - `size`: Number of choices to make when given
+  - `source`: Source array of selectable values
+  - `count`: Number of choices to make when given
   - `replace`: When true allows repeated selections
-  - `generator`: Generator supplying uniform samples
+  - `generator`: Generator supplying uniform samples or probability weights
+  - `values`: Source array of selectable values
 - Returns: Single chosen value or array of choices
 - NumPy: Equivalent to `Generator.choice`.
 

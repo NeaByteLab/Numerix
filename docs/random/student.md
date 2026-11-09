@@ -5,14 +5,14 @@ Draw samples from a Student t distribution.
 ## API
 
 ```ts
-Numeric.random.student(freedom, size, generator)
+Numeric.random.student(freedom, count, generator)
 ```
 
 Produces heavy tailed variates with given freedom.
 
 - Parameters:
   - `freedom`: Degrees of freedom for the distribution
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.standard_t`.

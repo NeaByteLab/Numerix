@@ -5,14 +5,14 @@ Draw samples from a geometric distribution.
 ## API
 
 ```ts
-Numeric.random.geometric(probability, size, generator)
+Numeric.random.geometric(probability, count, generator)
 ```
 
 Produces counts of trials before the first success.
 
 - Parameters:
   - `probability`: Success probability for each trial
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Covers `Generator.geometric`, `Generator.hypergeometric`, `Generator.multivariate_hypergeometric` through a single Numerix method.

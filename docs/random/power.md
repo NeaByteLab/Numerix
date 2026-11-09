@@ -5,14 +5,14 @@ Draw samples from a power law distribution.
 ## API
 
 ```ts
-Numeric.random.power(left, size, generator)
+Numeric.random.power(first, count, generator)
 ```
 
 Produces variates from a power law distribution.
 
 - Parameters:
-  - `left`: Exponent parameter of the distribution
-  - `size`: Number of samples to draw when given
+  - `first`: Exponent parameter of the distribution
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.power`.

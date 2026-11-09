@@ -5,14 +5,14 @@ Draw samples from a Rayleigh distribution.
 ## API
 
 ```ts
-Numeric.random.rayleigh(scale = 1, size, generator)
+Numeric.random.rayleigh(scale = 1, count, generator)
 ```
 
 Produces magnitudes of two dimensional normal vectors.
 
 - Parameters:
   - `scale`: Scale parameter of the distribution
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.rayleigh`.

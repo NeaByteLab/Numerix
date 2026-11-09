@@ -5,16 +5,16 @@ Draw samples from a triangular distribution.
 ## API
 
 ```ts
-Numeric.random.triangular(left, mode, right, size, generator)
+Numeric.random.triangular(first, method, right, count, generator)
 ```
 
 Produces variates between the bounds and the mode.
 
 - Parameters:
-  - `left`: Lower bound of the distribution
-  - `mode`: Most likely value of the distribution
+  - `first`: Lower bound of the distribution
+  - `method`: Most likely value of the distribution
   - `right`: Upper bound of the distribution
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.triangular`.

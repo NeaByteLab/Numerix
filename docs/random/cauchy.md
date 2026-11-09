@@ -5,13 +5,13 @@ Draw samples from a Cauchy distribution.
 ## API
 
 ```ts
-Numeric.random.cauchy(size, generator)
+Numeric.random.cauchy(count, generator)
 ```
 
 Produces heavy tailed variates around the origin.
 
 - Parameters:
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.standard_cauchy`.

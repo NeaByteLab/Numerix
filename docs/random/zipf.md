@@ -5,14 +5,14 @@ Draw samples from a Zipf distribution.
 ## API
 
 ```ts
-Numeric.random.zipf(left, size, generator)
+Numeric.random.zipf(first, count, generator)
 ```
 
 Produces rank weighted variates from the given exponent.
 
 - Parameters:
-  - `left`: Exponent parameter of the distribution
-  - `size`: Number of samples to draw when given
+  - `first`: Exponent parameter of the distribution
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.zipf`.

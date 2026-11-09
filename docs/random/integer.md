@@ -5,15 +5,15 @@ Draw integers within an inclusive range.
 ## API
 
 ```ts
-Numeric.random.integer(low, high, size, generator)
+Numeric.random.integer(lower, upper, count, generator)
 ```
 
 Produces integers within an inclusive range.
 
 - Parameters:
-  - `low`: Lower bound of the generated range
-  - `high`: Upper bound of the generated range
-  - `size`: Number of samples to draw when given
+  - `lower`: Lower bound of the generated range
+  - `upper`: Upper bound of the generated range
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.integers`.

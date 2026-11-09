@@ -5,7 +5,7 @@ Draw samples from a Gumbel distribution.
 ## API
 
 ```ts
-Numeric.random.gumbel(center = 0, scale = 1, size, generator)
+Numeric.random.gumbel(center = 0, scale = 1, count, generator)
 ```
 
 Produces extreme value variates with the given location.
@@ -13,7 +13,7 @@ Produces extreme value variates with the given location.
 - Parameters:
   - `center`: Location parameter of the distribution
   - `scale`: Scale parameter of the distribution
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.gumbel`.

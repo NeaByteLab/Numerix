@@ -5,14 +5,14 @@ Draw samples from a chi squared distribution.
 ## API
 
 ```ts
-Numeric.random.chisquare(freedom, size, generator)
+Numeric.random.chisquare(freedom, count, generator)
 ```
 
 Produces sums of squared standard normal variates.
 
 - Parameters:
   - `freedom`: Number of degrees of freedom
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Covers `Generator.chisquare`, `Generator.noncentral_chisquare` through a single Numerix method.

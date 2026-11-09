@@ -5,14 +5,14 @@ Draw samples from a logarithmic series distribution.
 ## API
 
 ```ts
-Numeric.random.logseries(probability, size, generator)
+Numeric.random.logseries(probability, count, generator)
 ```
 
 Produces counts drawn from a logarithmic distribution.
 
 - Parameters:
   - `probability`: Success probability of the distribution
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.logseries`.

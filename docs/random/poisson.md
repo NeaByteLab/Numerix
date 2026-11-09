@@ -5,14 +5,14 @@ Draw samples from a Poisson distribution.
 ## API
 
 ```ts
-Numeric.random.poisson(intensity = 1, size, generator)
+Numeric.random.poisson(intensity = 1, count, generator)
 ```
 
 Produces counts of events in an interval.
 
 - Parameters:
   - `intensity`: Expected number of events per interval
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.poisson`.

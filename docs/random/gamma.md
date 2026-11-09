@@ -5,7 +5,7 @@ Draw samples from a gamma distribution.
 ## API
 
 ```ts
-Numeric.random.gamma(shape, scale = 1, size, generator)
+Numeric.random.gamma(shape, scale = 1, count, generator)
 ```
 
 Produces variates with the given shape and scale.
@@ -13,7 +13,7 @@ Produces variates with the given shape and scale.
 - Parameters:
   - `shape`: Shape parameter of the distribution
   - `scale`: Scale parameter of the distribution
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Covers `Generator.gamma`, `Generator.standard_gamma` through a single Numerix method.

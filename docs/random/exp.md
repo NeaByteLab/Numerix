@@ -5,14 +5,14 @@ Draw samples from an exponential distribution.
 ## API
 
 ```ts
-Numeric.random.exp(scale = 1, size, generator)
+Numeric.random.exp(scale = 1, count, generator)
 ```
 
 Produces variates with the given scale parameter.
 
 - Parameters:
   - `scale`: Scale parameter of the distribution
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Covers `Generator.exponential`, `Generator.standard_exponential` through a single Numerix method.

@@ -5,15 +5,15 @@ Draw samples from a von Mises distribution.
 ## API
 
 ```ts
-Numeric.random.vonmises(mean, kappa, size, generator)
+Numeric.random.vonmises(center, kappa, count, generator)
 ```
 
 Produces circular variates around the given mean angle.
 
 - Parameters:
-  - `mean`: Mean direction of the distribution
+  - `center`: Mean direction of the distribution
   - `kappa`: Concentration parameter of the distribution
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Equivalent to `Generator.vonmises`.

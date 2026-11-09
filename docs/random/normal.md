@@ -5,7 +5,7 @@ Draw samples from a normal distribution.
 ## API
 
 ```ts
-Numeric.random.normal(center = 0, scale = 1, size, generator)
+Numeric.random.normal(center = 0, scale = 1, count, generator)
 ```
 
 Produces variates around the given center.
@@ -13,7 +13,7 @@ Produces variates around the given center.
 - Parameters:
   - `center`: Location parameter of the distribution
   - `scale`: Standard deviation of the distribution
-  - `size`: Number of samples to draw when given
+  - `count`: Number of samples to draw when given
   - `generator`: Generator supplying uniform samples
 - Returns: Single sample or array of samples
 - NumPy: Covers `Generator.normal`, `Generator.standard_normal`, `Generator.lognormal`, `Generator.multivariate_normal` through a single Numerix method.
