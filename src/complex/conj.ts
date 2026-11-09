@@ -16,10 +16,7 @@ export default function conj(
   | (Types.NumerixComplex | number)[][] {
   return Internal.traverse(
     value,
-    (entry) => {
-      const { re, im, complex } = Internal.components(entry)
-      return complex ? { re, im: -im } : re
-    }
+    (entry) => Internal.shape(entry) ? { re: entry.re, im: -entry.im } : Number(entry)
   ) as
     | Types.NumerixComplex
     | number
