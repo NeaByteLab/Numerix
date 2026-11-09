@@ -1,43 +1,91 @@
+import type * as Types from '@app/types.ts'
+import * as Index from '@app/index/index.ts'
+import * as Shape from '@app/shape/index.ts'
+import argpartition from '@app/sort/argpartition.ts'
+
+/**
+ * Partition a matrix around a rank.
+ * @description Places flattened values at the given rank in their sorted positions.
+ * @param values - Matrix to partition
+ * @param order - Position or positions of the partition boundary
+ * @param level - Null axis indicating a flattened partition
+ * @returns Partitioned flattened vector matching the rank
+ */
+export default function partition(
+  values: number[][],
+  order: number | number[],
+  level: null
+): number[]
+/**
+ * Partition a matrix around a rank.
+ * @description Places the value at the given rank in its sorted position.
+ * @param values - Matrix to partition
+ * @param order - Position or positions of the partition boundary
+ * @param level - Axis along which to partition a matrix
+ * @returns Partitioned matrix matching the rank
+ */
+export default function partition(
+  values: number[][],
+  order: number | number[],
+  level?: number
+): number[][]
+/**
+ * Partition a vector around a rank.
+ * @description Places the value at the given rank in its sorted position.
+ * @param values - Vector to partition
+ * @param order - Position or positions of the partition boundary
+ * @param level - Axis along which to partition a vector
+ * @returns Partitioned vector matching the rank
+ */
+export default function partition(
+  values: number[],
+  order: number | number[],
+  level?: number | null
+): number[]
+/**
+ * Partition a complex vector.
+ * @description Places the value at the given rank in its sorted position.
+ * @param values - Complex values to partition
+ * @param order - Position or positions of the partition boundary
+ * @param level - Axis along which to partition
+ * @returns Partitioned complex values matching the rank
+ */
+export default function partition(
+  values: Types.NumerixComplex[] | Types.NumerixComplex[][],
+  order: number | number[],
+  level?: number | null
+): Types.NumerixComplex[] | Types.NumerixComplex[][]
 /**
  * Partition values around a rank.
- * @description Places the value at rank in sorted position.
+ * @description Places the value at the given rank in its sorted position.
  * @param values - Values to partition
- * @param rank - Position of the partition boundary
+ * @param order - Position or positions of the partition boundary
+ * @param level - Axis along which to partition a matrix
  * @returns Partitioned values matching the rank
  */
-export default function partition(values: number[], rank: number): number[] {
-  const result = values.slice()
-  const length = result.length
-  const target = rank < 0 ? length + rank : rank
-  if (target < 0 || target >= length) {
-    return result
+export default function partition(
+  values:
+    | number[]
+    | number[][]
+    | Types.NumerixComplex[]
+    | Types.NumerixComplex[][]
+    | (number | Types.NumerixComplex)[]
+    | (number | Types.NumerixComplex)[][],
+  order: number | number[],
+  level: number | null = -1
+): number[] | number[][] | Types.NumerixComplex[] | Types.NumerixComplex[][] {
+  if (!Array.isArray(values[0])) {
+    return Index.take(
+      values as number[],
+      argpartition(values as (number | Types.NumerixComplex)[], order, level)
+    ) as number[] | Types.NumerixComplex[]
   }
-  let left = 0
-  let right = length - 1
-  while (left < right) {
-    const middle = (left + right) >> 1
-    const pivot = result[middle] ?? 0
-    result[middle] = result[right] ?? 0
-    result[right] = pivot
-    let store = left
-    for (let index = left; index < right; index++) {
-      const current = result[index] ?? 0
-      if (current < pivot) {
-        result[index] = result[store] ?? 0
-        result[store] = current
-        store++
-      }
-    }
-    result[right] = result[store] ?? 0
-    result[store] = pivot
-    if (store === target) {
-      break
-    }
-    if (store < target) {
-      left = store + 1
-    } else {
-      right = store - 1
-    }
+  if (level === null) {
+    return partition(Shape.flatten(values) as number[], order, 0)
   }
-  return result
+  return Index.take(
+    values as number[][],
+    argpartition(values as (number | Types.NumerixComplex)[][], order, level),
+    level < 0 ? 2 + level : level
+  ) as number[][] | Types.NumerixComplex[][]
 }
