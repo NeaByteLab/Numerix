@@ -1,8 +1,8 @@
-/** Shared buffer backing the bit level views */
+/** Shared buffer for bit views */
 const buffer = new ArrayBuffer(8)
 
 /**
- * Bit level views over one buffer.
+ * Bit-level views over one buffer.
  * @description Exposes the float and integer views.
  */
 export default {
