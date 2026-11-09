@@ -5,14 +5,16 @@ Find the distinct values of an array.
 ## API
 
 ```ts
-Numeric.set.unique(left, counted = false)
+Numeric.set.unique(first, counted = false, level, equal = true)
 ```
 
 Collects the distinct values of the array.
 
 - Parameters:
-  - `left`: Vector of input values
+  - `first`: Vector of input values
   - `counted`: When true also reports counts and inverse positions
+  - `level`: Optional axis to deduplicate along for two-dimensional matrices
+  - `equal`: When true collapses NaN values into a single entry
 - Returns: Distinct values or the full uniqueness report
 - NumPy: Covers `np.unique`, `np.unique_all`, `np.unique_counts`, `np.unique_inverse`, `np.unique_values` through a single Numerix method.
 

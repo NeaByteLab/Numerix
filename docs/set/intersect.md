@@ -5,14 +5,16 @@ Find the values shared by two arrays.
 ## API
 
 ```ts
-Numeric.set.intersect(left, right)
+Numeric.set.intersect(first, right, unique = false, indexed = false)
 ```
 
 Collects the values present in both arrays.
 
 - Parameters:
-  - `left`: First vector of values
+  - `first`: First vector of values
   - `right`: Second vector of values
+  - `unique`: Whether inputs are assumed to be unique
+  - `indexed`: Whether to return the indices of common values
 - Returns: Distinct values found in both arrays
 - NumPy: Equivalent to `np.intersect1d`.
 

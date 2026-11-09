@@ -14,6 +14,7 @@ Reports whether each value belongs to the set.
   - `element`: Values tested for membership
   - `members`: Values forming the set
   - `invert`: When true reports non-members instead
+  - `inverted`: Optional fourth argument for the invert flag
 - Returns: Membership flags for each tested value
 - NumPy: Equivalent to `np.isin`.
 

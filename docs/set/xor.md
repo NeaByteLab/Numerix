@@ -5,14 +5,15 @@ Find the values present in exactly one of two arrays.
 ## API
 
 ```ts
-Numeric.set.xor(left, right)
+Numeric.set.xor(first, right, unique = false)
 ```
 
 Collects the values appearing in only one array.
 
 - Parameters:
-  - `left`: First vector of values
+  - `first`: First vector of values
   - `right`: Second vector of values
+  - `unique`: When true treats both inputs as already unique
 - Returns: Distinct values found in exactly one array
 - NumPy: Equivalent to `np.setxor1d`.
 

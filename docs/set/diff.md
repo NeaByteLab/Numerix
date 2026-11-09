@@ -5,14 +5,15 @@ Find the values of the first array missing from the second.
 ## API
 
 ```ts
-Numeric.set.diff(left, right)
+Numeric.set.diff(first, right, unique = false)
 ```
 
 Collects the values absent from the second array.
 
 - Parameters:
-  - `left`: First vector of values
+  - `first`: First vector of values
   - `right`: Second vector of values
+  - `unique`: Whether inputs are assumed to be unique and preserve order
 - Returns: Distinct values found only in the first array
 - NumPy: Equivalent to `np.setdiff1d`.
 

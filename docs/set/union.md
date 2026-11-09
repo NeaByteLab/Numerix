@@ -5,13 +5,13 @@ Combine the distinct values of two arrays.
 ## API
 
 ```ts
-Numeric.set.union(left, right)
+Numeric.set.union(first, right)
 ```
 
 Collects the values present in either array.
 
 - Parameters:
-  - `left`: First vector of values
+  - `first`: First vector of values
   - `right`: Second vector of values
 - Returns: Distinct values found in either array
 - NumPy: Equivalent to `np.union1d`.

@@ -6,7 +6,7 @@ Access every method through the namespace form `Numeric.set.method`.
 
 | Method                    | Description                                        |
 | ------------------------- | -------------------------------------------------- |
-| [diff](diff.md)           | Keeps values present only in the left set.         |
+| [diff](diff.md)           | Keeps values present only in the first set.        |
 | [intersect](intersect.md) | Keeps values present in both sets.                 |
 | [member](member.md)       | Reports whether each value belongs to the set.     |
 | [union](union.md)         | Combines values from both sets without duplicates. |
