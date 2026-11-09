@@ -11,8 +11,8 @@ Numeric.math.nextafter(start, direction)
 Steps each element toward positive or negative infinity.
 
 - Parameters:
-  - `start`: Starting operand as scalar, vector, or matrix
-  - `direction`: Direction operand as scalar, vector, or matrix
+  - `start`: Starting operand as a scalar, vector, or matrix
+  - `direction`: Direction operand as a scalar, vector, or matrix
 - Returns: Adjacent values matching the broadcast shape of the operands
 - NumPy: Equivalent to `np.nextafter`.
 

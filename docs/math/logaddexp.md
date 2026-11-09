@@ -5,14 +5,14 @@ Compute the logarithm of a sum of exponentials.
 ## API
 
 ```ts
-Numeric.math.logaddexp(left, right, binary = false)
+Numeric.math.logaddexp(first, right, binary = false)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `right`: Second operand as a scalar, vector, or matrix
   - `binary`: When true computes the base two logarithm
 - Returns: Logarithms matching the broadcast shape of the operands
 - NumPy: Covers `np.logaddexp`, `np.logaddexp2` through a single Numerix method.

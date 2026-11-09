@@ -5,14 +5,14 @@ Multiply two operands together using NumPy style broadcasting rules.
 ## API
 
 ```ts
-Numeric.math.mul(left, right = 1)
+Numeric.math.mul(first, right = 1)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `right`: Second operand as a scalar, vector, or matrix
 - Returns: Products matching the broadcast shape of the operands
 - NumPy: Covers `np.multiply`, `np.matvec`, `np.vecmat` through a single Numerix method.
 

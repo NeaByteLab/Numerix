@@ -5,14 +5,14 @@ Multiply values by powers of two using a separate exponent operand.
 ## API
 
 ```ts
-Numeric.math.ldexp(left, right = 0)
+Numeric.math.ldexp(first, right = 0)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: Mantissa operand as scalar, vector, or matrix
-  - `right`: Exponent operand as scalar, vector, or matrix
+  - `first`: Mantissa operand as a scalar, vector, or matrix
+  - `right`: Exponent operand as a scalar, vector, or matrix
 - Returns: Scaled values matching the broadcast shape of the operands
 - NumPy: Equivalent to `np.ldexp`.
 

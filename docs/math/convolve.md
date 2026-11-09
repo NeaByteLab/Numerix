@@ -5,7 +5,7 @@ Convolve a signal with a kernel using discrete convolution.
 ## API
 
 ```ts
-Numeric.math.convolve(signal, kernel, mode = 'full')
+Numeric.math.convolve(signal, kernel, method)
 ```
 
 Computes discrete convolution over the signal entries.
@@ -13,7 +13,7 @@ Computes discrete convolution over the signal entries.
 - Parameters:
   - `signal`: Input signal samples to convolve
   - `kernel`: Kernel weights applied across the signal
-  - `mode`: Output length mode for the convolution
+  - `method`: Output length method for the convolution
 - Returns: Convolved signal values
 - NumPy: Equivalent to `np.convolve`.
 

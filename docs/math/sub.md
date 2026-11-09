@@ -5,14 +5,14 @@ Subtract one operand from another using NumPy style broadcasting rules.
 ## API
 
 ```ts
-Numeric.math.sub(left, right = 0)
+Numeric.math.sub(first, right = 0)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `right`: Second operand as a scalar, vector, or matrix
 - Returns: Differences matching the broadcast shape of the operands
 - NumPy: Equivalent to `np.subtract`.
 

@@ -11,7 +11,7 @@ Numeric.math.modf(value)
 Separates each value into its whole and fractional portions.
 
 - Parameters:
-  - `value`: Scalar or vector of input values
+  - `value`: Scalar, vector, or matrix of input values
 - Returns: Fractional and integral parts for each input value
 - NumPy: Equivalent to `np.modf`.
 

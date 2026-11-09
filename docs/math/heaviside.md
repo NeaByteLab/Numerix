@@ -5,14 +5,14 @@ Evaluate the Heaviside step function for every element.
 ## API
 
 ```ts
-Numeric.math.heaviside(value, half = 0.5)
+Numeric.math.heaviside(value, midpoint = 0.5)
 ```
 
 Applies the Heaviside step across nested numeric inputs.
 
 - Parameters:
   - `value`: Scalar, vector, or matrix input values
-  - `half`: Value returned at the zero crossing
+  - `midpoint`: Value returned at the zero crossing
 - Returns: Step values matching the input nesting shape
 - NumPy: Equivalent to `np.heaviside`.
 

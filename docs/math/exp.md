@@ -5,14 +5,14 @@ Compute the exponential of every element using a selectable variant.
 ## API
 
 ```ts
-Numeric.math.exp(value, mode = 'e')
+Numeric.math.exp(value, method)
 ```
 
 Applies an exponential variant across nested inputs.
 
 - Parameters:
   - `value`: Scalar, vector, or matrix input values
-  - `mode`: Exponential variant to apply to each element
+  - `method`: Exponential variant to apply to each element
 - Returns: Exponentials matching the input nesting shape
 - NumPy: Covers `np.exp`, `np.exp2`, `np.expm1` through a single Numerix method.
 

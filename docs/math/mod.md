@@ -5,15 +5,15 @@ Compute the remainder of a division with selectable remainder convention.
 ## API
 
 ```ts
-Numeric.math.mod(left, right = 1, mode = false)
+Numeric.math.mod(first, right = 1, method)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: Dividend as scalar, vector, or matrix
-  - `right`: Divisor as scalar, vector, or matrix
-  - `mode`: Remainder convention applied to each quotient
+  - `first`: Dividend as a scalar, vector, or matrix
+  - `right`: Divisor as a scalar, vector, or matrix
+  - `method`: Remainder convention applied to each quotient
 - Returns: Remainders matching the broadcast shape of the operands
 - NumPy: Covers `np.mod`, `np.remainder`, `np.fmod`, `np.divmod` through a single Numerix method.
 

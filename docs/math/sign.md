@@ -5,14 +5,14 @@ Report the sign of every element using magnitude, boolean, or bit mode.
 ## API
 
 ```ts
-Numeric.math.sign(value, mode)
+Numeric.math.sign(value, method)
 ```
 
 Reports sign as magnitude, boolean, or bit pattern.
 
 - Parameters:
   - `value`: Scalar, vector, or matrix input values
-  - `mode`: Sign reporting variant applied to each element
+  - `method`: Sign reporting variant applied to each element
 - Returns: Sign values matching the input nesting shape
 - NumPy: Covers `np.sign`, `np.signbit`, `np.copysign`, `np.positive`, `np.negative` through a single Numerix method.
 

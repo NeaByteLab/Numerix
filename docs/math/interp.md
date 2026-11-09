@@ -5,7 +5,7 @@ Interpolate values at query points using piecewise linear segments.
 ## API
 
 ```ts
-Numeric.math.interp(query, points, values, left, right)
+Numeric.math.interp(query, points, values, lower, right, period)
 ```
 
 Performs piecewise linear interpolation between known points.
@@ -14,8 +14,9 @@ Performs piecewise linear interpolation between known points.
   - `query`: Positions where values are requested
   - `points`: Sorted sample positions of the known values
   - `values`: Sample values paired with the positions
-  - `left`: Value returned for queries below the range
+  - `lower`: Value returned for queries below the range
   - `right`: Value returned for queries above the range
+  - `period`: Optional period for cyclic interpolation
 - Returns: Interpolated values at the query positions
 - NumPy: Equivalent to `np.interp`.
 

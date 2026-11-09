@@ -5,15 +5,15 @@ Limit every element to a minimum and maximum bound.
 ## API
 
 ```ts
-Numeric.math.clip(value, min = -Infinity, max = Infinity)
+Numeric.math.clip(value, lower, upper)
 ```
 
 Applies bounds across nested numeric inputs.
 
 - Parameters:
   - `value`: Scalar, vector, or matrix input values
-  - `min`: Lower bound applied to each element
-  - `max`: Upper bound applied to each element
+  - `lower`: Lower bound applied to each element
+  - `upper`: Upper bound applied to each element
 - Returns: Clipped values matching the input nesting shape
 - NumPy: Covers `np.clip`, `ndarray.clip` through a single Numerix method.
 

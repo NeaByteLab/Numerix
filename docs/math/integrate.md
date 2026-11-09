@@ -5,7 +5,7 @@ Integrate sampled values numerically using the trapezoidal rule.
 ## API
 
 ```ts
-Numeric.math.integrate(samples, points, spacing = 1)
+Numeric.math.integrate(samples, points, spacing = 1, level)
 ```
 
 Applies trapezoidal integration over vector or matrix samples.
@@ -14,6 +14,7 @@ Applies trapezoidal integration over vector or matrix samples.
   - `samples`: Sampled values to integrate
   - `points`: Optional integration boundaries within the samples
   - `spacing`: Distance between consecutive samples
+  - `level`: Axis along which to integrate
 - Returns: Integral of the sampled values
 - NumPy: Equivalent to `np.trapezoid`.
 

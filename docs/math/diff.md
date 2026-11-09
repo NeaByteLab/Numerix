@@ -5,7 +5,7 @@ Compute differences between adjacent elements for a given order.
 ## API
 
 ```ts
-Numeric.math.diff(values, order = 1, axis = -1)
+Numeric.math.diff(values, order = 1, level = -1, prepend, append)
 ```
 
 Repeats finite differencing to reach the requested order.
@@ -13,7 +13,9 @@ Repeats finite differencing to reach the requested order.
 - Parameters:
   - `values`: Vector or matrix of input values
   - `order`: Number of differencing passes to apply
-  - `axis`: Axis along which differences are computed
+  - `level`: Axis along which differences are computed
+  - `prepend`: Optional values prepended before differencing
+  - `append`: Optional values appended before differencing
 - Returns: Differences matching the shape of the input
 - NumPy: Covers `np.diff`, `np.ediff1d` through a single Numerix method.
 

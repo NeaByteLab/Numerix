@@ -5,14 +5,14 @@ Divide two operands together with optional floor division.
 ## API
 
 ```ts
-Numeric.math.div(left, right = 1, floor = false)
+Numeric.math.div(first, right = 1, floor = false)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `right`: Second operand as a scalar, vector, or matrix
   - `floor`: When true truncates the quotient toward negative infinity
 - Returns: Quotients matching the broadcast shape of the operands
 - NumPy: Covers `np.divide`, `np.true_divide`, `np.floor_divide` through a single Numerix method.

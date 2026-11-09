@@ -11,7 +11,7 @@ Numeric.math.frexp(value)
 Decomposes each value into fraction and power.
 
 - Parameters:
-  - `value`: Scalar or vector of input values
+  - `value`: Scalar, vector, or matrix of input values
 - Returns: Mantissa and exponent for each input value
 - NumPy: Equivalent to `np.frexp`.
 

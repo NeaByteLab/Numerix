@@ -5,14 +5,14 @@ Raise each element to a power using NumPy style broadcasting rules.
 ## API
 
 ```ts
-Numeric.math.pow(left, right = 2)
+Numeric.math.pow(first, right = 2)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: Base operand as scalar, vector, or matrix
-  - `right`: Exponent operand as scalar, vector, or matrix
+  - `first`: Base operand as a scalar, vector, or matrix
+  - `right`: Exponent operand as a scalar, vector, or matrix
 - Returns: Powers matching the broadcast shape of the operands
 - NumPy: Covers `np.pow`, `np.power`, `np.float_power`, `np.emath.power` through a single Numerix method.
 

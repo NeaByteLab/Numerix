@@ -5,7 +5,7 @@ Estimate derivatives from adjacent sample differences.
 ## API
 
 ```ts
-Numeric.math.gradient(samples, spacing = 1)
+Numeric.math.gradient(samples, spacing = 1, level, target)
 ```
 
 Estimates derivatives from adjacent sample differences.
@@ -13,6 +13,8 @@ Estimates derivatives from adjacent sample differences.
 - Parameters:
   - `samples`: Sampled values to differentiate
   - `spacing`: Distance between consecutive samples
+  - `level`: Optional axis or second-axis spacing for a two-dimensional gradient
+  - `target`: Optional axis when per-axis spacings are provided
 - Returns: Gradient estimates for each interior sample
 - NumPy: Equivalent to `np.gradient`.
 
@@ -51,13 +53,13 @@ console.log(values)
 // [1,2,4,6,7]
 ```
 
-### Gradient of a single sample
+### Gradient of a short sample
 
 ```ts
 import Numeric from '@neabyte/numerix'
 
-const values = Numeric.math.gradient([5])
+const values = Numeric.math.gradient([5, 5])
 
 console.log(values)
-// [0]
+// [0,0]
 ```
