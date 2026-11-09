@@ -5,14 +5,14 @@ Split a string around a separator.
 ## API
 
 ```ts
-Numeric.string.partition(text, separator, reverse = false)
+Numeric.string.partition(input, divider, reverse = false)
 ```
 
 Reports the text before and after the separator.
 
 - Parameters:
-  - `text`: String or array of strings to partition
-  - `separator`: Separator marking the split position
+  - `input`: String or array of strings to partition
+  - `divider`: Divider marking the split position
   - `reverse`: When true splits at the last separator
 - Returns: Partitioned parts matching the input shape
 - NumPy: Covers `np.strings.partition`, `np.strings.rpartition`, `np.char.partition`, `np.char.rpartition` through a single Numerix method.

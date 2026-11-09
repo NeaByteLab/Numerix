@@ -5,14 +5,14 @@ Capitalize the first character of a string.
 ## API
 
 ```ts
-Numeric.string.capitalize(text, title = false)
+Numeric.string.capitalize(input, titled = false)
 ```
 
 Uppercases the first character and lowers the remainder.
 
 - Parameters:
-  - `text`: String or array of strings to capitalize
-  - `title`: When true capitalizes each word separately
+  - `input`: String or array of strings to capitalize
+  - `titled`: When true capitalizes each word separately
 - Returns: Capitalized strings matching the input shape
 - NumPy: Covers `np.strings.capitalize`, `np.strings.title`, `np.char.capitalize`, `np.char.title` through a single Numerix method.
 

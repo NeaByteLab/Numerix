@@ -5,15 +5,16 @@ Replace every occurrence of a substring.
 ## API
 
 ```ts
-Numeric.string.replace(text, search, replace)
+Numeric.string.replace(input, search, change, limit)
 ```
 
 Swaps every match of the search string.
 
 - Parameters:
-  - `text`: String or array of strings to update
+  - `input`: String or array of strings to update
   - `search`: Substring whose occurrences are replaced
-  - `replace`: Replacement text inserted for each match
+  - `change`: Replacement text inserted for each match
+  - `limit`: Optional maximum number of occurrences replaced
 - Returns: Updated strings matching the input shape
 - NumPy: Covers `np.strings.replace`, `np.strings.translate`, `np.char.replace`, `np.char.translate` through a single Numerix method.
 

@@ -5,13 +5,13 @@ Count the characters in a string.
 ## API
 
 ```ts
-Numeric.string.length(text)
+Numeric.string.length(input)
 ```
 
 Counts characters in each string entry.
 
 - Parameters:
-  - `text`: String or array of strings to measure
+  - `input`: String or array of strings to measure
 - Returns: Character counts matching the input shape
 - NumPy: Covers `np.strings.str_len`, `np.char.str_len` through a single Numerix method.
 

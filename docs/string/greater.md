@@ -1,18 +1,18 @@
 # greater
 
-Report whether the left string sorts after the right.
+Report whether the first string sorts after the second.
 
 ## API
 
 ```ts
-Numeric.string.greater(left, right, inclusive = false)
+Numeric.string.greater(first, second, inclusive = false)
 ```
 
-Reports whether the left string sorts after the right.
+Reports whether the first string sorts after the second.
 
 - Parameters:
-  - `left`: First string or array of strings
-  - `right`: Second string or array of strings
+  - `first`: First string or array of strings
+  - `second`: Second string or array of strings
   - `inclusive`: When true treats equal strings as matching
 - Returns: Comparison results matching the input shape
 - NumPy: Covers `np.strings.greater`, `np.strings.greater_equal`, `np.char.greater`, `np.char.greater_equal` through a single Numerix method.

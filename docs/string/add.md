@@ -5,14 +5,14 @@ Concatenate two strings together.
 ## API
 
 ```ts
-Numeric.string.add(left, right)
+Numeric.string.add(first, second)
 ```
 
 Joins matching entries of two string inputs.
 
 - Parameters:
-  - `left`: First string or array of strings
-  - `right`: Second string or array of strings
+  - `first`: First string or array of strings
+  - `second`: Second string or array of strings
 - Returns: Concatenated strings matching the input shape
 - NumPy: Covers `np.strings.add`, `np.char.add` through a single Numerix method.
 

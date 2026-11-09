@@ -5,13 +5,13 @@ Convert every string entry to lowercase.
 ## API
 
 ```ts
-Numeric.string.lower(text)
+Numeric.string.lower(input)
 ```
 
 Lowercases every string entry.
 
 - Parameters:
-  - `text`: String or array of strings to convert
+  - `input`: String or array of strings to convert
 - Returns: Lowercase strings matching the input shape
 - NumPy: Covers `np.strings.lower`, `np.char.lower` through a single Numerix method.
 

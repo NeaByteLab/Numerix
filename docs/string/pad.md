@@ -5,13 +5,13 @@ Expand tab characters to fixed column stops.
 ## API
 
 ```ts
-Numeric.string.pad(text, width = 8)
+Numeric.string.pad(input, width = 8)
 ```
 
 Replaces tab stops with spaces up to the width.
 
 - Parameters:
-  - `text`: String or array of strings to expand
+  - `input`: String or array of strings to expand
   - `width`: Column width of each tab stop
 - Returns: Expanded strings matching the input shape
 - NumPy: Covers `np.strings.expandtabs`, `np.char.expandtabs` through a single Numerix method.

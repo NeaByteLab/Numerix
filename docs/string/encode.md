@@ -5,13 +5,13 @@ Convert strings into UTF-8 byte buffers.
 ## API
 
 ```ts
-Numeric.string.encode(text)
+Numeric.string.encode(input)
 ```
 
 Converts strings into UTF-8 byte buffers.
 
 - Parameters:
-  - `text`: String or array of strings to encode
+  - `input`: String or array of strings to encode
 - Returns: Byte buffers matching the input shape
 - NumPy: Covers `np.strings.encode`, `np.char.encode` through a single Numerix method.
 

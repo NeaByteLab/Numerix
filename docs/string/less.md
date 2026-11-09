@@ -1,18 +1,18 @@
 # less
 
-Report whether the left string sorts before the right.
+Report whether the first string sorts before the second.
 
 ## API
 
 ```ts
-Numeric.string.less(left, right, inclusive = false)
+Numeric.string.less(first, second, inclusive = false)
 ```
 
-Reports whether the left string sorts before the right.
+Reports whether the first string sorts before the second.
 
 - Parameters:
-  - `left`: First string or array of strings
-  - `right`: Second string or array of strings
+  - `first`: First string or array of strings
+  - `second`: Second string or array of strings
   - `inclusive`: When true treats equal strings as matching
 - Returns: Comparison results matching the input shape
 - NumPy: Covers `np.strings.less`, `np.strings.less_equal`, `np.char.less`, `np.char.less_equal` through a single Numerix method.

@@ -5,13 +5,13 @@ Convert UTF-8 byte buffers into strings.
 ## API
 
 ```ts
-Numeric.string.decode(bytes)
+Numeric.string.decode(buffer)
 ```
 
 Converts byte buffers using UTF-8 encoding.
 
 - Parameters:
-  - `bytes`: Byte buffer or array of buffers to decode
+  - `buffer`: Byte buffer or array of buffers to decode
 - Returns: Decoded strings matching the input shape
 - NumPy: Covers `np.strings.decode`, `np.char.decode` through a single Numerix method.
 

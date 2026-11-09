@@ -5,13 +5,13 @@ Format a template with placeholder values.
 ## API
 
 ```ts
-Numeric.string.mod(template, values)
+Numeric.string.mod(pattern, values)
 ```
 
 Substitutes placeholders in the template string.
 
 - Parameters:
-  - `template`: Template string or array of templates
+  - `pattern`: Template string or array of templates
   - `values`: Replacement values for the template placeholders
 - Returns: Formatted strings matching the input shape
 - NumPy: Covers `np.strings.mod`, `np.char.mod` through a single Numerix method.

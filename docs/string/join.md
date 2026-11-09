@@ -5,14 +5,14 @@ Insert a separator between every character of a string.
 ## API
 
 ```ts
-Numeric.string.join(separator, text)
+Numeric.string.join(divider, input)
 ```
 
 Inserts a separator between every character.
 
 - Parameters:
-  - `separator`: Separator placed between characters
-  - `text`: String or array of strings to join
+  - `divider`: Separator placed between characters
+  - `input`: String or array of strings to join
 - Returns: Joined strings matching the input shape
 - NumPy: Equivalent to `np.char.join`.
 

@@ -5,14 +5,16 @@ Test whether a string ends with a suffix.
 ## API
 
 ```ts
-Numeric.string.suffix(text, end)
+Numeric.string.suffix(input, closer, begin, finish)
 ```
 
 Checks the end of each string entry.
 
 - Parameters:
-  - `text`: String or array of strings to test
-  - `end`: Suffix expected at the end
+  - `input`: String or array of strings to test
+  - `closer`: Suffix expected at the end
+  - `begin`: Optional starting offset within each string
+  - `finish`: Optional ending offset within each string
 - Returns: Match results matching the input shape
 - NumPy: Covers `np.strings.endswith`, `np.char.endswith` through a single Numerix method.
 

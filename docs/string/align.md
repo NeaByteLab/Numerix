@@ -5,16 +5,16 @@ Pad a string to a fixed width.
 ## API
 
 ```ts
-Numeric.string.align(text, width, mode = 'center', fill = ' ')
+Numeric.string.align(input, width, method = 'center', filler = ' ')
 ```
 
 Pads text using the requested alignment mode.
 
 - Parameters:
-  - `text`: String or array of strings to align
+  - `input`: String or array of strings to align
   - `width`: Target width of the aligned text
-  - `mode`: Alignment mode applied to each string
-  - `fill`: Character used to fill the padding
+  - `method`: Alignment method applied to each string
+  - `filler`: Character used to fill the padding
 - Returns: Aligned strings matching the input shape
 - NumPy: Covers `np.strings.center`, `np.strings.ljust`, `np.strings.rjust`, `np.strings.zfill`, `np.char.center`, `np.char.ljust`, `np.char.rjust`, `np.char.zfill` through a single Numerix method.
 
@@ -28,7 +28,7 @@ import Numeric from '@neabyte/numerix'
 const value = Numeric.string.align('ab', 6, 'left')
 
 console.log(value)
-// ab
+// ab    (followed by four spaces)
 ```
 
 ### Align to the right
@@ -50,7 +50,7 @@ import Numeric from '@neabyte/numerix'
 const value = Numeric.string.align('ab', 6, 'center')
 
 console.log(value)
-//   ab
+//   ab  (followed by two spaces)
 ```
 
 ### Pad a number with leading zeros

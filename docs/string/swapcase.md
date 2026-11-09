@@ -5,13 +5,13 @@ Invert the case of every letter in a string.
 ## API
 
 ```ts
-Numeric.string.swapcase(text)
+Numeric.string.swapcase(input)
 ```
 
 Inverts uppercase and lowercase letters.
 
 - Parameters:
-  - `text`: String or array of strings to convert
+  - `input`: String or array of strings to convert
 - Returns: Case-swapped strings matching the input shape
 - NumPy: Covers `np.strings.swapcase`, `np.char.swapcase` through a single Numerix method.
 

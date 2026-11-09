@@ -5,13 +5,13 @@ Convert every string entry to uppercase.
 ## API
 
 ```ts
-Numeric.string.upper(text)
+Numeric.string.upper(input)
 ```
 
 Uppercases every string entry.
 
 - Parameters:
-  - `text`: String or array of strings to convert
+  - `input`: String or array of strings to convert
 - Returns: Uppercase strings matching the input shape
 - NumPy: Covers `np.strings.upper`, `np.char.upper` through a single Numerix method.
 

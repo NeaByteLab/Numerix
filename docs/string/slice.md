@@ -5,15 +5,16 @@ Extract a substring from a string.
 ## API
 
 ```ts
-Numeric.string.slice(text, start = 0, stop)
+Numeric.string.slice(input, begin, finish, stride)
 ```
 
 Slices each string between the given bounds.
 
 - Parameters:
-  - `text`: String or array of strings to slice
-  - `start`: Starting index of the extracted portion
-  - `stop`: Ending index of the extracted portion
+  - `input`: String or array of strings to slice
+  - `begin`: Starting index of the extracted portion
+  - `finish`: Ending index of the extracted portion
+  - `stride`: Step between extracted characters
 - Returns: Extracted substrings matching the input shape
 - NumPy: Covers `np.strings.slice`, `np.char.slice` through a single Numerix method.
 

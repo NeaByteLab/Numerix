@@ -5,14 +5,16 @@ Test whether a string starts with a prefix.
 ## API
 
 ```ts
-Numeric.string.prefix(text, start)
+Numeric.string.prefix(input, opener, begin, finish)
 ```
 
 Checks the beginning of each string entry.
 
 - Parameters:
-  - `text`: String or array of strings to test
-  - `start`: Prefix expected at the beginning
+  - `input`: String or array of strings to test
+  - `opener`: Prefix expected at the beginning
+  - `begin`: Optional starting offset within each string
+  - `finish`: Optional ending offset within each string
 - Returns: Match results matching the input shape
 - NumPy: Covers `np.strings.startswith`, `np.char.startswith` through a single Numerix method.
 

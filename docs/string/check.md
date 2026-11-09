@@ -5,14 +5,14 @@ Test whether a string matches a character class.
 ## API
 
 ```ts
-Numeric.string.check(text, kind = 'alnum')
+Numeric.string.check(input, category = 'alnum')
 ```
 
 Matches each string against a named validation pattern.
 
 - Parameters:
-  - `text`: String or array of strings to test
-  - `kind`: Character class used for the validation
+  - `input`: String or array of strings to test
+  - `category`: Character class used for the validation
 - Returns: Match results matching the input shape
 - NumPy: Covers `np.strings.isalnum`, `np.strings.isalpha`, `np.strings.isdecimal`, `np.strings.isdigit`, `np.strings.islower`, `np.strings.isnumeric`, `np.strings.isspace`, `np.strings.istitle`, `np.strings.isupper`, `np.char.isalnum` through `np.char.isupper` via a single Numerix method.
 

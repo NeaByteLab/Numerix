@@ -5,15 +5,17 @@ Find the position of a substring in a string.
 ## API
 
 ```ts
-Numeric.string.find(text, needle, reverse = false)
+Numeric.string.find(input, needle, reverse, begin, finish)
 ```
 
 Reports the index of the first or last occurrence.
 
 - Parameters:
-  - `text`: String or array of strings to search
+  - `input`: String or array of strings to search
   - `needle`: Substring whose position is reported
   - `reverse`: When true searches from the end
+  - `begin`: Optional starting slice index
+  - `finish`: Optional ending slice index
 - Returns: Match positions matching the input shape
 - NumPy: Covers `np.strings.find`, `np.strings.rfind`, `np.strings.index`, `np.strings.rindex`, `np.char.find`, `np.char.rfind`, `np.char.index`, `np.char.rindex` through a single Numerix method.
 

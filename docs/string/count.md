@@ -5,14 +5,16 @@ Count the occurrences of a substring.
 ## API
 
 ```ts
-Numeric.string.count(text, needle)
+Numeric.string.count(input, needle, begin, finish)
 ```
 
 Counts non-overlapping matches inside each string.
 
 - Parameters:
-  - `text`: String or array of strings to search
+  - `input`: String or array of strings to search
   - `needle`: Substring whose occurrences are counted
+  - `begin`: Optional starting index of the search slice
+  - `finish`: Optional ending index of the search slice
 - Returns: Match counts matching the input shape
 - NumPy: Covers `np.strings.count`, `np.char.count` through a single Numerix method.
 

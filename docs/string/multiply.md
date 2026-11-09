@@ -5,14 +5,14 @@ Repeat a string a given number of times.
 ## API
 
 ```ts
-Numeric.string.multiply(left, count)
+Numeric.string.multiply(input, times)
 ```
 
 Concatenates each string with itself repeatedly.
 
 - Parameters:
-  - `left`: String or array of strings to repeat
-  - `count`: Number of repetitions for each string
+  - `input`: String or array of strings to repeat
+  - `times`: Number of repetitions for each string
 - Returns: Repeated strings matching the input shape
 - NumPy: Covers `np.strings.multiply`, `np.char.multiply` through a single Numerix method.
 

@@ -5,14 +5,15 @@ Trim whitespace from the ends of a string.
 ## API
 
 ```ts
-Numeric.string.strip(text, mode = 'both')
+Numeric.string.strip(input, which, chars)
 ```
 
 Trims characters from one or both ends.
 
 - Parameters:
-  - `text`: String or array of strings to trim
-  - `mode`: Side or sides that are trimmed
+  - `input`: String or array of strings to trim
+  - `which`: Side or sides that are trimmed
+  - `chars`: Optional set of characters to strip
 - Returns: Trimmed strings matching the input shape
 - NumPy: Covers `np.strings.strip`, `np.strings.lstrip`, `np.strings.rstrip`, `np.char.strip`, `np.char.lstrip`, `np.char.rstrip` through a single Numerix method.
 
@@ -37,7 +38,7 @@ import Numeric from '@neabyte/numerix'
 const value = Numeric.string.strip('  ab  ', 'left')
 
 console.log(value)
-// ab
+// ab  (followed by two spaces)
 ```
 
 ### Trim the right end

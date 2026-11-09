@@ -5,15 +5,15 @@ Compare two strings with the requested operator.
 ## API
 
 ```ts
-Numeric.string.equal(left, right, mode = 'equal')
+Numeric.string.equal(first, second, method = 'equal')
 ```
 
 Compares matching entries using the requested operator.
 
 - Parameters:
-  - `left`: First string or array of strings
-  - `right`: Second string or array of strings
-  - `mode`: Comparison operator applied to each pair
+  - `first`: First string or array of strings
+  - `second`: Second string or array of strings
+  - `method`: Comparison operator applied to each pair
 - Returns: Comparison results matching the input shape
 - NumPy: Covers `np.strings.equal`, `np.strings.not_equal`, `np.char.equal`, `np.char.not_equal`, `np.char.compare_chararrays` through a single Numerix method.
 

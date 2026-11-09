@@ -5,16 +5,16 @@ Split a string on a separator.
 ## API
 
 ```ts
-Numeric.string.split(text, separator = ' ', reverse = false, mode = 'sep', limit = 0)
+Numeric.string.split(input, divider, reverse, method, limit)
 ```
 
 Splits each string on a separator or line break.
 
 - Parameters:
-  - `text`: String or array of strings to split
-  - `separator`: Separator used when splitting on delimiters
+  - `input`: String or array of strings to split
+  - `divider`: Divider used when splitting on delimiters
   - `reverse`: When true splits at the last separator
-  - `mode`: Splitting mode applied to each string
+  - `method`: Splitting method applied to each string
   - `limit`: Maximum number of parts to produce
 - Returns: Array of parts for each input string
 - NumPy: Covers `np.char.split`, `np.char.rsplit`, `np.char.splitlines` through a single Numerix method.
