@@ -36,14 +36,14 @@ export interface NumerixComponents {
 }
 
 /**
- * Log determinant with its sign.
- * @description Holds the log determinant magnitude and sign.
+ * Log-determinant with its sign.
+ * @description Holds the log-determinant magnitude and sign.
  */
 export interface NumerixDet {
   /** Natural logarithm of the determinant magnitude */
   logDet: number
   /** Sign of the original determinant */
-  sign: number
+  sign: number | NumerixComplex
 }
 
 /**
@@ -59,7 +59,7 @@ export interface NumerixDigits {
 
 /**
  * Data type descriptor with layout details.
- * @description Describes a dtype specification together with its layout.
+ * @description Describes a data type specification together with its layout.
  */
 export interface NumerixDtype extends NumerixSpec {
   /** Name of the data type */
@@ -75,13 +75,13 @@ export interface NumerixDtype extends NumerixSpec {
 }
 
 /**
- * Eigen decomposition result and vectors.
+ * Eigendecomposition result and vectors.
  * @description Holds eigenvalues and their matching eigenvectors.
  */
 export interface NumerixEigen {
   /** Eigenvalues of the input matrix */
   values: number[]
-  /** Eigenvectors aligned with the eigenvalues, one vector per eigenvalue */
+  /** Eigenvectors aligned with the eigenvalues */
   vectors: number[][]
 }
 
@@ -105,7 +105,7 @@ export interface NumerixEndian {
 export interface NumerixExtreme {
   /** Best entry value found so far */
   best: number
-  /** Index of the best entry found so far */
+  /** Best entry index found so far */
   bestIndex: number
   /** Whether a NaN entry was encountered */
   hitNan: boolean
@@ -125,15 +125,15 @@ export interface NumerixGenerator {
 }
 
 /**
- * Two dimensional histogram grid.
+ * Two-dimensional histogram grid.
  * @description Holds bin counts together with computed edges.
  */
 export interface NumerixGrid {
   /** Bin counts per grid cell */
   counts: number[][]
-  /** Edge positions along the x axis */
+  /** Edge positions along the first axis */
   xEdges: number[]
-  /** Edge positions along the y axis */
+  /** Edge positions along the second axis */
   yEdges: number[]
 }
 
@@ -185,12 +185,12 @@ export interface NumerixPosition {
 
 /**
  * QR decomposition result with factors.
- * @description Holds the orthogonal and upper triangular factors.
+ * @description Holds the orthogonal and upper-triangular factors.
  */
 export interface NumerixQr {
   /** Orthogonal factor of the decomposition */
   Q: number[][]
-  /** Upper triangular factor of the decomposition */
+  /** Upper-triangular factor of the decomposition */
   R: number[][]
 }
 
@@ -199,9 +199,9 @@ export interface NumerixQr {
  * @description Carries the merge operation and the starting value.
  */
 export interface NumerixReduce {
-  /** Operation merging the running value with the next entry */
+  /** Operation merging running and next values */
   combine: (running: number, value: number) => number
-  /** Value the run starts from */
+  /** Starting value of the reduction */
   identity: number
   /** Value substituted for a skipped entry */
   neutral: number
@@ -212,7 +212,7 @@ export interface NumerixReduce {
  * @description Holds the kept digits beside a pending carry.
  */
 export interface NumerixRound {
-  /** Whether the cut carries into the digits before it */
+  /** Whether the cut carries into preceding digits */
   carry: boolean
   /** Digits kept before the cut */
   kept: string
@@ -244,6 +244,8 @@ export interface NumerixSpec {
   max: number
   /** Smallest representable value */
   min: number
+  /** Smallest positive normal floating-point value */
+  tiny?: number
 }
 
 /**
@@ -251,8 +253,10 @@ export interface NumerixSpec {
  * @description Accumulates a total with its contributing entry count.
  */
 export interface NumerixSum {
-  /** Number of entries contributing to the total */
+  /** Count of entries in total */
   count: number
+  /** Running imaginary total of accumulated entries */
+  imags: number
   /** Running total of the accumulated entries */
   sum: number
 }
@@ -279,19 +283,31 @@ export interface NumerixUnique {
   counts: number[]
   /** First index of each distinct value */
   indices: number[]
-  /** Index mapping back to the original input */
+  /** Indices reconstructing the original input */
   inverse: number[]
   /** Distinct values in ascending order */
-  values: number[]
+  values: number[] | number[][]
 }
+
+/**
+ * Array of real or complex entries.
+ * @description Represents a one-dimensional vector or two-dimensional matrix of real or complex entries.
+ */
+export type NumerixArray =
+  | number[]
+  | number[][]
+  | NumerixComplex[]
+  | NumerixComplex[][]
+  | (number | NumerixComplex)[]
+  | (number | NumerixComplex)[][]
 
 /**
  * Axis selection for a transform.
  * @description Chooses the axes along which a transform runs.
  */
-export type NumerixAxis = number | number[] | 'all'
+export type NumerixAxis = number | number[] | 'all' | 'rows' | 'columns'
 
-/** Polynomial basis families available for orthogonal polynomials */
+/** Orthogonal polynomial basis families */
 export type NumerixBasis = 'poly' | 'cheb' | 'leg' | 'herm' | 'herme' | 'lag'
 
 /** Comparison operators available for element-wise comparisons */
@@ -303,10 +319,19 @@ export type NumerixCompare = 'equal' | 'not' | 'less' | 'less_equal' | 'greater'
  */
 export type NumerixDirection = 'min' | 'max'
 
-/** Gauss quadrature weight families available for integration */
+/** Gauss quadrature integration weight families */
 export type NumerixGauss = 'chebyshev' | 'legendre' | 'hermite' | 'hermite_e' | 'laguerre'
 
-/** Byte order used when packing multi-byte values */
+/**
+ * Two-dimensional matrix of real or complex entries.
+ * @description Represents a two-dimensional matrix of real or complex entries.
+ */
+export type NumerixMatrix =
+  | number[][]
+  | NumerixComplex[][]
+  | (number | NumerixComplex)[][]
+
+/** Multi-byte packing byte order */
 export type NumerixOrder = 'big' | 'little'
 
 /** Selection modes available for boolean indexing */
@@ -322,7 +347,7 @@ export type NumerixSide = 'greater' | 'less'
 export type NumerixSplit = 'sep' | 'lines'
 
 /**
- * Direction a transform runs along.
+ * Direction along which a transform runs.
  * @description Names the axes a grid transform covers.
  */
 export type NumerixTransform = 'all' | 'rows' | 'columns'
@@ -335,7 +360,7 @@ export type NumerixTruthy = 'all' | 'any'
 
 /**
  * Value accepted by the complex traversal.
- * @description A real number or complex entry, possibly nested.
+ * @description Represents a real number or complex entry, possibly nested.
  */
 export type NumerixValue =
   | NumerixComplex
@@ -343,5 +368,14 @@ export type NumerixValue =
   | (NumerixComplex | number)[]
   | (NumerixComplex | number)[][]
 
+/**
+ * One-dimensional vector of real or complex entries.
+ * @description Represents a one-dimensional vector of real or complex entries.
+ */
+export type NumerixVector =
+  | number[]
+  | NumerixComplex[]
+  | (number | NumerixComplex)[]
+
 /** Coordinate systems available for condition selection */
-export type NumerixWhere = 'index' | 'coord'
+export type NumerixWhere = 'index' | 'coord' | 'flat'
