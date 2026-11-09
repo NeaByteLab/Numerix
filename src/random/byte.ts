@@ -9,9 +9,5 @@ import * as Internal from '@app/internal/index.ts'
  * @returns Buffer of random byte values
  */
 export default function byte(length: number, generator?: Types.NumerixGenerator): Uint8Array {
-  const bytes = new Uint8Array(length)
-  for (let index = 0; index < length; index++) {
-    bytes[index] = Math.floor(Internal.source(generator) * 256)
-  }
-  return bytes
+  return Uint8Array.from({ length }, () => Math.floor(Internal.source(generator) * 256))
 }
