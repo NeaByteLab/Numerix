@@ -10,5 +10,5 @@ import * as Internal from '@app/internal/index.ts'
 export default function imag(
   value: Types.NumerixValue
 ): number | number[] | number[][] {
-  return Internal.traverse(value, (entry) => Internal.components(entry).im)
+  return Internal.traverse(value, (entry) => (Internal.shape(entry) ? entry.im : 0), false)
 }
