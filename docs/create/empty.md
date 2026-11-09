@@ -1,6 +1,6 @@
 # empty
 
-Create an array with the requested shape and uninitialised values.
+Create an array with the requested shape filled with zeros.
 
 ## API
 

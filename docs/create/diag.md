@@ -5,7 +5,7 @@ Read entries along a matrix diagonal or build a diagonal matrix.
 ## API
 
 ```ts
-Numeric.create.diag(input, offset = 0, flat = false)
+Numeric.create.diag(input, offset = 0, vector = false)
 ```
 
 Reads or writes entries along the diagonal.
@@ -13,7 +13,7 @@ Reads or writes entries along the diagonal.
 - Parameters:
   - `input`: Vector or matrix to read from
   - `offset`: Diagonal offset used for the extraction
-  - `flat`: When true treats the input as a flat vector
+  - `vector`: When true treats the input as a flat vector
 - Returns: Diagonal entries or matrix holding them
 - NumPy: Covers `np.diag`, `np.diagflat` through a single Numerix method.
 

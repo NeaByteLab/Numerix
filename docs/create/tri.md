@@ -5,7 +5,7 @@ Create a triangular matrix filled above or below the diagonal.
 ## API
 
 ```ts
-Numeric.create.tri(input, columns, diagonal = 0, mode = 'mask')
+Numeric.create.tri(input, columns, diagonal = 0, method = 'mask')
 ```
 
 Builds a matrix filled above or below the diagonal.
@@ -14,7 +14,7 @@ Builds a matrix filled above or below the diagonal.
   - `input`: Number of rows or an existing matrix
   - `columns`: Number of columns in the matrix
   - `diagonal`: Diagonal offset of the triangle
-  - `mode`: Triangle side that is filled
+  - `method`: Triangle side that is filled
 - Returns: Triangular matrix
 - NumPy: Covers `np.tri`, `np.tril`, `np.triu` through a single Numerix method.
 

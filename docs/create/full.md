@@ -5,14 +5,14 @@ Create an array filled with a single repeated value.
 ## API
 
 ```ts
-Numeric.create.full(shape, fill = 0)
+Numeric.create.full(shape, value = 0)
 ```
 
 Builds an array filled with the given value.
 
 - Parameters:
   - `shape`: Target dimensions of the created array
-  - `fill`: Value placed in every cell
+  - `value`: Value placed in every cell
 - Returns: Array filled with the given value
 - NumPy: Covers `np.full`, `np.full_like`, `ndarray.fill` through a single Numerix method.
 

@@ -5,15 +5,16 @@ Build a coordinate grid from two axes of values.
 ## API
 
 ```ts
-Numeric.create.mesh(rows, columns, indexing = 'xy')
+Numeric.create.mesh(vertical, columns, indexing = 'xy')
 ```
 
 Builds coordinate arrays for each grid axis.
 
 - Parameters:
-  - `rows`: Coordinates along the first axis
+  - `vertical`: Coordinates along the first axis
   - `columns`: Coordinates along the second axis
   - `indexing`: Indexing order of the returned grid
+  - `sparse`: When true returns sparse coordinate grids
 - Returns: Grid of coordinate arrays
 - NumPy: Covers `np.meshgrid`, `np.indices`, `np.ix_` through a single Numerix method.
 

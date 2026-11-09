@@ -5,13 +5,13 @@ Create an identity matrix with an optional diagonal offset.
 ## API
 
 ```ts
-Numeric.create.eye(rows, columns = rows, offset = 0)
+Numeric.create.eye(height, columns = height, offset = 0)
 ```
 
 Builds an identity matrix with a shifted diagonal.
 
 - Parameters:
-  - `rows`: Number of rows in the matrix
+  - `height`: Number of rows in the matrix
   - `columns`: Number of columns in the matrix
   - `offset`: Diagonal offset of the ones
 - Returns: Identity matrix

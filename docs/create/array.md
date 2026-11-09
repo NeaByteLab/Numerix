@@ -5,14 +5,14 @@ Build an array from numeric, textual, or binary source data.
 ## API
 
 ```ts
-Numeric.create.array(source, dims = 0, offset = 0)
+Numeric.create.array(source, shape = 0, offset = 0)
 ```
 
 Reshapes binary, textual, or numeric sources.
 
 - Parameters:
   - `source`: Data used to populate the array
-  - `dims`: Target dimensions or binary buffer
+  - `shape`: Target dimensions or binary buffer
   - `offset`: Starting position within the source buffer
 - Returns: Array holding the source values
 - NumPy: Covers `np.array`, `np.asarray`, `np.asanyarray`, `np.asarray_chkfinite`, `np.ascontiguousarray`, `np.asfortranarray`, `np.require`, `np.astype` through a single Numerix method.

@@ -5,15 +5,15 @@ Generate evenly spaced values between two numeric bounds.
 ## API
 
 ```ts
-Numeric.create.range(start, stop, step = 1)
+Numeric.create.range(start, finish, stride = 1)
 ```
 
 Generates evenly spaced values between two bounds.
 
 - Parameters:
   - `start`: First value or lower bound
-  - `stop`: Upper bound when separate from the start
-  - `step`: Spacing between generated values
+  - `finish`: Upper bound when separate from the start
+  - `stride`: Spacing between generated values
 - Returns: Array of generated values
 - NumPy: Equivalent to `np.arange`.
 

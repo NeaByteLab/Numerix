@@ -5,18 +5,18 @@ Generate linear, logarithmic, or geometric spaced values.
 ## API
 
 ```ts
-Numeric.create.space(start, stop, count = 50, mode = 'linear', endpoint = true, base = 10)
+Numeric.create.space(start, finish, count = 50, method = 'linear', endpoint = true, radix = 10)
 ```
 
 Generates linear, logarithmic, or geometric spacing.
 
 - Parameters:
   - `start`: First value of the sequence
-  - `stop`: Last value of the sequence
+  - `finish`: Last value of the sequence
   - `count`: Number of values to generate
-  - `mode`: Spacing mode applied to the sequence
+  - `method`: Spacing method applied to the sequence
   - `endpoint`: When true includes the stop value
-  - `base`: Logarithm base for logarithmic spacing
+  - `radix`: Logarithm base for logarithmic spacing
 - Returns: Array of generated values
 - NumPy: Covers `np.linspace`, `np.logspace`, `np.geomspace` through a single Numerix method.
 
