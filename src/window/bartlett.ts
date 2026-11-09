@@ -7,6 +7,5 @@ import * as Internal from '@app/internal/index.ts'
  * @returns Bartlett window values
  */
 export default function bartlett(length: number): number[] {
-  const step = length > 1 ? 2 / (length - 1) : 0
-  return Internal.taper(length, (index) => index * step)
+  return Internal.taper(length, (index) => index * (2 / (length - 1)))
 }
