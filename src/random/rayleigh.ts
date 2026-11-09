@@ -3,33 +3,22 @@ import * as Internal from '@app/internal/index.ts'
 
 /**
  * Draw samples from a Rayleigh distribution.
- * @description Produces magnitudes of two dimensional normal vectors.
+ * @description Produces magnitudes of two-dimensional normal vectors.
  * @param scale - Scale parameter of the distribution
- * @param size - Number of samples to draw when given
+ * @param count - Number of samples to draw when given
  * @param generator - Generator supplying uniform samples
  * @returns Single sample or array of samples
  */
 export default function rayleigh(
   scale: number = 1,
-  size?: number,
+  count?: number,
   generator?: Types.NumerixGenerator
 ): number | number[] {
-  if (size === undefined) {
-    return sampleRayleigh(scale, generator)
+  if (scale < 0) {
+    throw new RangeError('scale < 0')
   }
-  return Internal.draw(size, () => sampleRayleigh(scale, generator))
-}
-
-/**
- * Draw one Rayleigh variate.
- * @description Produces one magnitude of a normal vector.
- * @param scale - Scale parameter of the distribution
- * @param generator - Generator supplying uniform samples
- * @returns Single Rayleigh variate
- */
-function sampleRayleigh(
-  scale: number,
-  generator?: Types.NumerixGenerator
-): number {
-  return scale * Math.sqrt(-2 * Math.log(1 - Internal.source(generator)))
+  return Internal.draw(
+    count,
+    () => scale * Math.sqrt(-2 * Math.log(1 - Internal.source(generator)))
+  )
 }
