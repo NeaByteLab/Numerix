@@ -9,6 +9,8 @@ import taper from '@app/internal/taper.ts'
  * @returns Symmetric window values
  */
 export default function window(length: number, center: number, amplitude: number): number[] {
-  const step = length > 1 ? (2 * Math.PI) / (length - 1) : 0
-  return taper(length, (index) => center - amplitude * Math.cos(step * index))
+  return taper(
+    length,
+    (index) => center - amplitude * Math.cos(((2 * Math.PI) / (length - 1)) * index)
+  )
 }
