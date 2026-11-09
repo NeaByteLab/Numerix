@@ -1,15 +1,64 @@
+import type * as Types from '@app/types.ts'
 import * as Internal from '@app/internal/index.ts'
 
 /**
  * Subtract two operands element-wise.
- * @description Combines operands with NumPy style broadcast.
- * @param left - Minuend as scalar, vector, or matrix
- * @param right - Subtrahend as scalar, vector, or matrix
+ * @description Combines operands with NumPy-style broadcast.
+ * @param first - Minuend as a scalar, vector, or matrix
+ * @param right - Subtrahend as a scalar, vector, or matrix
  * @returns Differences matching the broadcast shape of the operands
  */
 export default function sub(
-  left: number | number[] | number[][],
-  right: number | number[] | number[][] = 0
-): number | number[] | number[][] {
-  return Internal.broadcast(left, right, (first, second) => first - second)
+  first:
+    | number
+    | number[]
+    | number[][]
+    | Types.NumerixComplex
+    | Types.NumerixComplex[]
+    | Types.NumerixComplex[][],
+  right:
+    | number
+    | number[]
+    | number[][]
+    | Types.NumerixComplex
+    | Types.NumerixComplex[]
+    | Types.NumerixComplex[][] = 0
+):
+  | number
+  | number[]
+  | number[][]
+  | Types.NumerixComplex
+  | Types.NumerixComplex[]
+  | Types.NumerixComplex[][] {
+  if (
+    Internal.classify(first, true, true) !== true &&
+    Internal.classify(right, true, true) !== true
+  ) {
+    if (typeof right === 'number') {
+      return typeof first === 'number'
+        ? first - right
+        : Internal.mapper(first as number[] | number[][], (leading) => leading - right)
+    }
+    if (typeof first === 'number') {
+      return Internal.mapper(right as number[] | number[][], (trailing) => first - trailing)
+    }
+    return Internal.broadcast<number>(
+      first,
+      right,
+      (leading, trailing) => leading - trailing
+    )
+  }
+  return Internal.broadcast<Types.NumerixComplex>(
+    first,
+    right,
+    (leading, trailing) => ({
+      re: (Internal.shape(leading) ? leading.re : Number(leading ?? 0)) -
+        (Internal.shape(trailing) ? trailing.re : Number(trailing ?? 0)),
+      im: (Internal.shape(leading) ? leading.im : 0) -
+        (Internal.shape(trailing) ? trailing.im : 0)
+    })
+  ) as
+    | Types.NumerixComplex
+    | Types.NumerixComplex[]
+    | Types.NumerixComplex[][]
 }
