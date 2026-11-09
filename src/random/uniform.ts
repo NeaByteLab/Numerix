@@ -4,37 +4,24 @@ import * as Internal from '@app/internal/index.ts'
 /**
  * Draw samples from a uniform distribution.
  * @description Produces variates spread evenly over the given range.
- * @param low - Lower bound of the distribution
- * @param high - Upper bound of the distribution
- * @param size - Number of samples to draw when given
+ * @param lower - Lower bound of the distribution
+ * @param upper - Upper bound of the distribution
+ * @param count - Number of samples to draw when given
  * @param generator - Generator supplying uniform samples
  * @returns Single sample or array of samples
  */
 export default function uniform(
-  low: number = 0,
-  high: number = 1,
-  size?: number,
+  lower: number = 0,
+  upper: number = 1,
+  count?: number,
   generator?: Types.NumerixGenerator
 ): number | number[] {
-  const span = high - low
-  if (size === undefined) {
-    return sampleUniform(low, span, generator)
+  const width = upper - lower
+  if (!Number.isFinite(width)) {
+    throw new RangeError('high - low range exceeds valid bounds')
   }
-  return Internal.draw(size, () => sampleUniform(low, span, generator))
-}
-
-/**
- * Draw one uniform variate.
- * @description Produces a single sample spread over the given range.
- * @param low - Lower bound of the distribution
- * @param span - Width of the distribution range
- * @param generator - Generator supplying uniform samples
- * @returns Single uniform variate
- */
-function sampleUniform(
-  low: number,
-  span: number,
-  generator?: Types.NumerixGenerator
-): number {
-  return low + Internal.source(generator) * span
+  if (width < 0) {
+    throw new RangeError('high - low < 0')
+  }
+  return Internal.draw(count, () => lower + Internal.source(generator) * width)
 }
