@@ -9,5 +9,5 @@ import * as Internal from '@app/internal/index.ts'
 export default function not(
   value: boolean | number | (boolean | number)[] | (boolean | number)[][]
 ): boolean | boolean[] | boolean[][] {
-  return Internal.negate(value)
+  return Internal.nested<boolean>(value, (entry) => Internal.settle('all', entry))
 }
