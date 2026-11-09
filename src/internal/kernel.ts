@@ -1,5 +1,5 @@
 /** Width of a register tile */
-const tileWidth = 4
+const stride = 4
 
 /**
  * Pair lanes into a normal matrix.
@@ -14,56 +14,32 @@ export default function kernel(
   count: number,
   samples: number
 ): number[][] {
-  const normal = new Array<number[]>(count)
-  for (let index = 0; index < count; index++) {
-    normal[index] = new Array<number>(count)
-  }
+  const normal = Array.from({ length: count }, () => new Array<number>(count).fill(0))
   if (count === 0 || samples === 0) {
     return normal
   }
-  const padded = lanes.slice()
-  while (padded.length % tileWidth !== 0) {
-    padded.push(new Float64Array(samples))
-  }
-  for (let column = 0; column < count; column += tileWidth) {
-    const columns = Math.min(tileWidth, count - column)
-    const peers: Float64Array[] = [
-      padded[column] as Float64Array,
-      padded[column + 1] as Float64Array,
-      padded[column + 2] as Float64Array,
-      padded[column + 3] as Float64Array
-    ]
-    for (let row = column; row < count; row += tileWidth) {
-      const rows = Math.min(tileWidth, count - row)
-      const block: Float64Array[] = [
-        padded[row] as Float64Array,
-        padded[row + 1] as Float64Array,
-        padded[row + 2] as Float64Array,
-        padded[row + 3] as Float64Array
-      ]
-      const entries: number[][] = []
-      for (let lane = 0; lane < tileWidth; lane++) {
-        entries.push(new Array<number>(tileWidth).fill(0))
-      }
+  const entries = new Float64Array(stride * stride)
+  for (let column = 0; column < count; column += stride) {
+    const horizontal = Math.min(stride, count - column)
+    for (let outer = column; outer < count; outer += stride) {
+      const vertical = Math.min(stride, count - outer)
+      entries.fill(0)
       for (let sample = 0; sample < samples; sample++) {
-        for (let lane = 0; lane < tileWidth; lane++) {
-          const point = block[lane]?.[sample] ?? 0
-          for (let peer = 0; peer < tileWidth; peer++) {
-            const partner = peers[peer]?.[sample] ?? 0
-            const line = entries[lane]
-            if (line) {
-              line[peer] = (line[peer] ?? 0) + point * partner
-            }
+        for (let offset = 0; offset < vertical; offset++) {
+          const origin = offset * stride
+          const leading = lanes[outer + offset]?.[sample] ?? 0
+          for (let other = 0; other < horizontal; other++) {
+            entries[origin + other] = (entries[origin + other] ?? 0) +
+              leading * (lanes[column + other]?.[sample] ?? 0)
           }
         }
       }
-      for (let lane = 0; lane < rows; lane++) {
-        const target = normal[row + lane] as number[]
-        for (let peer = 0; peer < columns; peer++) {
-          const value = entries[lane]?.[peer] ?? 0
-          target[column + peer] = value
-          const mirrored = normal[column + peer] as number[]
-          mirrored[row + lane] = value
+      for (let offset = 0; offset < vertical; offset++) {
+        const origin = offset * stride
+        for (let other = 0; other < horizontal; other++) {
+          const value = entries[origin + other] ?? 0
+          normal[outer + offset]![column + other] = value
+          normal[column + other]![outer + offset] = value
         }
       }
     }
