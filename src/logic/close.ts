@@ -1,104 +1,70 @@
+import type * as Types from '@app/types.ts'
 import * as Internal from '@app/internal/index.ts'
+import * as Reduce from '@app/reduce/index.ts'
 
 /**
  * Test whether operands are numerically close.
  * @description Compares operands within relative and absolute tolerances.
- * @param left - First operand as scalar, vector, or matrix
- * @param right - Second operand as scalar, vector, or matrix
+ * @param first - First operand as a scalar, vector, or matrix
+ * @param right - Second operand as a scalar, vector, or matrix
  * @param relative - Relative tolerance applied to the comparison
  * @param absolute - Absolute tolerance applied to the comparison
- * @param reduce - When true combines results into one boolean
- * @param equal - When true treats equal values as close
+ * @param reduce - When true, combines results into one boolean
+ * @param equal - When true, treats equal values as close
  * @returns Match results matching the broadcast shape
  */
 export default function close(
-  left: number | number[] | number[][],
-  right: number | number[] | number[][],
+  first: Types.NumerixValue,
+  right: Types.NumerixValue,
   relative = 1e-5,
   absolute = 1e-8,
   reduce = false,
   equal = false
 ): boolean | boolean[] | boolean[][] {
-  if (reduce) {
-    return checkClose(left, right, relative, absolute, equal)
+  if (
+    (typeof first === 'object' &&
+      first !== null &&
+      !Array.isArray(first) &&
+      !Internal.shape(first)) ||
+    (typeof right === 'object' &&
+      right !== null &&
+      !Array.isArray(right) &&
+      !Internal.shape(right))
+  ) {
+    throw new TypeError('invalid input type')
   }
-  return Internal.broadcast(
-    left,
-    right,
-    (first, second) => closeScalar(Number(first), Number(second), relative, absolute, equal),
-    0
-  ) as boolean | boolean[] | boolean[][]
-}
-
-/**
- * Test whether all entries are close.
- * @description Combines nested results into one boolean.
- * @param left - First operand as scalar, vector, or matrix
- * @param right - Second operand as scalar, vector, or matrix
- * @param relative - Relative tolerance applied to the comparison
- * @param absolute - Absolute tolerance applied to the comparison
- * @param equal - When true treats equal values as close
- * @returns True when every entry is close
- */
-function checkClose(
-  left: number | number[] | number[][],
-  right: number | number[] | number[][],
-  relative: number,
-  absolute: number,
-  equal: boolean
-): boolean {
-  if (Array.isArray(left) && Array.isArray(right)) {
-    if (left.length !== right.length) {
-      return false
-    }
-    for (let index = 0; index < left.length; index++) {
-      if (!checkClose(left[index] ?? 0, right[index] ?? 0, relative, absolute, equal)) {
-        return false
+  const flags = Internal.classify(first, true, true) !== true &&
+      Internal.classify(right, true, true) !== true
+    ? Internal.broadcast(first as number, right as number, (alpha, omega) => {
+      if (Number.isNaN(alpha) || Number.isNaN(omega)) {
+        return equal && Number.isNaN(alpha) && Number.isNaN(omega)
       }
-    }
-    return true
-  }
-  if (Array.isArray(left)) {
-    for (let index = 0; index < left.length; index++) {
-      if (!checkClose(left[index] ?? 0, right, relative, absolute, equal)) {
-        return false
+      if (alpha === omega) {
+        return true
       }
-    }
-    return true
-  }
-  if (Array.isArray(right)) {
-    for (let index = 0; index < right.length; index++) {
-      if (!checkClose(left, right[index] ?? 0, relative, absolute, equal)) {
-        return false
+      return Number.isFinite(alpha) &&
+        Number.isFinite(omega) &&
+        Math.abs(alpha - omega) <= absolute + relative * Math.abs(omega)
+    })
+    : Internal.broadcast(first, right, (alpha, omega) => {
+      const reals = Internal.shape(alpha) ? alpha.re : Number(alpha ?? 0)
+      const imags = Internal.shape(alpha) ? alpha.im : 0
+      const prior = Internal.shape(omega) ? omega.re : Number(omega ?? 0)
+      const extra = Internal.shape(omega) ? omega.im : 0
+      const missing = Number.isNaN(reals) || Number.isNaN(imags)
+      const absent = Number.isNaN(prior) || Number.isNaN(extra)
+      if (missing || absent) {
+        return equal && missing && absent
       }
-    }
-    return true
-  }
-  return closeScalar(Number(left), Number(right), relative, absolute, equal)
-}
-
-/**
- * Test whether two scalars are close.
- * @description Compares values within the given tolerances.
- * @param left - First scalar to compare
- * @param right - Second scalar to compare
- * @param relative - Relative tolerance applied to the comparison
- * @param absolute - Absolute tolerance applied to the comparison
- * @param equal - When true treats equal values as close
- * @returns True when the scalars are close
- */
-function closeScalar(
-  left: number,
-  right: number,
-  relative: number,
-  absolute: number,
-  equal: boolean
-): boolean {
-  if (equal && Number.isNaN(left) && Number.isNaN(right)) {
-    return true
-  }
-  if (left === right) {
-    return true
-  }
-  return Math.abs(left - right) <= absolute + relative * Math.abs(right)
+      if (reals === prior && imags === extra) {
+        return true
+      }
+      return Number.isFinite(reals) &&
+        Number.isFinite(imags) &&
+        Number.isFinite(prior) &&
+        Number.isFinite(extra) &&
+        Math.hypot(reals - prior, imags - extra) <=
+          absolute + relative * Math.hypot(prior, extra)
+    })
+  return reduce && typeof flags !== 'boolean' ? Reduce.all(flags) : flags
 }
