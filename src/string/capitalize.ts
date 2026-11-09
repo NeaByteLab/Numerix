@@ -1,41 +1,72 @@
-/** Pattern matching the first letter of each word */
-const start = /\b\w/g
+import * as Internal from '@app/internal/index.ts'
 
 /**
  * Capitalize the first letter of text.
  * @description Uppercases the first character and lowers the remainder.
- * @param text - String or array of strings to capitalize
- * @param title - When true capitalizes each word separately
+ * @param input - String to capitalize
+ * @param titled - When true, capitalizes each word separately
+ * @returns Capitalized string
+ */
+export default function capitalize(
+  input: string,
+  titled?: boolean | 'title'
+): string
+/**
+ * Capitalize a vector of strings.
+ * @description Uppercases the first character of each string entry.
+ * @param input - Vector of strings to capitalize
+ * @param titled - When true, capitalizes each word separately
+ * @returns Vector of capitalized strings
+ */
+export default function capitalize(
+  input: string[],
+  titled?: boolean | 'title'
+): string[]
+/**
+ * Capitalize a matrix of strings.
+ * @description Uppercases the first character of each matrix entry.
+ * @param input - Matrix of strings to capitalize
+ * @param titled - When true, capitalizes each word separately
+ * @returns Matrix of capitalized strings
+ */
+export default function capitalize(
+  input: string[][],
+  titled?: boolean | 'title'
+): string[][]
+/**
+ * Capitalize the first letter of text.
+ * @description Uppercases the first character and lowers the remainder.
+ * @param input - String, vector, or matrix of strings to capitalize
+ * @param titled - When true, capitalizes each word separately
  * @returns Capitalized strings matching the input shape
  */
 export default function capitalize(
-  text: string | string[],
-  title: boolean = false
-): string | string[] {
-  if (!Array.isArray(text)) {
-    return capitalizeText(text, title)
-  }
-  const length = text.length
-  const result = new Array<string>(length)
-  for (let index = 0; index < length; index++) {
-    result[index] = capitalizeText(text[index] ?? '', title)
-  }
-  return result
-}
-
+  input: string | string[] | string[][],
+  titled?: boolean | 'title'
+): string | string[] | string[][]
 /**
- * Capitalize one string.
- * @description Uppercases the first letter and lowers the remainder.
- * @param text - String to capitalize
- * @param title - When true capitalizes each word separately
- * @returns Capitalized string
+ * Capitalize the first letter of text.
+ * @description Uppercases the first character and lowers the remainder.
+ * @param input - String, vector, or matrix of strings to capitalize
+ * @param titled - When true, capitalizes each word separately
+ * @returns Capitalized strings matching the input shape
  */
-function capitalizeText(text: string, title: boolean): string {
-  if (!text) {
-    return text
-  }
-  if (title) {
-    return text.replace(start, (character) => character.toUpperCase())
-  }
-  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+export default function capitalize(
+  input: string | string[] | string[][],
+  titled: boolean | 'title' = false
+): string | string[] | string[][] {
+  return Internal.mapper(input, (value) => {
+    const source = value ?? ''
+    if (!source) {
+      return source
+    }
+    if (titled) {
+      return source.toLowerCase().replace(
+        /(^|[^\p{Cased}])(\p{Cased})/gu,
+        (_full: string, prefix: string, letter: string) => prefix + letter.toUpperCase()
+      )
+    }
+    const width = (source.codePointAt(0) ?? 0) > 0xffff ? 2 : 1
+    return source.slice(0, width).toUpperCase() + source.slice(width).toLowerCase()
+  })
 }
