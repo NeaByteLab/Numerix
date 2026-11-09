@@ -1,107 +1,64 @@
-import numeric from '@app/internal/numeric.ts'
-
 /**
  * Apply a binary function to operands.
  * @description Combines operands element-wise with broadcast.
- * @param left - Left operand as scalar, vector, or matrix
- * @param right - Right operand as scalar, vector, or matrix
+ * @template Output - Result element type
+ * @param first - Left operand as a scalar, vector, or matrix
+ * @param second - Right operand as a scalar, vector, or matrix
  * @param apply - Scalar function applied to each element pair
  * @param identity - Value substituted when an operand has no matching entry
  * @returns Result with the broadcast shape of the operands
- * @template R - Result element type
  */
-export default function broadcast<R>(
-  left: boolean | number | (boolean | number)[] | (boolean | number)[][],
-  right: boolean | number | (boolean | number)[] | (boolean | number)[][],
-  apply: (first: number, second: number) => R,
+export default function broadcast<Output>(
+  first: unknown,
+  second: unknown,
+  apply: (leading: number, trailing: number) => Output,
   identity = 0
-): R | R[] | R[][] {
-  const leftArray = Array.isArray(left)
-  const rightArray = Array.isArray(right)
-  if (!leftArray && !rightArray) {
-    return apply(Number(left), Number(right))
-  }
-  const leftSize = leftArray ? (left as (boolean | number)[]).length : 0
-  const rightSize = rightArray ? (right as (boolean | number)[]).length : 0
-  const leftGrid = leftArray && Array.isArray((left as (boolean | number)[])[0])
-  const rightGrid = rightArray && Array.isArray((right as (boolean | number)[])[0])
-  if (!leftGrid && !rightGrid && leftArray !== rightArray) {
-    const vector = (leftArray ? left : right) as (boolean | number)[]
-    const scalar = Number(leftArray ? right : left)
-    const result = new Array<R>(vector.length)
-    for (let index = 0; index < vector.length; index++) {
-      const entry = vector[index]
-      result[index] = entry === undefined
-        ? apply(scalar, identity)
-        : leftArray
-        ? apply(Number(entry), scalar)
-        : apply(scalar, Number(entry))
-    }
-    return result
-  }
-  if (leftGrid && !rightGrid) {
-    const result = new Array<R>(leftSize)
-    for (let index = 0; index < leftSize; index++) {
-      result[index] = broadcast(
-        (left as (boolean | number)[][])[index] as never,
-        right,
-        apply,
-        identity
-      ) as R
-    }
-    return result
-  }
-  if (!leftGrid && rightGrid) {
-    const result = new Array<R>(rightSize)
-    const leftList = left as (boolean | number)[]
-    const scalar = leftList.length === 1
-    for (let index = 0; index < rightSize; index++) {
-      result[index] = broadcast(
-        scalar ? leftList[0] as never : left,
-        (right as (boolean | number)[][])[index] as never,
-        apply,
-        identity
-      ) as R
-    }
-    return result
-  }
-  const count = leftArray && rightArray
-    ? rightSize === 1 ? leftSize : leftSize === 1 ? rightSize : leftSize
-    : leftArray
-    ? leftSize
-    : rightSize
-  if (leftArray && rightArray && numeric(left) && numeric(right)) {
-    const source = left as (boolean | number)[]
-    const target = right as (boolean | number)[]
-    const result = new Array<R>(count)
-    const leftSolo = leftSize === 1
-    const rightSolo = rightSize === 1
-    for (let index = 0; index < count; index++) {
-      const leftValue = leftSolo ? source[0] : source[index]
-      const rightValue = rightSolo ? target[0] : target[index]
-      result[index] = apply(
-        leftValue === undefined ? identity : Number(leftValue),
-        rightValue === undefined ? identity : Number(rightValue)
-      )
-    }
-    return result
-  }
-  const result = new Array(count)
-  for (let index = 0; index < count; index++) {
-    const leftItem = leftArray
-      ? (leftSize === 1 ? (left as (boolean | number)[])[0] : (left as (boolean | number)[])[index])
-      : left
-    const rightItem = rightArray
-      ? (rightSize === 1
-        ? (right as (boolean | number)[])[0]
-        : (right as (boolean | number)[])[index])
-      : right
-    result[index] = broadcast(
-      leftItem as never,
-      rightItem as never,
-      apply,
-      identity
+): Output | Output[] | Output[][] {
+  const lefts = Array.isArray(first)
+  const rights = Array.isArray(second)
+  if (!lefts && !rights) {
+    return apply(
+      (first === undefined
+        ? identity
+        : typeof first === 'boolean'
+        ? Number(first)
+        : first) as number,
+      (
+        second === undefined ? identity : typeof second === 'boolean' ? Number(second) : second
+      ) as number
     )
   }
-  return result as R[] | R[][]
+  const alpha = lefts ? (first as unknown[]).length : 0
+  const omega = rights ? (second as unknown[]).length : 0
+  const deepen = lefts && Array.isArray((first as unknown[])[0])
+  const broaden = rights && Array.isArray((second as unknown[])[0])
+  if (deepen && !broaden) {
+    return (first as unknown[][]).map((entry) =>
+      broadcast(entry, second, apply, identity) as Output
+    )
+  }
+  if (!deepen && broaden) {
+    return (second as unknown[][]).map((entry) =>
+      broadcast(alpha === 1 ? (first as unknown[])[0] : first, entry, apply, identity) as Output
+    )
+  }
+  if (lefts && rights && alpha !== omega && alpha !== 1 && omega !== 1) {
+    throw new RangeError('operands could not be broadcast together')
+  }
+  return Array.from(
+    {
+      length: lefts && rights
+        ? omega === 1 ? alpha : alpha === 1 ? omega : alpha
+        : lefts
+        ? alpha
+        : omega
+    },
+    (_outer, index) =>
+      broadcast(
+        lefts ? (alpha === 1 ? (first as unknown[])[0] : (first as unknown[])[index]) : first,
+        rights ? (omega === 1 ? (second as unknown[])[0] : (second as unknown[])[index]) : second,
+        apply,
+        identity
+      )
+  ) as Output[] | Output[][]
 }
