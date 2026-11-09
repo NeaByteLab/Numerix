@@ -4,58 +4,59 @@ import * as Internal from '@app/internal/index.ts'
  * Expand the nesting of a value.
  * @description Adds array levels around the given input.
  * @param input - Value or nested array to expand
- * @param axis - Target nesting level or dimension count
+ * @param chosen - Target nesting level or axes
  * @returns Expanded value with the requested nesting
  */
 export default function expand(
   input: unknown,
-  axis: number | '1d' | '2d' | '3d' = 0
+  chosen: number | number[] | '1d' | '2d' | '3d' = 0
 ): unknown {
   const level = Internal.depth(input)
-  if (axis === '1d') {
-    return level === 0 ? [input] : input
-  }
-  if (axis === '2d') {
-    if (level === 0) {
-      return [[input]]
+  let result: unknown
+  if (Array.isArray(chosen)) {
+    const dimension = level + chosen.length
+    const visited = new Set<number>()
+    for (const entry of chosen) {
+      const resolved = (entry ?? 0) < 0 ? dimension + (entry ?? 0) : (entry ?? 0)
+      if (resolved < 0 || resolved >= dimension) {
+        throw new RangeError('axis is out of bounds for array of dimension ' + dimension)
+      }
+      if (visited.has(resolved)) {
+        throw new RangeError('repeated axis in expand')
+      }
+      visited.add(resolved)
     }
-    if (level === 1) {
-      return [input]
+    result = input
+    for (const target of Array.from(visited).sort((first, second) => first - second)) {
+      result = expand(result, target)
     }
-    return input
-  }
-  if (axis === '3d') {
-    if (level === 0) {
-      return [[[input]]]
+  } else if (chosen === '1d') {
+    result = level === 0 ? [input] : (input as unknown[]).slice()
+  } else if (chosen === '2d') {
+    result = level === 0
+      ? [[input]]
+      : level === 1
+      ? [(input as unknown[]).slice()]
+      : (input as unknown[][]).map((entry) => entry.slice())
+  } else if (chosen === '3d') {
+    result = level === 0
+      ? [[[input]]]
+      : level === 1
+      ? [expand(input, 1)]
+      : level === 2
+      ? expand(input, 2)
+      : input
+  } else {
+    if (typeof chosen !== 'number') {
+      throw new RangeError("axis must be an integer, array of integers, or '1d' | '2d' | '3d'")
     }
-    if (level === 1) {
-      return [expandAt(input, 1)]
+    const normalized = chosen < 0 ? level + 1 + chosen : chosen
+    if (normalized < 0 || normalized > level) {
+      throw new RangeError('axis is out of bounds for array of dimension ' + level)
     }
-    if (level === 2) {
-      return expandAt(input, 2)
-    }
-    return input
+    result = normalized === 0 || !Array.isArray(input)
+      ? [Array.isArray(input) ? input.slice() : input]
+      : input.map((entry) => expand(entry, normalized - 1))
   }
-  const dimensions = level + 1
-  const normalized = axis < 0 ? dimensions + axis : axis
-  return expandAt(input, normalized)
-}
-
-/**
- * Expand a value to a level.
- * @description Adds array levels until the target level is reached.
- * @param input - Value to expand
- * @param axis - Target nesting level of the result
- * @returns Expanded value at the requested level
- */
-function expandAt(input: unknown, axis: number): unknown {
-  if (axis <= 0 || !Array.isArray(input)) {
-    return [input]
-  }
-  const length = input.length
-  const result = new Array<unknown>(length)
-  for (let index = 0; index < length; index++) {
-    result[index] = expandAt(input[index], axis - 1)
-  }
-  return result
+  return Internal.classify(input, true, true) === true ? Internal.nested(result) : result
 }
