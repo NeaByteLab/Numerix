@@ -5,14 +5,14 @@ Test whether values are infinite numbers.
 ## API
 
 ```ts
-Numeric.logic.isinf(value, sign)
+Numeric.logic.isinf(value, polarity)
 ```
 
 Checks each element against positive and negative infinity.
 
 - Parameters:
   - `value`: Scalar, vector, or matrix values to inspect
-  - `sign`: Restricts the check to one infinity sign
+  - `polarity`: Restricts the check to one infinity sign
 - Returns: Match results matching the input nesting shape
 - NumPy: Covers `np.isinf`, `np.isposinf`, `np.isneginf` through a single Numerix method.
 

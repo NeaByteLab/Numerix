@@ -5,14 +5,14 @@ Combine two operands with logical disjunction.
 ## API
 
 ```ts
-Numeric.logic.or(left, right)
+Numeric.logic.or(first, right)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `right`: Second operand as a scalar, vector, or matrix
 - Returns: Disjunction results matching the broadcast shape
 - NumPy: Equivalent to `np.logical_or`.
 

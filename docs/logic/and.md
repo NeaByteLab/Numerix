@@ -5,14 +5,14 @@ Combine two operands with logical conjunction.
 ## API
 
 ```ts
-Numeric.logic.and(left, right)
+Numeric.logic.and(first, right)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `right`: Second operand as a scalar, vector, or matrix
 - Returns: Conjunction results matching the broadcast shape
 - NumPy: Equivalent to `np.logical_and`.
 

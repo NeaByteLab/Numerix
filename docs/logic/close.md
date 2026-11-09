@@ -5,14 +5,14 @@ Test whether two operands are numerically close.
 ## API
 
 ```ts
-Numeric.logic.close(left, right, relative = 1e-5, absolute = 1e-8, reduce = false, equal = false)
+Numeric.logic.close(first, right, relative = 1e-5, absolute = 1e-8, reduce = false, equal = false)
 ```
 
 Compares operands within relative and absolute tolerances.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `right`: Second operand as a scalar, vector, or matrix
   - `relative`: Relative tolerance applied to the comparison
   - `absolute`: Absolute tolerance applied to the comparison
   - `reduce`: When true combines results into one boolean

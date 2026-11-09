@@ -11,9 +11,9 @@ Access every method through the namespace form `Numeric.logic.method`.
 | [equal](equal.md)         | Compares matching entries of both operands.                 |
 | [greater](greater.md)     | Compares operands with NumPy style broadcast.               |
 | [iscomplex](iscomplex.md) | Checks each element for a complex representation.           |
-| [isfinite](isfinite.md)   | Checks each element against infinity and not a number.      |
+| [isfinite](isfinite.md)   | Checks each element against infinity and NaN.               |
 | [isinf](isinf.md)         | Checks each element against positive and negative infinity. |
-| [isnan](isnan.md)         | Checks each element against the not a number value.         |
+| [isnan](isnan.md)         | Checks each element for the NaN value.                      |
 | [isreal](isreal.md)       | Checks each element for a real representation.              |
 | [isscalar](isscalar.md)   | Checks the runtime type of the given value.                 |
 | [less](less.md)           | Compares operands with NumPy style broadcast.               |

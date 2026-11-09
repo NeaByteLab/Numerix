@@ -8,7 +8,7 @@ Test whether values are finite numbers.
 Numeric.logic.isfinite(value)
 ```
 
-Checks each element against infinity and not a number.
+Checks each element against infinity and NaN.
 
 - Parameters:
   - `value`: Scalar, vector, or matrix values to inspect

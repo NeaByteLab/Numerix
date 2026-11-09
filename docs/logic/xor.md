@@ -5,14 +5,14 @@ Combine two operands with exclusive disjunction.
 ## API
 
 ```ts
-Numeric.logic.xor(left, right)
+Numeric.logic.xor(first, right)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `right`: Second operand as a scalar, vector, or matrix
 - Returns: Exclusive disjunction results matching the broadcast shape
 - NumPy: Equivalent to `np.logical_xor`.
 

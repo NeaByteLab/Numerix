@@ -1,18 +1,18 @@
 # greater
 
-Test whether left values exceed right values.
+Test whether the first operand exceeds the right operand.
 
 ## API
 
 ```ts
-Numeric.logic.greater(left, right, inclusive = false)
+Numeric.logic.greater(first, right, inclusive = false)
 ```
 
 Compares operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `right`: Second operand as a scalar, vector, or matrix
   - `inclusive`: When true treats equal values as matching
 - Returns: Match results matching the broadcast shape
 - NumPy: Covers `np.greater`, `np.greater_equal` through a single Numerix method.

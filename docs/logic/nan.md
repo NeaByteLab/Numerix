@@ -1,6 +1,6 @@
 # nan
 
-Replace not a number values with safe fallbacks.
+Replace NaN values with safe fallbacks.
 
 ## API
 
@@ -31,7 +31,7 @@ console.log(values)
 // [1,0,1.7976931348623157e+308]
 ```
 
-### Sanitize a single not a number value
+### Sanitize a single NaN value
 
 ```ts
 import Numeric from '@neabyte/numerix'

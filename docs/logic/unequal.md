@@ -5,15 +5,16 @@ Test whether matching entries of two operands differ.
 ## API
 
 ```ts
-Numeric.logic.unequal(left, right, reduce = false)
+Numeric.logic.unequal(first, right, reduce = false, missing = false)
 ```
 
 Compares matching entries of both operands.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as a scalar, vector, or matrix
+  - `right`: Second operand as a scalar, vector, or matrix
   - `reduce`: When true combines results into one boolean
+  - `missing`: When true treats NaN entries as equal
 - Returns: Match results matching the broadcast shape
 - NumPy: Equivalent to `np.not_equal`.
 

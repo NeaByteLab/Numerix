@@ -1,6 +1,6 @@
 # isnan
 
-Test whether values are not numbers.
+Test whether values are NaN.
 
 ## API
 
@@ -8,7 +8,7 @@ Test whether values are not numbers.
 Numeric.logic.isnan(value)
 ```
 
-Checks each element against the not a number value.
+Checks each element for the NaN value.
 
 - Parameters:
   - `value`: Scalar, vector, or matrix values to inspect
@@ -17,7 +17,7 @@ Checks each element against the not a number value.
 
 ## Examples
 
-### Check a vector with a not a number value
+### Check a vector containing NaN
 
 ```ts
 import Numeric from '@neabyte/numerix'
@@ -39,7 +39,7 @@ console.log(flag)
 // false
 ```
 
-### Check a single not a number value
+### Check a single NaN value
 
 ```ts
 import Numeric from '@neabyte/numerix'
