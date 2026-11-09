@@ -5,14 +5,14 @@ Combine two operands with a bitwise conjunction.
 ## API
 
 ```ts
-Numeric.bit.and(left, right = 0)
+Numeric.bit.and(first, second = 0)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as scalar, vector, or matrix
+  - `second`: Second operand as scalar, vector, or matrix
 - Returns: Conjunction results matching the broadcast shape
 - NumPy: Equivalent to `np.bitwise_and`.
 

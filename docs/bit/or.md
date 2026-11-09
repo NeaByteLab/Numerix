@@ -5,14 +5,14 @@ Combine two operands with a bitwise disjunction.
 ## API
 
 ```ts
-Numeric.bit.or(left, right = 0)
+Numeric.bit.or(first, second = 0)
 ```
 
 Combines operands with NumPy style broadcast.
 
 - Parameters:
-  - `left`: First operand as scalar, vector, or matrix
-  - `right`: Second operand as scalar, vector, or matrix
+  - `first`: First operand as scalar, vector, or matrix
+  - `second`: Second operand as scalar, vector, or matrix
 - Returns: Disjunction results matching the broadcast shape
 - NumPy: Equivalent to `np.bitwise_or`.
 

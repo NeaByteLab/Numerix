@@ -5,14 +5,15 @@ Pack bit values into bytes.
 ## API
 
 ```ts
-Numeric.bit.pack(bits, order = 'big')
+Numeric.bit.pack(values, order, level)
 ```
 
 Groups bits into bytes using the requested order.
 
 - Parameters:
-  - `bits`: Bit values to pack
+  - `values`: Bit values to pack
   - `order`: Byte order used for packing
+  - `level`: Optional axis along which to pack two-dimensional matrices
 - Returns: Packed byte values
 - NumPy: Equivalent to `np.packbits`.
 

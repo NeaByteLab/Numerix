@@ -5,14 +5,14 @@ Shift the bits of each element left or right.
 ## API
 
 ```ts
-Numeric.bit.shift(value, bits, right = false)
+Numeric.bit.shift(value, places, right = false)
 ```
 
 Moves bits left or right by the given count.
 
 - Parameters:
   - `value`: Scalar, vector, or matrix values to shift
-  - `bits`: Number of bit positions to shift
+  - `places`: Number of bit positions to shift
   - `right`: When true shifts bits toward the low end
 - Returns: Shifted values matching the input nesting shape
 - NumPy: Covers `np.bitwise_left_shift`, `np.left_shift`, `np.bitwise_right_shift`, `np.right_shift` through a single Numerix method.

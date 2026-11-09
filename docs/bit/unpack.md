@@ -5,7 +5,7 @@ Unpack byte values into individual bits.
 ## API
 
 ```ts
-Numeric.bit.unpack(bytes, order = 'big')
+Numeric.bit.unpack(bytes, order, count, level)
 ```
 
 Expands each byte into its individual bits.
@@ -13,6 +13,8 @@ Expands each byte into its individual bits.
 - Parameters:
   - `bytes`: Byte values to unpack
   - `order`: Byte order used for unpacking
+  - `count`: Optional maximum number of unpacked bits
+  - `level`: Optional axis along which to unpack two-dimensional matrices
 - Returns: Bit values for every byte
 - NumPy: Equivalent to `np.unpackbits`.
 
