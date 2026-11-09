@@ -5,7 +5,7 @@ Write values into an array at the given positions.
 ## API
 
 ```ts
-Numeric.index.put(input, indices, values, axis = 1)
+Numeric.index.put(input, indices, values, level = 1)
 ```
 
 Assigns values into an array at the given positions.
@@ -14,7 +14,7 @@ Assigns values into an array at the given positions.
   - `input`: Array receiving the written values
   - `indices`: Positions or mask selecting the targets
   - `values`: Values written into the array
-  - `axis`: Axis along which the values are written
+  - `level`: Axis along which the values are written
 - Returns: Array containing the written values
 - NumPy: Covers `np.put`, `np.put_along_axis`, `np.putmask`, `np.place`, `np.fill_diagonal`, `ndarray.put` through a single Numerix method.
 

@@ -5,15 +5,16 @@ Pick values from an array at the given indices.
 ## API
 
 ```ts
-Numeric.index.take(input, indices = 0, offset = 0)
+Numeric.index.take(input, indices = 0, offset, policy = 'wrap')
 ```
 
 Reads the entries at the selected positions.
 
 - Parameters:
   - `input`: Array holding the requested values
-  - `indices`: Positions of the requested values
-  - `offset`: Shift applied to each position
+  - `indices`: Positions or pattern selecting the entries
+  - `offset`: Shift or boundary handling applied to each position
+  - `policy`: Boundary handling mode
 - Returns: Values taken from the input
 - NumPy: Covers `np.take`, `np.take_along_axis`, `np.diagonal`, `np.linalg.diagonal`, `ndarray.take`, `ndarray.diagonal`, `ndarray.item` through a single Numerix method.
 
@@ -52,13 +53,13 @@ console.log(value)
 // 10
 ```
 
-### Take values with a shifted position
+### Take the last value with a negative position
 
 ```ts
 import Numeric from '@neabyte/numerix'
 
-const values = Numeric.index.take([10, 20, 30], [0, 1], 1)
+const value = Numeric.index.take([10, 20, 30], -1)
 
-console.log(values)
-// [10,20]
+console.log(value)
+// 30
 ```

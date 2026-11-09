@@ -13,6 +13,7 @@ Computes the position of an offset along each axis.
 - Parameters:
   - `index`: Flat offset to convert
   - `dimensions`: Length of each axis
+  - `order`: Memory layout order, row-major or column-major
 - Returns: Coordinate along each axis
 - NumPy: Equivalent to `np.unravel_index`.
 

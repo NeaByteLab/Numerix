@@ -5,7 +5,7 @@ Extract overlapping windows of a fixed length from an array.
 ## API
 
 ```ts
-Numeric.index.slide(input, window, step = 1)
+Numeric.index.slide(input, window, spacing = 1, level)
 ```
 
 Collects overlapping windows of the given length.
@@ -13,7 +13,8 @@ Collects overlapping windows of the given length.
 - Parameters:
   - `input`: Array the windows are taken from
   - `window`: Number of entries in each window
-  - `step`: Distance between consecutive windows
+  - `spacing`: Distance between consecutive windows
+  - `level`: Optional axis along which the window slides
 - Returns: Array of extracted windows
 - NumPy: Covers `np.lib.stride_tricks.sliding_window_view`, `np.lib.stride_tricks.as_strided` through a single Numerix method.
 

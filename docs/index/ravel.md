@@ -13,6 +13,8 @@ Computes the row-major offset of a coordinate.
 - Parameters:
   - `coordinates`: Position along each axis
   - `dimensions`: Length of each axis
+  - `policy`: Out-of-bounds handling mode or memory layout order
+  - `order`: Memory layout order or out-of-bounds handling mode
 - Returns: Flat index of the given coordinates
 - NumPy: Equivalent to `np.ravel_multi_index`.
 

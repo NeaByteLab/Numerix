@@ -5,16 +5,16 @@ Report matching positions or pick values where a condition holds.
 ## API
 
 ```ts
-Numeric.index.where(condition, yes, no, mode = 'index')
+Numeric.index.where(condition, first, second, policy = 'index')
 ```
 
 Reports positions or picks values where the condition holds.
 
 - Parameters:
   - `condition`: Conditions deciding which values are used
-  - `yes`: Value used where the condition holds
-  - `no`: Value used where the condition fails
-  - `mode`: Reporting mode for the selected positions
+  - `first`: Value used where the condition holds
+  - `second`: Value used where the condition fails
+  - `policy`: Reporting mode for the selected positions
 - Returns: Selected values or matching positions
 - NumPy: Covers `np.where`, `np.nonzero`, `np.flatnonzero`, `np.argwhere`, `ndarray.nonzero` through a single Numerix method.
 
