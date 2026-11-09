@@ -1,109 +1,110 @@
+import type * as Types from '@app/types.ts'
 import * as Internal from '@app/internal/index.ts'
 
 /**
  * Compute the variance of values.
  * @description Measures the spread around the mean.
- * @param left - Values whose variance is computed
+ * @param values - Values whose variance is computed
  * @param freedom - Degrees of freedom used in the divisor
- * @param nan - Whether invalid entries are skipped
- * @param axis - Axis along which the variance is taken
+ * @param invalid - Whether invalid entries are skipped
+ * @param level - Axis along which the variance is taken
  * @returns Variance for the requested axis
  */
 export default function variance(
-  left: unknown[],
+  values: unknown[],
   freedom: number | boolean = 0,
-  nan: boolean | number = false,
-  axis?: number
+  invalid: boolean | number = false,
+  level?: number | boolean
 ): number | number[] {
-  const resolved = typeof freedom === 'number' ? freedom : (typeof nan === 'number' ? nan : 0)
-  const skip = typeof freedom === 'boolean' ? freedom : (typeof nan === 'boolean' ? nan : false)
-  if (!Array.isArray(left[0])) {
-    return var1D(left as number[], resolved, skip)
-  }
-  if (axis !== undefined) {
-    const matrix = left as number[][]
-    const rows = matrix.length
-    if (axis === 1 || axis === -1) {
-      const result = new Array<number>(rows)
-      for (let row = 0; row < rows; row++) {
-        result[row] = var1D(matrix[row] ?? [], resolved, skip)
-      }
-      return result
+  const divisor = typeof freedom === 'number'
+    ? freedom
+    : typeof invalid === 'number' && typeof level === 'number'
+    ? invalid
+    : 0
+  const ignore = freedom === true || invalid === true || level === true
+  const chosen = typeof level === 'number'
+    ? level
+    : typeof invalid === 'number'
+    ? invalid
+    : undefined
+  const layered = Array.isArray(values[0])
+  if (chosen !== undefined) {
+    const normalized = chosen < 0 ? (layered ? 2 : 1) + chosen : chosen
+    if (normalized < 0 || normalized > (layered ? 1 : 0)) {
+      throw new RangeError(`axis is out of bounds for array of dimension ${layered ? 2 : 1}`)
     }
-    if (axis === 0 || axis === -2) {
-      const columns = matrix[0]?.length ?? 0
-      const result = new Array<number>(columns)
-      const buffer = new Array<number>(rows)
-      for (let column = 0; column < columns; column++) {
-        result[column] = var1D(
-          Internal.column(matrix, rows, column, buffer, 0),
-          resolved,
-          skip
+    if (layered) {
+      if (normalized === 1) {
+        return (values as unknown[][]).map((slice) =>
+          variance(slice ?? [], divisor, ignore) as number
         )
       }
-      return result
+      const height = values.length
+      const buffer = new Array<unknown>(height)
+      return Array.from(
+        { length: (values[0] as unknown[] | undefined)?.length ?? 0 },
+        (_unused, inner) =>
+          variance(
+            Internal.column(values as unknown[][], height, inner, buffer, 0),
+            divisor,
+            ignore
+          ) as number
+      )
     }
   }
-  const accumulator = { sum: 0, count: 0 }
-  Internal.tally(left, skip, accumulator)
-  if (accumulator.count <= resolved) {
+  const state = Internal.total(values, ignore)
+  if (state.count <= divisor) {
     return NaN
   }
-  const mean = accumulator.sum / accumulator.count
-  return diffFlat(left, mean, skip) / (accumulator.count - resolved)
-}
-
-/**
- * Compute the squared deviation of values.
- * @description Measures the spread of nested arrays around a mean.
- * @param values - Nested values to inspect
- * @param mean - Mean the values are compared against
- * @param skip - Whether invalid entries are skipped
- * @returns Sum of the squared deviations
- */
-function diffFlat(values: unknown[], mean: number, skip: boolean): number {
+  const reals = state.sum / state.count
   let squared = 0
-  for (let index = 0; index < values.length; index++) {
-    const entry = values[index]
-    if (Array.isArray(entry)) {
-      squared += diffFlat(entry, mean, skip)
+  if (Internal.classify(values, true, true) !== true) {
+    if (layered) {
+      for (let outer = 0; outer < values.length; outer++) {
+        const slice = (values[outer] ?? []) as number[]
+        for (let column = 0; column < slice.length; column++) {
+          const first = Number(slice[column] ?? 0)
+          if (ignore && Number.isNaN(first)) {
+            continue
+          }
+          squared += (first - reals) ** 2
+        }
+      }
     } else {
-      const value = Number(entry ?? 0)
-      if (skip && Number.isNaN(value)) {
+      for (let index = 0; index < values.length; index++) {
+        const first = Number((values as number[])[index] ?? 0)
+        if (ignore && Number.isNaN(first)) {
+          continue
+        }
+        squared += (first - reals) ** 2
+      }
+    }
+    return squared / (state.count - divisor)
+  }
+  const imags = state.imags / state.count
+  if (layered) {
+    for (let outer = 0; outer < values.length; outer++) {
+      const slice = (values[outer] ?? []) as unknown[]
+      for (let column = 0; column < slice.length; column++) {
+        const entry = (slice[column] ?? 0) as number | Types.NumerixComplex
+        const first = Internal.shape(entry) ? entry.re : Number(entry)
+        const second = Internal.shape(entry) ? entry.im : 0
+        if (ignore && (Number.isNaN(first) || Number.isNaN(second))) {
+          continue
+        }
+        squared += (first - reals) ** 2 + (second - imags) ** 2
+      }
+    }
+  } else {
+    for (let index = 0; index < values.length; index++) {
+      const entry = (values[index] ?? 0) as number | Types.NumerixComplex
+      const first = Internal.shape(entry) ? entry.re : Number(entry)
+      const second = Internal.shape(entry) ? entry.im : 0
+      if (ignore && (Number.isNaN(first) || Number.isNaN(second))) {
         continue
       }
-      const deviation = value - mean
-      squared += deviation * deviation
+      squared += (first - reals) ** 2 + (second - imags) ** 2
     }
   }
-  return squared
-}
-
-/**
- * Compute the variance of a vector.
- * @description Measures the spread of a total vector.
- * @param values - Vector whose variance is computed
- * @param freedom - Degrees of freedom used in the divisor
- * @param skip - Whether invalid entries are skipped
- * @returns Variance of the vector entries
- */
-function var1D(values: number[], freedom: number, skip: boolean): number {
-  const length = values.length
-  const accumulator = { sum: 0, count: 0 }
-  Internal.total(values, skip, accumulator)
-  const { sum, count } = accumulator
-  if (count <= freedom) {
-    return NaN
-  }
-  const mean = sum / count
-  let squared = 0
-  for (let index = 0; index < length; index++) {
-    const value = values[index] ?? 0
-    if (skip && Number.isNaN(value)) {
-      continue
-    }
-    const deviation = value - mean
-    squared += deviation * deviation
-  }
-  return squared / (count - freedom)
+  return squared / (state.count - divisor)
 }
