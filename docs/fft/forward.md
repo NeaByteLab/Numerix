@@ -5,14 +5,15 @@ Compute the discrete Fourier transform of a signal.
 ## API
 
 ```ts
-Numeric.fft.forward(values, axis)
+Numeric.fft.forward(values, level, target)
 ```
 
 Applies the radix two transform to the signal samples.
 
 - Parameters:
   - `values`: Signal samples to transform
-  - `axis`: Axes along which the transform runs, or `all` for every axis
+  - `level`: Transform length or axis along which the transform runs
+  - `target`: Optional axis when a transform length is given
 - Returns: Complex spectrum of the transformed signal
 - NumPy: Covers `np.fft.fft`, `np.fft.fft2`, `np.fft.fftn` through a single Numerix method.
 

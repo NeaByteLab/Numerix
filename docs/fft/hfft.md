@@ -5,14 +5,15 @@ Compute the half spectrum of a real signal.
 ## API
 
 ```ts
-Numeric.fft.hfft(values, count)
+Numeric.fft.hfft(values, count, level)
 ```
 
 Produces the half spectrum of a real signal.
 
 - Parameters:
-  - `values`: Real signal samples to transform
+  - `values`: Real or complex signal samples to transform
   - `count`: Length of the produced spectrum
+  - `level`: Axes along which the transform runs
 - Returns: Complex spectrum of the transformed signal
 - NumPy: Equivalent to `np.fft.hfft`.
 

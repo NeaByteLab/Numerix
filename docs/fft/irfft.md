@@ -5,7 +5,7 @@ Rebuild a real signal from its frequency spectrum.
 ## API
 
 ```ts
-Numeric.fft.irfft(spectrum, count, axis)
+Numeric.fft.irfft(spectrum, count, level)
 ```
 
 Rebuilds a real signal from its frequency spectrum.
@@ -13,7 +13,7 @@ Rebuilds a real signal from its frequency spectrum.
 - Parameters:
   - `spectrum`: Frequency spectrum to transform
   - `count`: Length of the produced signal
-  - `axis`: Axes along which the transform runs, or `all` for every axis
+  - `level`: Axes along which the transform runs, or `all` for every axis
 - Returns: Real signal of the transformed spectrum
 - NumPy: Covers `np.fft.irfft`, `np.fft.irfft2`, `np.fft.irfftn` through a single Numerix method.
 

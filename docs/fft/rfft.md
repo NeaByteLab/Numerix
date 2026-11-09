@@ -5,14 +5,15 @@ Compute the transform of a real signal.
 ## API
 
 ```ts
-Numeric.fft.rfft(values, axis)
+Numeric.fft.rfft(values, level, target)
 ```
 
 Produces the positive bins of a real signal.
 
 - Parameters:
   - `values`: Real signal samples to transform
-  - `axis`: Axes along which the transform runs, or `all` for every axis
+  - `level`: Transform length or axis along which the transform runs
+  - `target`: Optional axis when a transform length is given
 - Returns: Complex spectrum of the transformed signal
 - NumPy: Covers `np.fft.rfft`, `np.fft.rfft2`, `np.fft.rfftn` through a single Numerix method.
 

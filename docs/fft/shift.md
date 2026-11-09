@@ -5,7 +5,7 @@ Move the zero frequency bin to the edge of the spectrum.
 ## API
 
 ```ts
-Numeric.fft.shift(values, inverse = false)
+Numeric.fft.shift(values, inverse, level)
 ```
 
 Moves the zero frequency bin to the array edge.
@@ -13,6 +13,7 @@ Moves the zero frequency bin to the array edge.
 - Parameters:
   - `values`: Spectral values to reorder
   - `inverse`: When true reverses the shift direction
+  - `level`: Optional axis or axes along which to shift a two-dimensional spectrum
 - Returns: Reordered spectral values
 - NumPy: Covers `np.fft.fftshift`, `np.fft.ifftshift` through a single Numerix method.
 

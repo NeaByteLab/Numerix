@@ -5,7 +5,7 @@ Compute the frequency of each spectral bin.
 ## API
 
 ```ts
-Numeric.fft.freq(count, spacing = 1, real = false)
+Numeric.fft.freq(count, spacing = 1, positive = false)
 ```
 
 Reports the frequency of each spectral bin.
@@ -13,7 +13,7 @@ Reports the frequency of each spectral bin.
 - Parameters:
   - `count`: Number of bins in the transform
   - `spacing`: Sample spacing of the original signal
-  - `real`: When true returns only the positive bins
+  - `positive`: When true returns only the positive bins
 - Returns: Frequency of each spectral bin
 - NumPy: Covers `np.fft.fftfreq`, `np.fft.rfftfreq` through a single Numerix method.
 

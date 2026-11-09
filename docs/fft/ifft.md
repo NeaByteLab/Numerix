@@ -5,14 +5,15 @@ Compute the inverse discrete Fourier transform of a spectrum.
 ## API
 
 ```ts
-Numeric.fft.ifft(spectrum, axis)
+Numeric.fft.ifft(spectrum, level, target)
 ```
 
 Transforms a spectrum back into signal samples.
 
 - Parameters:
   - `spectrum`: Frequency spectrum to transform
-  - `axis`: Axes along which the transform runs, or `all` for every axis
+  - `level`: Transform length or axis along which the transform runs
+  - `target`: Optional axis when a transform length is given
 - Returns: Complex signal of the transformed spectrum
 - NumPy: Covers `np.fft.ifft`, `np.fft.ifft2`, `np.fft.ifftn` through a single Numerix method.
 
