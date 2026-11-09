@@ -6,39 +6,52 @@ import * as Internal from '@app/internal/index.ts'
  * @description Produces counts across several outcome categories.
  * @param trials - Number of independent trials to distribute
  * @param probabilities - Outcome probability for each category
+ * @param amount - Sample count or generator supplying uniform samples
  * @param generator - Generator supplying uniform samples
  * @returns Count of outcomes in each category
  */
 export default function multinomial(
   trials: number,
   probabilities: number[],
+  amount?: number | Types.NumerixGenerator,
   generator?: Types.NumerixGenerator
-): number[] {
-  const count = probabilities.length
-  const counts = new Array<number>(count).fill(0)
-  if (count === 0 || trials <= 0) {
-    return counts
+): number[] | number[][] {
+  if (trials < 0 || !Number.isFinite(trials)) {
+    throw new RangeError('n < 0')
   }
-  const cdf = new Float64Array(count)
+  const steps = Math.trunc(trials)
   let running = 0
-  for (let index = 0; index < count; index++) {
-    running += probabilities[index] ?? 0
-    cdf[index] = running
-  }
-  const last = count - 1
-  for (let trial = 0; trial < trials; trial++) {
-    const sample = Internal.source(generator)
-    let low = 0
-    let high = last
-    while (low < high) {
-      const middle = (low + high) >> 1
-      if ((cdf[middle] ?? 0) < sample) {
-        low = middle + 1
-      } else {
-        high = middle
-      }
+  const cumulative = probabilities.map((entry) => {
+    const chance = entry ?? 0
+    if (chance < 0 || chance > 1 || Number.isNaN(chance)) {
+      throw new RangeError('pvals < 0, pvals > 1 or pvals contains NaNs')
     }
-    counts[low] = (counts[low] ?? 0) + 1
+    running += chance
+    return running
+  })
+  if (probabilities.length > 1 && (cumulative[probabilities.length - 2] ?? 0) > 1 + 1e-12) {
+    throw new RangeError('sum of probabilities excluding the last entry exceeds 1.0')
   }
-  return counts
+  const source = typeof amount === 'object' ? amount : generator
+  return Internal.draw(typeof amount === 'number' ? amount : undefined, () => {
+    const counts = new Array<number>(probabilities.length).fill(0)
+    if (probabilities.length === 0 || steps === 0) {
+      return counts
+    }
+    for (let trial = 0; trial < steps; trial++) {
+      const sample = Internal.source(source)
+      let lower = 0
+      let upper = probabilities.length - 1
+      while (lower < upper) {
+        const middle = (lower + upper) >> 1
+        if ((cumulative[middle] ?? 0) <= sample) {
+          lower = middle + 1
+        } else {
+          upper = middle
+        }
+      }
+      counts[lower] = (counts[lower] ?? 0) + 1
+    }
+    return counts
+  })
 }
