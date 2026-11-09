@@ -1,20 +1,24 @@
 /**
- * Resolve the overloaded nanarg argument.
- * @description Reads a boolean as skip, a number as axis.
- * @param nanarg - Boolean skip flag or numeric axis, absent when a peer list is supplied
- * @param axis - Axis used when the nanarg argument carries no axis
- * @param fallback - Skip flag or axis used when the nanarg argument carries neither
+ * Resolve the overloaded extreme-index arguments.
+ * @description Reads a boolean as the skip flag and a number as the axis.
+ * @param argument - Boolean skip flag or numeric axis, absent when a peer list is supplied
+ * @param level - Axis used when the first argument carries no axis
+ * @param fallback - Skip flag or axis used when the first argument carries neither
  * @returns Skip flag and resolved axis
  */
 export default function nanarg(
-  nanarg: boolean | number | undefined,
-  axis?: number,
+  argument: boolean | number | undefined,
+  level?: number | boolean,
   fallback?: boolean | number
 ): { skip: boolean; target: number | undefined } {
-  const spare = typeof fallback === 'boolean' ? fallback : false
-  const fallbackAxis = typeof fallback === 'number' ? fallback : axis
   return {
-    skip: typeof nanarg === 'boolean' ? nanarg : spare,
-    target: typeof nanarg === 'number' ? nanarg : fallbackAxis
+    skip: argument === true || fallback === true || level === true,
+    target: typeof argument === 'number'
+      ? argument
+      : typeof fallback === 'number'
+      ? fallback
+      : typeof level === 'number'
+      ? level
+      : undefined
   }
 }
