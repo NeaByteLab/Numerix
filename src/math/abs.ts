@@ -1,3 +1,4 @@
+import type * as Types from '@app/types.ts'
 import * as Internal from '@app/internal/index.ts'
 
 /**
@@ -7,7 +8,11 @@ import * as Internal from '@app/internal/index.ts'
  * @returns Magnitudes matching the input nesting shape
  */
 export default function abs(
-  value: number | number[] | number[][]
+  value: Types.NumerixValue
 ): number | number[] | number[][] {
-  return Internal.unary(value, Math.abs)
+  return Internal.traverse(
+    value,
+    (entry) => Internal.shape(entry) ? Math.hypot(entry.re, entry.im) : Math.abs(Number(entry)),
+    false
+  )
 }
