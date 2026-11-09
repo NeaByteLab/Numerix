@@ -4,45 +4,50 @@ import evaluate from '@app/poly/evaluate.ts'
 /**
  * Evaluate a polynomial over a grid.
  * @description Computes polynomial values at grid intersections.
- * @param rows - Row positions of the evaluation grid
+ * @param first - Row positions of the evaluation grid
  * @param columns - Column positions of the evaluation grid
  * @param coefficients - Coefficients of the source polynomial
  * @param basis - Polynomial basis of the coefficients
  * @returns Evaluated values for each grid row
  */
 export default function grid(
-  rows: number[],
-  columns: number[],
-  coefficients: number[][],
+  first: (number | Types.NumerixComplex)[] | number | Types.NumerixComplex,
+  columns: (number | Types.NumerixComplex)[] | number | Types.NumerixComplex,
+  coefficients:
+    | (number | Types.NumerixComplex)[]
+    | (number | Types.NumerixComplex)[][],
   basis: Types.NumerixBasis = 'poly'
-): number[][] {
-  const height = rows.length
-  const width = columns.length
-  const count = coefficients.length
-  const evaluated = new Array<number[]>(count)
-  for (let row = 0; row < count; row++) {
-    evaluated[row] = evaluate(
-      columns,
-      coefficients[row] ?? [],
+):
+  | number
+  | number[]
+  | number[][]
+  | Types.NumerixComplex
+  | Types.NumerixComplex[]
+  | Types.NumerixComplex[][] {
+  const result = evaluate(
+    Array.isArray(columns) ? (columns as number[]) : [columns as number],
+    evaluate(
+      Array.isArray(first) ? (first as number[]) : [first as number],
+      coefficients as number[][],
       basis
-    ) as number[]
+    ) as number[][],
+    basis
+  ) as (number | Types.NumerixComplex)[][]
+  if (!Array.isArray(coefficients[0])) {
+    return (Array.isArray(columns) ? result : (result[0] ?? 0)) as
+      | number
+      | number[]
+      | Types.NumerixComplex
+      | Types.NumerixComplex[]
   }
-  const column = new Array<number>(count)
-  const result = new Array<number[]>(height)
-  for (let index = 0; index < height; index++) {
-    result[index] = new Array<number>(width)
+  if (!Array.isArray(first) && !Array.isArray(columns)) {
+    return (result[0]?.[0] ?? 0) as number | Types.NumerixComplex
   }
-  for (let index = 0; index < width; index++) {
-    for (let row = 0; row < count; row++) {
-      column[row] = evaluated[row]?.[index] ?? 0
-    }
-    const line = evaluate(rows, column, basis) as number[]
-    for (let position = 0; position < height; position++) {
-      const output = result[position]
-      if (output) {
-        output[index] = line[position] ?? 0
-      }
-    }
+  if (!Array.isArray(first)) {
+    return (result[0] ?? []) as number[] | Types.NumerixComplex[]
   }
-  return result
+  if (!Array.isArray(columns)) {
+    return result.map((entry) => entry[0] ?? 0) as number[] | Types.NumerixComplex[]
+  }
+  return result as number[][] | Types.NumerixComplex[][]
 }
