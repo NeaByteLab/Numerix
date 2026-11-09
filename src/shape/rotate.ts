@@ -1,52 +1,52 @@
+import * as Internal from '@app/internal/index.ts'
+
 /**
- * Rotate a matrix by quarter turns.
- * @description Turns the matrix clockwise by the given count.
+ * Rotate a matrix by quarter-turns.
+ * @description Turns the matrix in the plane specified by axes.
  * @param matrix - Matrix to rotate
- * @param turns - Number of quarter turns to apply
+ * @param turns - Number of quarter-turns to apply
+ * @param plane - Two-element tuple of axes defining the rotation plane
  * @returns Rotated matrix
  */
-export default function rotate(matrix: unknown[][], turns = 1): unknown[][] {
-  const quarter = ((turns % 4) + 4) % 4
-  const rows = matrix.length
-  const columns = matrix[0]?.length ?? 0
+export default function rotate(
+  matrix: unknown[][],
+  turns = 1,
+  plane: [number, number] = [0, 1]
+): unknown[][] {
+  if (!Array.isArray(matrix) || (matrix.length > 0 && !Array.isArray(matrix[0]))) {
+    throw new RangeError('Input must be >= 2-d.')
+  }
+  const first = plane[0] < 0 ? plane[0] + 2 : plane[0]
+  const second = plane[1] < 0 ? plane[1] + 2 : plane[1]
+  if (first < 0 || first > 1 || second < 0 || second > 1 || first === second) {
+    throw new RangeError('axes must be two distinct axes in [0, 1]')
+  }
+  const quarter = (((first === 1 && second === 0 ? -turns : turns) % 4) + 4) % 4
+  const complex = Internal.classify(matrix, true, true) === true
   if (quarter === 0) {
-    const result = new Array<unknown[]>(rows)
-    for (let row = 0; row < rows; row++) {
-      result[row] = (matrix[row] ?? []).slice()
-    }
-    return result
+    return complex
+      ? (Internal.nested(matrix) as unknown[][])
+      : matrix.map((slice) => (slice ?? []).slice())
   }
-  if (quarter === 1) {
-    const result = new Array<unknown[]>(columns)
-    for (let column = 0; column < columns; column++) {
-      const output = new Array<unknown>(rows)
-      const source = columns - 1 - column
-      for (let row = 0; row < rows; row++) {
-        output[row] = matrix[row]?.[source]
-      }
-      result[column] = output
-    }
-    return result
-  }
+  const height = matrix.length
+  const width = matrix[0]?.length ?? 0
   if (quarter === 2) {
-    const result = new Array<unknown[]>(rows)
-    for (let row = 0; row < rows; row++) {
-      const source = matrix[rows - 1 - row] ?? []
-      const output = new Array<unknown>(columns)
-      for (let column = 0; column < columns; column++) {
-        output[column] = source[columns - 1 - column]
-      }
-      result[row] = output
-    }
-    return result
+    const result = Array.from({ length: height }, (_outer, outer) => {
+      const slice = matrix[height - 1 - outer] ?? []
+      return Array.from({ length: width }, (_inner, inner) => slice[width - 1 - inner])
+    })
+    return complex ? (Internal.nested(result) as unknown[][]) : result
   }
-  const result = new Array<unknown[]>(columns)
-  for (let column = 0; column < columns; column++) {
-    const output = new Array<unknown>(rows)
-    for (let row = 0; row < rows; row++) {
-      output[row] = matrix[rows - 1 - row]?.[column]
-    }
-    result[column] = output
-  }
-  return result
+  const result = quarter === 1
+    ? Array.from(
+      { length: width },
+      (_outer, outer) =>
+        Array.from({ length: height }, (_inner, inner) => matrix[inner]?.[width - 1 - outer])
+    )
+    : Array.from(
+      { length: width },
+      (_outer, outer) =>
+        Array.from({ length: height }, (_inner, inner) => matrix[height - 1 - inner]?.[outer])
+    )
+  return complex ? (Internal.nested(result) as unknown[][]) : result
 }
