@@ -1,15 +1,23 @@
 import * as Internal from '@app/internal/index.ts'
 
 /**
- * Compute Euclidean distance of two operands.
+ * Compute the Euclidean distance of two operands.
  * @description Combines operands element-wise with stable square roots.
- * @param left - First operand as scalar, vector, or matrix
- * @param right - Second operand as scalar, vector, or matrix
+ * @param first - First operand as a scalar, vector, or matrix
+ * @param second - Second operand as a scalar, vector, or matrix
  * @returns Distances matching the broadcast shape of the operands
  */
 export default function hypot(
-  left: number | number[] | number[][],
-  right: number | number[] | number[][] = 0
+  first: number | number[] | number[][],
+  second: number | number[] | number[][] = 0
 ): number | number[] | number[][] {
-  return Internal.broadcast(left, right, Math.hypot)
+  if (typeof second === 'number' && Internal.classify(first, true, true) === false) {
+    return typeof first === 'number'
+      ? Math.hypot(first, second)
+      : Internal.mapper(first, (leading) => Math.hypot(leading, second))
+  }
+  if (typeof first === 'number' && Internal.classify(second, true, true) === false) {
+    return Internal.mapper(second, (trailing) => Math.hypot(first, trailing))
+  }
+  return Internal.broadcast(first, second, Math.hypot)
 }
