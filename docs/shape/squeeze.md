@@ -5,13 +5,14 @@ Remove length one dimensions from a nested array.
 ## API
 
 ```ts
-Numeric.shape.squeeze(input)
+Numeric.shape.squeeze(input, chosen)
 ```
 
 Removes single entry dimensions from the array.
 
 - Parameters:
   - `input`: Nested array to squeeze
+  - `chosen`: Optional axis or list of axes to squeeze
 - Returns: Array without the single entry dimensions
 - NumPy: Covers `np.squeeze`, `ndarray.squeeze` through a single Numerix method.
 

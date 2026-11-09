@@ -5,14 +5,14 @@ Reverse entries along one axis or across every axis.
 ## API
 
 ```ts
-Numeric.shape.flip(input, axis = 0)
+Numeric.shape.flip(input, chosen = 0)
 ```
 
 Reverses rows, columns, or every axis.
 
 - Parameters:
   - `input`: Nested array to reverse
-  - `axis`: Axis or named direction to reverse
+  - `chosen`: Axis or named direction to reverse
 - Returns: Reversed array matching the input nesting
 - NumPy: Covers `np.flip`, `np.fliplr`, `np.flipud` through a single Numerix method.
 

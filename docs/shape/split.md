@@ -5,7 +5,7 @@ Divide an array into equal or sized sections.
 ## API
 
 ```ts
-Numeric.shape.split(input, sections, axis = 0, mode = 'equal')
+Numeric.shape.split(input, sections, level = 0, method = 'equal')
 ```
 
 Divides the array into equal or sized sections.
@@ -13,8 +13,8 @@ Divides the array into equal or sized sections.
 - Parameters:
   - `input`: Array to divide into sections
   - `sections`: Number of sections or their sizes
-  - `axis`: Axis along which the array is split
-  - `mode`: Splitting mode applied to the array
+  - `level`: Axis along which the array is split
+  - `method`: Splitting method applied to the array
 - Returns: Array of section arrays
 - NumPy: Covers `np.split`, `np.array_split`, `np.vsplit`, `np.hsplit`, `np.dsplit` through a single Numerix method.
 

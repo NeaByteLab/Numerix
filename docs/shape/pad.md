@@ -5,7 +5,7 @@ Add entries around an array using the chosen padding mode.
 ## API
 
 ```ts
-Numeric.shape.pad(input, width, mode = 'constant', fill = 0)
+Numeric.shape.pad(input, width, method = 'constant', value = 0)
 ```
 
 Adds entries around the array using the chosen mode.
@@ -13,8 +13,8 @@ Adds entries around the array using the chosen mode.
 - Parameters:
   - `input`: Array to pad
   - `width`: Number of entries added on each side
-  - `mode`: Padding mode applied to the array
-  - `fill`: Constant value used by constant padding
+  - `method`: Padding method applied to the array
+  - `value`: Constant value used by constant padding
 - Returns: Padded array with the added entries
 - NumPy: Equivalent to `np.pad`.
 

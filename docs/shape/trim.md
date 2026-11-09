@@ -5,14 +5,15 @@ Remove zero entries from the ends of an array.
 ## API
 
 ```ts
-Numeric.shape.trim(input, mode = 'fb')
+Numeric.shape.trim(input, method, chosen)
 ```
 
 Trims leading or trailing zero values.
 
 - Parameters:
   - `input`: Array to trim
-  - `mode`: Side or sides that are trimmed
+  - `method`: Side or sides that are trimmed
+  - `chosen`: Optional axis or axes along which to trim
 - Returns: Trimmed array without the zero entries
 - NumPy: Equivalent to `np.trim_zeros`.
 

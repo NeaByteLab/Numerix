@@ -5,7 +5,7 @@ Insert values into an array at the given index.
 ## API
 
 ```ts
-Numeric.shape.insert(input, index, values)
+Numeric.shape.insert(input, index, values, level)
 ```
 
 Inserts the values at the requested position.
@@ -14,6 +14,7 @@ Inserts the values at the requested position.
   - `input`: Array receiving the new values
   - `index`: Position where the values are inserted
   - `values`: Values placed into the array
+  - `level`: Optional axis along which values are inserted
 - Returns: Array holding the inserted values
 - NumPy: Covers `np.insert`, `np.append` through a single Numerix method.
 

@@ -5,13 +5,14 @@ Flatten nested values into a single vector.
 ## API
 
 ```ts
-Numeric.shape.flatten(input)
+Numeric.shape.flatten(input, order = 'C')
 ```
 
 Flattens nested values into one vector.
 
 - Parameters:
   - `input`: Nested array to flatten
+  - `order`: Memory layout order, row-major or column-major
 - Returns: Vector holding every nested value
 - NumPy: Covers `np.ravel`, `ndarray.flatten`, `ndarray.ravel`, `ndarray.flat` through a single Numerix method.
 

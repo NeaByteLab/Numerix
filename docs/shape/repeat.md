@@ -5,7 +5,7 @@ Repeat each element or tile the whole array several times.
 ## API
 
 ```ts
-Numeric.shape.repeat(input, repeats, tile = false)
+Numeric.shape.repeat(input, repeats, times, level)
 ```
 
 Repeats entries or tiles the whole array.
@@ -13,7 +13,8 @@ Repeats entries or tiles the whole array.
 - Parameters:
   - `input`: Array whose entries are repeated
   - `repeats`: Number of repetitions applied
-  - `tile`: When true tiles the whole array instead
+  - `times`: When true tiles the whole array instead
+  - `level`: Optional axis when repeating a matrix or tile flag
 - Returns: Array holding the repeated values
 - NumPy: Covers `np.repeat`, `np.tile`, `ndarray.repeat` through a single Numerix method.
 
@@ -60,5 +61,5 @@ import Numeric from '@neabyte/numerix'
 const matrix = Numeric.shape.repeat([[1, 2]], 2, true)
 
 console.log(matrix)
-// [1,2,1,2]
+// [[1,2,1,2]]
 ```

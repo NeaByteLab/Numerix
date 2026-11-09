@@ -1,11 +1,11 @@
 # rotate
 
-Rotate a matrix by a quarter turn.
+Rotate a matrix by quarter turns.
 
 ## API
 
 ```ts
-Numeric.shape.rotate(matrix, turns = 1)
+Numeric.shape.rotate(matrix, turns = 1, plane = [0, 1])
 ```
 
 Rotates the matrix by the requested quarter turns.
@@ -13,6 +13,7 @@ Rotates the matrix by the requested quarter turns.
 - Parameters:
   - `matrix`: Matrix to rotate
   - `turns`: Number of quarter turns applied
+  - `plane`: Two-element tuple of axes defining the rotation plane
 - Returns: Rotated matrix
 - NumPy: Equivalent to `np.rot90`.
 

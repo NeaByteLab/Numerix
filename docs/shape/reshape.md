@@ -5,7 +5,7 @@ Reshape nested values into a new dimension layout.
 ## API
 
 ```ts
-Numeric.shape.reshape(input, shape)
+Numeric.shape.reshape(input, shape, order = 'C')
 ```
 
 Rebuilds the array with the requested dimensions.
@@ -13,6 +13,7 @@ Rebuilds the array with the requested dimensions.
 - Parameters:
   - `input`: Nested array to reshape
   - `shape`: Target dimensions of the reshaped array
+  - `order`: Memory layout order, row-major or column-major
 - Returns: Array holding the reshaped values
 - NumPy: Covers `np.reshape`, `ndarray.reshape` through a single Numerix method.
 

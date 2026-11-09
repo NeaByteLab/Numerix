@@ -5,15 +5,15 @@ Concatenate or stack several arrays along a shared axis.
 ## API
 
 ```ts
-Numeric.shape.join(arrays, axis = 0, stack = false)
+Numeric.shape.join(arrays, level = 0, method = 'concatenate')
 ```
 
 Combines several arrays along the requested axis.
 
 - Parameters:
   - `arrays`: Arrays joined together
-  - `axis`: Axis along which the arrays are combined
-  - `stack`: When true stacks the arrays into a new axis
+  - `level`: Axis along which the arrays are combined
+  - `method`: When true stacks the arrays into a new axis
 - Returns: Array holding the combined values
 - NumPy: Covers `np.concat`, `np.concatenate`, `np.stack`, `np.vstack`, `np.hstack`, `np.dstack`, `np.column_stack`, `np.block`, `np.unstack` through a single Numerix method.
 

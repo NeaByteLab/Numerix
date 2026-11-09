@@ -5,15 +5,16 @@ Reorder the axes of a nested array.
 ## API
 
 ```ts
-Numeric.shape.transpose(input, axes, second)
+Numeric.shape.transpose(input, order, other, method)
 ```
 
 Reorders the axes of a nested array.
 
 - Parameters:
   - `input`: Nested array to transpose
-  - `axes`: Axis order or swapped axis pair
-  - `second`: Second axis when swapping a pair
+  - `order`: Axis order, swapped axis pair, or mode
+  - `other`: Second axis when swapping a pair
+  - `method`: Optional transposition mode
 - Returns: Transposed array
 - NumPy: Covers `np.transpose`, `np.permute_dims`, `np.matrix_transpose`, `np.swapaxes`, `np.moveaxis`, `np.rollaxis`, `np.linalg.matrix_transpose`, `ndarray.T`, `ndarray.transpose`, `ndarray.swapaxes` through a single Numerix method.
 

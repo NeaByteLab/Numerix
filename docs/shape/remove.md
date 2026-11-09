@@ -5,7 +5,7 @@ Remove entries from an array at the given indices.
 ## API
 
 ```ts
-Numeric.shape.remove(input, indices)
+Numeric.shape.remove(input, indices, level)
 ```
 
 Removes the indexed entries from the array.
@@ -13,6 +13,7 @@ Removes the indexed entries from the array.
 - Parameters:
   - `input`: Array losing the selected entries
   - `indices`: Positions of the entries to remove
+  - `level`: Optional axis along which entries are removed
 - Returns: Array without the removed entries
 - NumPy: Equivalent to `np.delete`.
 

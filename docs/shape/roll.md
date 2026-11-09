@@ -5,14 +5,15 @@ Roll array entries forward by a given offset.
 ## API
 
 ```ts
-Numeric.shape.roll(input, shift)
+Numeric.shape.roll(input, offset, level)
 ```
 
 Moves entries from the end to the front.
 
 - Parameters:
   - `input`: Array whose entries are shifted
-  - `shift`: Number of positions each entry moves
+  - `offset`: Number of positions each entry moves
+  - `level`: Optional axis or axes along which entries are shifted
 - Returns: Array containing the rolled entries
 - NumPy: Equivalent to `np.roll`.
 
@@ -40,7 +41,7 @@ console.log(values)
 // [2,3,1]
 ```
 
-### Roll each row of a matrix
+### Roll a matrix by one position
 
 ```ts
 import Numeric from '@neabyte/numerix'
@@ -48,7 +49,7 @@ import Numeric from '@neabyte/numerix'
 const matrix = Numeric.shape.roll([[1, 2], [3, 4]], 1)
 
 console.log(matrix)
-// [[3,4],[1,2]]
+// [[4,1],[2,3]]
 ```
 
 ### Roll by a full cycle
