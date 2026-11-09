@@ -1,7 +1,7 @@
 import type * as Types from '@app/types.ts'
 import * as Random from '@app/random/index.ts'
 
-/** Shared generator used when no generator is supplied */
+/** Shared fallback random generator */
 let shared: Types.NumerixGenerator | undefined
 
 /**
