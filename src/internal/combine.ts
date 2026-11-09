@@ -1,26 +1,57 @@
+import type * as Types from '@app/types.ts'
+import * as Poly from '@app/poly/index.ts'
+import classify from '@app/internal/classify.ts'
+import shape from '@app/internal/shape.ts'
+
 /**
  * Combine two coefficient arrays.
  * @description Aligns the coefficients, then applies the operation.
- * @param left - Coefficients of the first polynomial
- * @param right - Coefficients of the second polynomial
- * @param sign - One to add the coefficients, minus one to subtract them
+ * @param first - Coefficients of the first polynomial
+ * @param second - Coefficients of the second polynomial
+ * @param polarity - One to add the coefficients, minus one to subtract them
  * @returns Coefficients of the combined polynomial
  */
 export default function combine(
-  left: number[],
-  right: number[] | number,
-  sign: 1 | -1
-): number[] {
-  const operand = typeof right === 'number' ? [right] : right
-  const length = Math.max(left.length, operand.length)
-  const result = new Array<number>(length)
-  for (let index = 0; index < length; index++) {
-    const first = left[index] ?? 0
-    const second = operand[index] ?? 0
-    result[index] = sign === 1 ? first + second : first - second
+  first: number[] | number | Types.NumerixComplex[] | Types.NumerixComplex,
+  second: number[] | number | Types.NumerixComplex[] | Types.NumerixComplex,
+  polarity: 1 | -1
+): number[] | Types.NumerixComplex[] {
+  const leading = Array.isArray(first) ? first : [first]
+  const trailing = Array.isArray(second) ? second : [second]
+  if (leading.length === 0 || trailing.length === 0) {
+    throw new RangeError('Coefficient array is empty')
   }
-  while (result.length > 1 && result[result.length - 1] === 0) {
-    result.pop()
+  if (Array.isArray(leading[0]) || Array.isArray(trailing[0])) {
+    throw new RangeError('Coefficient array is not 1-d')
   }
-  return result.length === 0 ? [0] : result
+  const length = Math.max(leading.length, trailing.length)
+  if (classify(leading, true, true) !== true && classify(trailing, true, true) !== true) {
+    let limit = length - 1
+    const result = new Array<number>(length)
+    for (let index = 0; index < length; index++) {
+      result[index] = Number(leading[index] ?? 0) + polarity * Number(trailing[index] ?? 0)
+    }
+    while (limit > 0 && result[limit] === 0) {
+      limit--
+    }
+    if (limit + 1 < length) {
+      result.length = limit + 1
+    }
+    return result
+  }
+  return Poly.domain(
+    Array.from(
+      { length },
+      (_outer, index) => {
+        const prior = leading[index]
+        const later = trailing[index]
+        return {
+          re: (shape(prior) ? prior.re : Number(prior ?? 0)) +
+            polarity * (shape(later) ? later.re : Number(later ?? 0)),
+          im: (shape(prior) ? prior.im : 0) + polarity * (shape(later) ? later.im : 0)
+        }
+      }
+    ),
+    'trim'
+  ) as Types.NumerixComplex[]
 }
