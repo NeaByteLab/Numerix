@@ -24,25 +24,45 @@ import * as window from '@app/window/index.ts'
  * @description Groups every public namespace under a single root export.
  */
 export default {
+  /** Bitwise operations namespace */
   bit,
+  /** Complex number operations namespace */
   complex,
+  /** Array creation namespace */
   create,
+  /** Data type inspection namespace */
   dtype,
+  /** Fast Fourier transform namespace */
   fft,
+  /** Array indexing namespace */
   index,
+  /** Linear algebra namespace */
   linalg,
+  /** Logical comparison namespace */
   logic,
+  /** Arithmetic and math namespace */
   math,
+  /** Polynomial evaluation namespace */
   poly,
+  /** Random sampling namespace */
   random,
+  /** Reduction operations namespace */
   reduce,
+  /** Set operations namespace */
   set,
+  /** Array shape manipulation namespace */
   shape,
+  /** Sorting and searching namespace */
   sort,
+  /** Statistical operations namespace */
   stat,
+  /** String manipulation namespace */
   string,
+  /** Trigonometric operations namespace */
   trig,
+  /** Utility operations namespace */
   util,
+  /** Window generation namespace */
   window
 }
 
