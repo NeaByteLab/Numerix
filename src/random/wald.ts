@@ -1,40 +1,30 @@
 import type * as Types from '@app/types.ts'
 import * as Internal from '@app/internal/index.ts'
-import normal from '@app/random/normal.ts'
 
 /**
  * Draw samples from a Wald distribution.
  * @description Produces positive variates with the given mean.
- * @param mean - Mean of the distribution
+ * @param center - Mean of the distribution
  * @param scale - Scale parameter of the distribution
- * @param size - Number of samples to draw when given
+ * @param count - Number of samples to draw when given
  * @param generator - Generator supplying uniform samples
  * @returns Single sample or array of samples
  */
 export default function wald(
-  mean: number,
+  center: number,
   scale: number,
-  size?: number,
+  count?: number,
   generator?: Types.NumerixGenerator
 ): number | number[] {
-  if (size === undefined) {
-    return sampleWald(mean, scale, generator)
+  if (center <= 0 || scale <= 0) {
+    throw new RangeError('wald mean and scale must be positive')
   }
-  return Internal.draw(size, () => sampleWald(mean, scale, generator))
-}
-
-/**
- * Draw one Wald variate.
- * @description Produces a single sample from the Wald distribution.
- * @param mean - Mean of the distribution
- * @param scale - Scale parameter of the distribution
- * @param generator - Generator supplying uniform samples
- * @returns Single Wald variate
- */
-function sampleWald(mean: number, scale: number, generator?: Types.NumerixGenerator): number {
-  const value = Number(normal(0, 1, undefined, generator))
-  const squared = value * value
-  const values = mean + (mean * mean * squared) / (2 * scale) -
-    (mean / (2 * scale)) * Math.sqrt(4 * mean * scale * squared + mean * mean * squared * squared)
-  return Internal.source(generator) <= mean / (mean + values) ? values : (mean * mean) / values
+  return Internal.draw(count, () => {
+    const scaled = center * Internal.deviate(generator) ** 2
+    const drawn = center +
+      (center / (2 * scale)) * (scaled - Math.sqrt(4 * scale * scaled + scaled * scaled))
+    return Internal.source(generator) <= center / (center + drawn)
+      ? drawn
+      : (center * center) / drawn
+  })
 }
